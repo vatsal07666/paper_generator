@@ -22,7 +22,7 @@ import { useSnackbar } from '../../Context/SnackbarContext';
 import { useEffect } from 'react';
 import { FaLanguage } from "react-icons/fa6";
 import { MdOutlineTopic } from "react-icons/md";
-import { BsQuestionSquare } from "react-icons/bs";
+import { MdOutlineQuestionAnswer } from "react-icons/md";
 
 const drawerWidth = 240;
 
@@ -96,7 +96,7 @@ const Items = [
     { name: "Dashboard", icon: <TbLayoutDashboardFilled />, to: "/admin" },
     { name: "Language", icon: <FaLanguage />, to: "/admin/language" },
     { name: "Topic", icon: <MdOutlineTopic />, to: "/admin/topic" },
-    { name: "Questions", icon: <BsQuestionSquare />, to: "/admin/question" },
+    { name: "Questions", icon: <MdOutlineQuestionAnswer />, to: "/admin/question" },
 ]
 
 const Index = ({children}) => {
