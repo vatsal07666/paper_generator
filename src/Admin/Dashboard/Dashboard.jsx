@@ -9,7 +9,7 @@ import { setLanguage } from "../Language/LanguageSlice";
 import { setTopic } from "../Topic/TopicSlice";
 import { MdOutlineTopic } from "react-icons/md";
 import { setQuestion } from "../Questions/QuestionsSlice";
-import { BsQuestionSquare } from "react-icons/bs";
+import { MdOutlineQuestionAnswer } from "react-icons/md";
 
 const Dashboard = () => {
     const { list: languages = [] } = useSelector((state) => state.languageStore);
@@ -66,7 +66,7 @@ const Dashboard = () => {
             path: "/admin/topic",
         },
         {
-            icon: <BsQuestionSquare />,
+            icon: <MdOutlineQuestionAnswer />,
             title: "Questions",
             count: questions?.length,
             path: "/admin/question",
