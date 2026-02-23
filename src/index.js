@@ -3,11 +3,24 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { BrowserRouter } from 'react-router-dom';
+import { SnackbarProvider } from './Context/SnackbarContext';
+import { Provider } from 'react-redux';
+import Store from "./Admin/Store/Store";
+import { ContextProvider } from './Context/ContextProvider';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+      <Provider store={Store}>
+        <SnackbarProvider>
+          <ContextProvider>
+            <App />
+          </ContextProvider>
+        </SnackbarProvider>
+      </Provider>
+    </BrowserRouter>
   </React.StrictMode>
 );
 
