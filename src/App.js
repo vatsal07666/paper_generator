@@ -7,7 +7,7 @@ import PrivateRoute from "./Route/PrivateRoute";
 import Layout from "./User/Layout/Layout";
 import LoginPage from "./Login-&-Register/LoginPage";
 import RegisterPage from "./Login-&-Register/RegisterPage";
-import AddLanguage from "./Admin/Language/AddLanguage";
+import AddSubject from "./Admin/Subject/AddSubject";
 import AddTopic from "./Admin/Topic/AddTopic";
 import AddQuestions from "./Admin/Questions/AddQuestions";
 
@@ -24,7 +24,7 @@ function App() {
                         <Index>
                             <Switch>
                                 <PrivateRoute exact path="/admin" component={Dashboard} role="admin" />
-                                <PrivateRoute exact path="/admin/language" component={AddLanguage} role="admin" />
+                                <PrivateRoute exact path="/admin/subject" component={AddSubject} role="admin" />
                                 <PrivateRoute exact path="/admin/topic" component={AddTopic} role="admin" />
                                 <PrivateRoute exact path="/admin/question" component={AddQuestions} role="admin" />
                             </Switch>

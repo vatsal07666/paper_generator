@@ -48,17 +48,17 @@
     border-radius: 12px;
 }
 
-.language-form input, #status, .topic-form input, .topic-form #languageName, .question-form input, 
-.question-form #languageName, .question-form #topicName, .question-form #question{
+.subject-form input, #status, .topic-form input, .topic-form #subjectName, .question-form input, 
+.question-form #subjectName, .question-form #question{
     padding: 12px 14px;
-    border: 1px solid;
+    border: 1px solid #d2d2d3;
     border-radius: 10px;
     font-family: sans-serif;
     font-size: small;
     letter-spacing: 0.1cqmin;
 }
 
-label[for="languageName"], label[for="languageCode"], label[for="status"], label[for="topicName"],
+label[for="subjectName"], label[for="subjectCode"], label[for="status"], label[for="topicName"],
 label[for="question"], label[for="marks"]{
     letter-spacing: 0.1cqmin;
     font-weight: 600;

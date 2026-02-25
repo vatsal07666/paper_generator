@@ -1,11 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
-import LanguageSlice from "../Language/LanguageSlice";
+import SubjectSlice from "../Subject/SubjectSlice";
 import TopicSlice from "../Topic/TopicSlice";
 import QuestionsSlice from "../Questions/QuestionsSlice";
 
 export default configureStore({
     reducer: {
-        languageStore: LanguageSlice,
+        subjectStore: SubjectSlice,
         topicStore: TopicSlice,
         questionStore: QuestionsSlice
     }

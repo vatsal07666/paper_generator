@@ -4,7 +4,7 @@ const initialState = {
     list: [],
     formValues: {
         topicName: '',
-        languageName: '',
+        subjectName: '',
         status: ''
     },
     openForm: false,

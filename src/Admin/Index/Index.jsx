@@ -20,9 +20,9 @@ import { useState } from 'react';
 import { useRef } from 'react';
 import { useSnackbar } from '../../Context/SnackbarContext';
 import { useEffect } from 'react';
-import { FaLanguage } from "react-icons/fa6";
 import { MdOutlineTopic } from "react-icons/md";
 import { MdOutlineQuestionAnswer } from "react-icons/md";
+import { GiBookshelf } from "react-icons/gi";
 
 const drawerWidth = 240;
 
@@ -94,7 +94,7 @@ const DesktopDrawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 
 
 const Items = [
     { name: "Dashboard", icon: <TbLayoutDashboardFilled />, to: "/admin" },
-    { name: "Language", icon: <FaLanguage />, to: "/admin/language" },
+    { name: "Subject", icon: <GiBookshelf />, to: "/admin/subject" },
     { name: "Topic", icon: <MdOutlineTopic />, to: "/admin/topic" },
     { name: "Questions", icon: <MdOutlineQuestionAnswer />, to: "/admin/question" },
 ]

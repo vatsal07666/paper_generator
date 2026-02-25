@@ -3,8 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     list: [],
     formValues: {
-        languageName: '',
-        languageCode: '',
+        subjectName: '',
+        subjectCode: '',
         status: ''
     },
     openForm: false,
@@ -14,21 +14,21 @@ const initialState = {
     editId: null
 }
 
-export const LanguageSlice = createSlice({
-    name: "language",
+export const SubjectSlice = createSlice({
+    name: "subject",
     initialState,
     reducers: {
-        setLanguage: (state, action) => {
+        setSubject: (state, action) => {
             state.list = action.payload;
         },
-        addLanguage: (state, action) => {
+        addSubject: (state, action) => {
             state.list.push(action.payload);
         },
-        deleteLanguage: (state, action) => {
-            state.list = state.list.filter((l) => l._id !== action.payload);
+        deleteSubject: (state, action) => {
+            state.list = state.list.filter((s) => s._id !== action.payload);
         },
-        updateLanguage: (state, action) => {
-            const index = state.list.findIndex(l => l._id === action.payload._id);
+        updateSubject: (state, action) => {
+            const index = state.list.findIndex(s => s._id === action.payload._id);
             if (index !== -1) state.list[index] = {...state.list[index], ...action.payload};
         },
 
@@ -68,7 +68,7 @@ export const LanguageSlice = createSlice({
     }
 })
 
-export const { setLanguage, addLanguage, setOpenForm, setSearchItem, setFormValues, resetFormValues, resetUIstate,
-    setDeleteOpen, setDeleteId, resetDeleteState, deleteLanguage, updateLanguage, setEditId
-} = LanguageSlice.actions;
-export default LanguageSlice.reducer;
+export const { setSubject, addSubject, setOpenForm, setSearchItem, setFormValues, resetFormValues, 
+    resetUIstate, setDeleteOpen, setDeleteId, resetDeleteState, deleteSubject, updateSubject, setEditId
+} = SubjectSlice.actions;
+export default SubjectSlice.reducer;

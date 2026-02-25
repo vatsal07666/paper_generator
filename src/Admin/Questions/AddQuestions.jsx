@@ -16,11 +16,12 @@ import { FaEdit } from 'react-icons/fa';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
 import { IoMdAdd } from 'react-icons/io';
+import Select from "react-select";
 
 const AddQuestions = () => {
     const { list: questions = [], openForm, formValues, searchItem, deleteOpen, deleteId, editId } = useSelector((state) => state.questionStore);
-    const { list: languages } = useSelector((state) => state.languageStore);
-    const { list: topics } = useSelector((state) => state.topicStore);
+    const { list: subjects = [] } = useSelector((state) => state.subjectStore);
+    const { list: topics = [] } = useSelector((state) => state.topicStore);
     const dispatch = useDispatch();
     const { ShowSnackbar } = useSnackbar();
 
@@ -28,14 +29,14 @@ const AddQuestions = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
     const validationSchema = Yup.object({
-        languageName: Yup.string().required("Language Name is Required*"),
+        subjectName: Yup.string().required("Subject Name is Required*"),
         topicName: Yup.string().required("Topic Name is Required*"),
         question: Yup.string().required("Question is Required*"),
         marks: Yup.number().typeError("Marks Must be Number").required("Marks is Required")
                 .min(0, "Marks cannot be negative"),
     })
 
-    const token = "5xBkPzlxXM0mLYJX";
+    const token = "5TirRDcDOTjoaVUS";
     
     const getData = () => {
         axios.get("https://generateapi.techsnack.online/api/question", {
@@ -54,7 +55,7 @@ const AddQuestions = () => {
     }, [])
 
     const postData = (values, resetForm) => {
-        const data = { languageName: values.languageName, topicName: values.topicName, marks: Number(values.marks),
+        const data = { subjectName: values.subjectName, topicName: values.topicName, marks: Number(values.marks),
             question: values.question
         };
 
@@ -134,15 +135,18 @@ const AddQuestions = () => {
         dispatch(setOpenForm(true));
         dispatch(setEditId(item._id));
         dispatch(setFormValues({
-            languageName: item.languageName, topicName: item.topicName, marks: Number(item.marks), 
+            subjectName: item.subjectName, topicName: item.topicName, marks: Number(item.marks), 
             question: item.question
         }));
     }
 
     /* ---------------- Search ---------------- */
     const filteredQuestion = questions.filter(l =>
-        [l.languageName, l.topicName, l.question].join(" ").toLowerCase().includes(searchItem.toLowerCase())
+        [l.subjectName, l.topicName, l.question].join(" ").toLowerCase().includes(searchItem.toLowerCase())
     )
+
+    const subjectOptions = subjects.map((s) => ({ value: s.subjectName, label: s.subjectName }));
+    const topicOptions = topics.map((t) => ({ value: t.topicName, label: t.topicName }));
 
     return (
         <>
@@ -170,7 +174,7 @@ const AddQuestions = () => {
                     </Button>
                 </Box>
 
-                {/* Product Form */}
+                {/* Question Form */}
                 <Dialog open={openForm} sx={{ zIndex: 2000 }} maxWidth="md" fullWidth disableRestoreFocus
                     slotProps={{
                         backdrop: { sx: { backgroundColor: "rgba(0,0,0,0.35)", backdropFilter: "blur(4px)" } }
@@ -190,38 +194,40 @@ const AddQuestions = () => {
                         >
                             {({errors, touched, isValid, dirty, resetForm, setFieldValue, values}) => (
                                 <Form className="question-form">
-                                    {/* Language Name & Topic Name & Marks */}
+                                    {/* Subject Name & Topic Name & Marks */}
                                     <Box sx={{ display: "flex", flexDirection: {xs: "column", sm: "row"}, 
                                             gap: 3, mb: 3 
                                         }}
                                     >
                                         <Box sx={{ display: "flex", flexDirection: "column", gap: 1, flex: 1 }}>
-                                            <label htmlFor="languageName">Language Name</label>
-                                            <Field name="languageName" id="languageName" as="select"
-                                                onChange={(e) => {
-                                                    setFieldValue("languageName", e.target.value);
-                                                    setFieldValue("topicName", ""); // Reset topic when language changes
-                                                }}
-                                            >
-                                                <option value="" hidden> Select Language </option>
-                                                {languages.map((l) => (
-                                                    <option key={l._id} value={l.languageName}> {l.languageName} </option>
-                                                ))}
-                                            </Field>
-                                            {errors.languageName && touched.languageName && (
-                                                <div style={{ color: "#ff0000" }}>{errors.languageName}</div>
+                                            <label htmlFor="subjectName">Subject Name</label>                                            
+                                            <Select options={subjectOptions} placeholder="Search and select subject"
+                                                value={subjectOptions.find(
+                                                    (option) => option.value === values.subjectName
+                                                ) || null}
+                                                onChange={(option) => setFieldValue("subjectName", option ? option.value : "")}
+                                                isSearchable
+                                                isClearable
+                                                menuPortalTarget={document.body}
+                                                styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+                                            />
+                                            {errors.subjectName && touched.subjectName && (
+                                                <div style={{ color: "#ff0000" }}>{errors.subjectName}</div>
                                             )}
                                         </Box>
 
                                         <Box sx={{ display: "flex", flexDirection: "column", gap: 1, flex: 1 }}>
-                                            <label htmlFor="topicName">Topic Name</label>
-                                            <Field name="topicName" id="topicName" as="select">
-                                                <option value="" hidden> Select Topic </option>
-                                                {topics.filter((t) => t.languageName === values.languageName && t.status === "Active")
-                                                .map((t) => (
-                                                    <option key={t._id} value={t.topicName}> {t.topicName} </option>
-                                                ))}
-                                            </Field>
+                                            <label htmlFor="topicName">Topic Name</label>                                            
+                                            <Select options={topicOptions} placeholder="Search and select topic"
+                                                value={topicOptions.find(
+                                                    (option) => option.value === values.topicName
+                                                ) || null}
+                                                onChange={(option) => setFieldValue("topicName", option ? option.value : "")}
+                                                isSearchable
+                                                isClearable
+                                                menuPortalTarget={document.body}
+                                                styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+                                            />
                                             {errors.topicName && touched.topicName && (
                                                 <div style={{ color: "#ff0000" }}>{errors.topicName}</div>
                                             )}
@@ -274,7 +280,7 @@ const AddQuestions = () => {
                             py: 0.5, my: 2
                         }}
                     >
-                        <InputBase name="search" placeholder="Search Product" value={searchItem ?? ""}
+                        <InputBase name="search" placeholder="Search Questions" value={searchItem ?? ""}
                             onChange={(e) => dispatch(setSearchItem(e.target.value))}
                             sx={{ paddingLeft: '40px', width: '100%', boxSizing: "border-box" }}
                         />
@@ -298,7 +304,7 @@ const AddQuestions = () => {
                                 }}
                             >
                                 <TableRow>
-                                    {["#", "Question", "Language Name", "Topic Name", "Marks", "Actions"]
+                                    {["#", "Question", "Subject Name", "Topic Name", "Marks", "Actions"]
                                         .map((h) => (
                                             <TableCell key={h} sx={{ color: "#fff", textAlign: "center" }}>
                                                 {h}
@@ -320,7 +326,7 @@ const AddQuestions = () => {
                                         >
                                             <TableCell>{index + 1}</TableCell>
                                             <TableCell>{item.question}</TableCell>
-                                            <TableCell>{item.languageName}</TableCell>
+                                            <TableCell>{item.subjectName}</TableCell>
                                             <TableCell>{item.topicName}</TableCell>
                                             <TableCell>{item.marks}</TableCell>
                                             <TableCell>
@@ -408,7 +414,7 @@ const AddQuestions = () => {
                                     )
                                 )) : (
                                     <TableRow>
-                                        <TableCell colSpan={6} align="center">No Language Data Found</TableCell>
+                                        <TableCell colSpan={6} align="center">No Question Data Found</TableCell>
                                     </TableRow>
                                 )}
                             </TableBody>
@@ -423,7 +429,7 @@ const AddQuestions = () => {
                                 {/* CONTENT */}
                                 <CardContent sx={{ flexGrow: 1 }}>
                                     <Typography variant="body2"><b>Question:</b> {item.question}</Typography>
-                                    <Typography variant="body2"><b>Language Name:</b> {item.languageName}</Typography>
+                                    <Typography variant="body2"><b>Subject Name:</b> {item.subjectName}</Typography>
                                     <Typography variant="body2"><b>Topic Name:</b> {item.topicName}</Typography>
                                     <Typography variant="body2"><b>Marks:</b> {item.marks}</Typography>
                                 </CardContent>
