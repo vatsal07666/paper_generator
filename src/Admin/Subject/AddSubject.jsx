@@ -16,6 +16,7 @@ import { useSnackbar } from "../../Context/SnackbarContext";
 import SearchIcon from "@mui/icons-material/Search";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FaEdit } from "react-icons/fa";
+import Select from "react-select";
 
 const AddSubject = () => {
     const { list: subjects = [], formValues, openForm, searchItem, deleteOpen, deleteId, editId } 
@@ -139,6 +140,8 @@ const AddSubject = () => {
         [s.subjectName, s.subjectCode, s.status].join(" ").toLowerCase().includes(searchItem.toLowerCase())
     );
 
+    const statusOptions = status.map((st) => ({label: st, value: st}));
+
     return (
         <>
             <Box>
@@ -185,7 +188,7 @@ const AddSubject = () => {
                             onSubmit={handleSubmit}
                             enableReinitialize
                         >
-                        {({ errors, touched, isValid, dirty, resetForm }) => (
+                        {({ errors, touched, isValid, dirty, resetForm, values, setFieldValue }) => (
                             <Form className="subject-form">
                                 {/* Subject Name & Code */}
                                 <Box sx={{ display: "flex",  flexDirection: { xs: "column", sm: "row" },
@@ -225,12 +228,16 @@ const AddSubject = () => {
                                 >
                                     <Box sx={{ display: "flex", flexDirection: "column", gap: 1, flex: 1 }}>
                                         <label htmlFor="status">Status</label>
-                                        <Field name="status" id="status" as="select">
-                                            <option value="" hidden> Select Status </option>
-                                            {status.map((st) => (
-                                                <option key={st} value={st}> {st} </option>
-                                            ))}
-                                        </Field>
+                                        <Select options={statusOptions} placeholder="Search and select subject"
+                                            value={statusOptions.find(
+                                                (option) => option.value === values.status
+                                            ) || null}
+                                            onChange={(option) => setFieldValue("status", option ? option.value : "")}
+                                            isSearchable
+                                            isClearable
+                                            menuPortalTarget={document.body}
+                                            styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+                                        />
                                         {errors.status && touched.status && (
                                             <div style={{ color: "#ff0000" }}>{errors.status}</div>
                                         )}
