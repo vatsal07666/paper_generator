@@ -158,6 +158,7 @@ const AddSubject = () => {
     );
 
     const subjectOptions = subjects.map((s) => ({ value: s.subjectName, label: s.subjectName }));
+    const statusOptions = status.map((st) => ({ label: st, value: st }));
 
     return (
         <>
@@ -245,12 +246,16 @@ const AddSubject = () => {
 
                                         <Box sx={{ display: "flex", flexDirection: "column", gap: 1, flex: 1 }}>
                                             <label htmlFor="status">Status</label>
-                                            <Field name="status" id="status" as="select">
-                                                <option value="" hidden>Select Status</option>
-                                                {status.map((st) => (
-                                                    <option key={st} value={st}> {st} </option>
-                                                ))}
-                                            </Field>
+                                            <Select options={statusOptions} placeholder="Search and select subject"
+                                                value={statusOptions.find(
+                                                    (option) => option.value === values.status
+                                                ) || null}
+                                                onChange={(option) => setFieldValue("status", option ? option.value : "")}
+                                                isSearchable
+                                                isClearable
+                                                menuPortalTarget={document.body}
+                                                styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+                                            />
                                             {errors.status && touched.status && (
                                                 <div style={{ color: "#ff0000" }}>{errors.status}</div>
                                             )}
