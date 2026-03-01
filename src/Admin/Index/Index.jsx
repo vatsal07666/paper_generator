@@ -20,7 +20,7 @@ import { useState } from 'react';
 import { useRef } from 'react';
 import { useSnackbar } from '../../Context/SnackbarContext';
 import { useEffect } from 'react';
-import { MdOutlineTopic } from "react-icons/md";
+import { MdOutlineTopic, MdOutlineViewInAr } from "react-icons/md";
 import { MdOutlineQuestionAnswer } from "react-icons/md";
 import { GiBookshelf } from "react-icons/gi";
 
@@ -97,6 +97,7 @@ const Items = [
     { name: "Subject", icon: <GiBookshelf />, to: "/admin/subject" },
     { name: "Topic", icon: <MdOutlineTopic />, to: "/admin/topic" },
     { name: "Questions", icon: <MdOutlineQuestionAnswer />, to: "/admin/question" },
+    { name: "View Questions", icon: <MdOutlineViewInAr />, to: "/admin/viewQuestions" },
 ]
 
 const Index = ({children}) => {
@@ -216,7 +217,7 @@ const Index = ({children}) => {
                             </Typography>
                             <Button sx={{color: "#1E293B", border: "1px solid #1E293B", px: 2, py: 0.6,
                                     transition: "0.3s ease-in-out", textTransform: "none", fontSize: {xs: "13px", sm: "15px"},
-                                    '&:hover': { background: "#1E293B", color: "#ffffff", border: 0, fontWeight: 700 },
+                                    '&:hover': { background: "#1E293B", color: "#ffffff" },
                                 }}
                                 onClick={() => { isLoggedIn ? handleLogout() : history.push("/login") }}
                             >

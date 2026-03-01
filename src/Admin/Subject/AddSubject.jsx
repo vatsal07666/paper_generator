@@ -160,7 +160,7 @@ const AddSubject = () => {
                     <Button onClick={() => dispatch(setOpenForm(true))}
                         sx={{ background: "linear-gradient(135deg, #1E293B 0%, #334155 100%)",
                             color: "#fff", p: "8px 14px", borderRadius: 2, mt: { xs: 2, sm: 0 },
-                            whiteSpace: "none", textTransform: "none",
+                            whiteSpace: "none", textTransform: "none", "&:hover": { filter: "brightness(1.3)" }
                         }}
                         startIcon={<IoMdAdd />}
                     >
@@ -271,8 +271,9 @@ const AddSubject = () => {
                     }}
                 >
                     {/* Search Field */}
-                    <Box sx={{ position: "relative", border: 1, borderRadius: 2,
-                            width: { xs: "100%", sm: "60%", md: "50%" }, py: 0.5, my: 2,
+                    <Box sx={{ position: "relative", borderRadius: 2, border: "1px solid #ddd",
+                            width: { xs: "100%", sm: "60%", md: "50%" }, py: 0.5, my: 2, background: "#fff",
+                            boxShadow: "0 6px 16px rgba(0,0,0,0.1)"
                         }}
                     >
                         <InputBase name="search" placeholder="Search Subjects" value={searchItem ?? ""}

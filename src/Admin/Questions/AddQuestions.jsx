@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react'
-import { Box, Button, Card, CardContent, Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, 
-    InputBase, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography, 
-    useMediaQuery, useTheme 
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Card, CardContent, Dialog, DialogActions, 
+    DialogContent, DialogTitle, Divider, InputBase, Paper, Tooltip, Typography, useMediaQuery, useTheme 
 } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { addQuestion, deleteQuestion, resetDeleteState, resetFormValues, resetUIstate, setDeleteId, 
-    setDeleteOpen, setEditId, setFormValues, setOpenForm, setQuestion, setSearchItem, updateQuestion 
+import { addQuestion, deleteQuestion, resetDeleteState, resetFormValues, resetUIstate, setDeleteId, setDeleteOpen, 
+    setEditId, setFormValues, setOpenForm, setQuestion, setSearchItem, updateQuestion 
 } from '../Questions/QuestionsSlice';
 import { Field, Form, Formik } from 'formik';
 import SearchIcon from '@mui/icons-material/Search';
@@ -17,6 +16,9 @@ import * as Yup from 'yup';
 import { toast } from 'react-toastify';
 import { IoMdAdd } from 'react-icons/io';
 import Select from "react-select";
+import { MdOutlineViewInAr } from 'react-icons/md';
+import { NavLink } from "react-router-dom";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const AddQuestions = () => {
     const { list: questions = [], openForm, formValues, searchItem, deleteOpen, deleteId, editId } = useSelector((state) => state.questionStore);
@@ -24,6 +26,7 @@ const AddQuestions = () => {
     const { list: topics = [] } = useSelector((state) => state.topicStore);
     const dispatch = useDispatch();
     const { ShowSnackbar } = useSnackbar();
+    const [expanded, setExpanded] = React.useState(false);
 
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -146,7 +149,20 @@ const AddQuestions = () => {
     )
 
     const subjectOptions = subjects.map((s) => ({ value: s.subjectName, label: s.subjectName }));
-    const topicOptions = topics.map((t) => ({ value: t.topicName, label: t.topicName }));
+
+    const getFilteredTopics = (selectedSubject) => {
+    if (!selectedSubject) {
+        return topics.map((t) => ({ value: t.topicName, label: t.topicName }));
+    }
+
+    return topics.filter((t) => t.subjectName === selectedSubject).map((t) => ({
+            value: t.topicName, label: t.topicName
+        }));
+    };
+
+    const handleAccordionChange = (panel) => (event, isExpanded) => {
+        setExpanded(isExpanded ? panel : false);
+    };
 
     return (
         <>
@@ -166,7 +182,7 @@ const AddQuestions = () => {
                     <Button  onClick={() => dispatch(setOpenForm(true))}
                         sx={{background: "linear-gradient(135deg, #1E293B 0%, #334155 100%)", color: "#fff", 
                             p: "8px 14px", borderRadius: 2, mt: {xs: 2, sm: 0}, whiteSpace: "none", 
-                            textTransform: "none"
+                            textTransform: "none", "&:hover": { filter: "brightness(1.3)" }
                         }}
                         startIcon={<IoMdAdd />}
                     >
@@ -218,10 +234,11 @@ const AddQuestions = () => {
 
                                         <Box sx={{ display: "flex", flexDirection: "column", gap: 1, flex: 1 }}>
                                             <label htmlFor="topicName">Topic Name</label>                                            
-                                            <Select options={topicOptions} placeholder="Search and select topic"
-                                                value={topicOptions.find(
-                                                    (option) => option.value === values.topicName
-                                                ) || null}
+                                            <Select options={getFilteredTopics(values.subjectName)} placeholder="Search and select topic"
+                                                value={ getFilteredTopics(values.subjectName).find(
+                                                        (option) => option.value === values.topicName
+                                                    ) || null
+                                                }
                                                 onChange={(option) => setFieldValue("topicName", option ? option.value : "")}
                                                 isSearchable
                                                 isClearable
@@ -271,13 +288,26 @@ const AddQuestions = () => {
                     </DialogContent>
                 </Dialog>
 
-                <Box sx={{display: "flex", flexDirection: {xs: "column", sm: "row"}, justifyContent: "center", 
+                <Box sx={{display: "flex", flexDirection: {xs: "column", sm: "row"}, justifyContent: "space-between", 
                         alignItems: {xs: "stretch", sm: "center"}, gap: {xs: 1, sm: 0}, my: 2
                     }}
                 >
+                    <Box sx={{mr: {xs: 0, sm: 2}}}>
+                        <Button component={NavLink} to="/admin/viewQuestions" 
+                            sx={{ borderRadius: 2, color: "#fff",
+                                background: "linear-gradient(135deg, #1E293B 0%, #334155 100%)",
+                                textTransform: "none", transition: "all 0.3s ease-in-out",
+                                '&:hover': { filter: "brightness(1.3)" }
+                            }}
+                        >
+                            <MdOutlineViewInAr size={20} />&nbsp; View Questions
+                        </Button>
+                    </Box>
+
                     {/* Search Field */}
-                    <Box sx={{ position: 'relative', border: 1, borderRadius: 2, width: { xs: "100%", sm: "60%", md: "50%" }, 
-                            py: 0.5, my: 2
+                    <Box sx={{ position: "relative", borderRadius: 2, border: "1px solid #ddd",
+                            width: { xs: "100%", sm: "60%", md: "50%" }, py: 0.5, my: 2, background: "#fff",
+                            boxShadow: "0 6px 16px rgba(0,0,0,0.1)"
                         }}
                     >
                         <InputBase name="search" placeholder="Search Questions" value={searchItem ?? ""}
@@ -289,137 +319,76 @@ const AddQuestions = () => {
                 </Box>
 
                 {!isMobile ? (
-                    <TableContainer component={Paper} elevation={0} 
-                        sx={{ WebkitOverflowScrolling: 'touch', '&::-webkit-scrollbar': { height: '8px' },
-                            '&::-webkit-scrollbar-track': { backgroundColor: '#f1f1f1' },
-                            '&::-webkit-scrollbar-thumb': { backgroundColor: '#888', borderRadius: 4,
-                                '&:hover': { backgroundColor: '#555' },
-                            },
-                        }}
-                    >
-                        <Table sx={{ borderCollapse: "separate", borderSpacing: 0 }}>
-                            <TableHead sx={{ background: "linear-gradient(135deg, #1E293B 0%, #334155 100%)", 
-                                    "& .MuiTableCell-head": { color: "#ffffff", fontWeight: 600, fontSize: "14px",
-                                    borderBottom: "none" }, whiteSpace: "nowrap"
-                                }}
-                            >
-                                <TableRow>
-                                    {["#", "Question", "Subject Name", "Topic Name", "Marks", "Actions"]
-                                        .map((h) => (
-                                            <TableCell key={h} sx={{ color: "#fff", textAlign: "center" }}>
-                                                {h}
-                                            </TableCell>
-                                        ))}
-                                </TableRow>
-                            </TableHead>
-
-                            <TableBody sx={{ "& .MuiTableCell-root": { fontSize: "16px", whiteSpace: "nowrap",
-                                    borderRight: "1px solid rgba(255, 255, 255, 0.1)", py: 1.5                      
-                                }
-                            }}>
-                                {filteredQuestion.length > 0 ? (
-                                    filteredQuestion.map((item, index) => (
-                                        <TableRow key={item._id ?? index}
-                                            sx={{ backgroundColor: index % 2 === 0 ? "#f9f9f9" : "#fff",
-                                                "&:hover": { backgroundColor: "#e9f5fd" }, transition: "all 0.3s ease"
+                    <Box>
+                        {filteredQuestion.length > 0 ? (
+                            filteredQuestion.map((item, index) => (
+                                <Accordion key={item._id ?? index} expanded={expanded === item._id}
+                                    onChange={handleAccordionChange(item._id)}
+                                    sx={{ mb: 1.5, borderRadius: 2, overflow: "hidden", border: "1px solid #e2e8f0",
+                                        "&:before": { display: "none" }
+                                    }}
+                                >
+                                    {/* ================= SUMMARY ================= */}
+                                    <AccordionSummary expandIcon={<ExpandMoreIcon />}
+                                        sx={{ background: index % 2 === 0 ? "#f8fafc" : "#ffffff",
+                                            "&:hover": { backgroundColor: "#e9f5fd" }
+                                        }}
+                                    >
+                                        <Box sx={{ width: "100%", display: "flex", justifyContent: "space-between",
+                                                alignItems: "center", gap: 2, flexWrap: "wrap"
                                             }}
                                         >
-                                            <TableCell>{index + 1}</TableCell>
-                                            <TableCell>{item.question}</TableCell>
-                                            <TableCell>{item.subjectName}</TableCell>
-                                            <TableCell>{item.topicName}</TableCell>
-                                            <TableCell>{item.marks}</TableCell>
-                                            <TableCell>
-                                                <Box sx={{display: "flex", justifyContent: "center", alignItems: "center", gap: 1}}>
-                                                    {/* Delete Button */}
-                                                    <Tooltip title="Delete" component={Paper}
-                                                        slotProps={{
-                                                            tooltip: {
-                                                                sx:{ fontSize: "12px", px: 2, color:"#ef4444", background: "#ffddddff",
-                                                                    letterSpacing: 1, fontWeight: 600
-                                                                }
-                                                            }
-                                                        }}
-                                                    >
-                                                        <IconButton
-                                                            sx={{
-                                                                background:"#fff", color: "#ef4444", transition: "0.3s ease-in-out",
-                                                                "&:hover": { background: "#dc2626", color:"#fff" }
-                                                            }}
-                                                            onClick={() => handleDelete(item)}
-                                                        >
-                                                            <RiDeleteBin6Line />
-                                                        </IconButton>
-                                                    </Tooltip>
+                                            <Typography fontWeight={600}>{index + 1}. {item.question}</Typography>
 
-                                                    {/* Delete Button Dialog */}
-                                                    <Dialog open={deleteOpen} fullWidth onClose={() => dispatch(resetDeleteState())} 
-                                                        disableRestoreFocus
-                                                        slotProps={{
-                                                            backdrop: {
-                                                                sx: { backgroundColor: "rgba(0,0,0,0.35)",
-                                                                    backdropFilter: "blur(4px)"
-                                                                }
-                                                            }
-                                                        }}
-                                                    >
-                                                        <DialogTitle id="alert-dialog-title"> Confirm Delete By Clicking Delete! </DialogTitle>
-                                                        
-                                                        <DialogActions>
-                                                            <Button onClick={() => dispatch(resetDeleteState())} 
-                                                                variant="contained" 
-                                                                sx={{color: "#1e293b", background: "#fff", 
-                                                                    '&:hover': { boxShadow: "0 0 0 2px rgba(0, 0, 0, 0.5)" }
-                                                                }}
-                                                            >
-                                                                Cancle
-                                                            </Button>
+                                            <Typography fontSize={14} color="text.secondary">
+                                                {item.subjectName} | {item.topicName} | {item.marks} Marks
+                                            </Typography>
+                                        </Box>
+                                    </AccordionSummary>
 
-                                                            <Button variant="contained" className="agree-button" 
-                                                                onClick={deleteData}
-                                                                sx={{background: "#ef4444", color: "#fff", transition: "0.2s ease-in-out",
-                                                                    '&:hover': {background: "#fff", color: "#ff0000", 
-                                                                        boxShadow: "0 0 2px rgba(255, 0, 0, 1)"
-                                                                    }
-                                                                }}
-                                                            >
-                                                                Delete
-                                                            </Button>
-                                                        </DialogActions>    
-                                                    </Dialog>
+                                    {/* ================= DETAILS ================= */}
+                                    <AccordionDetails sx={{ background: "#f9fafb" }}>
+                                        <Box sx={{ display: "flex", justifyContent: "space-between", gap: 2, mb: 2 }}>
+                                            <Typography><strong>Subject:</strong> {item.subjectName} </Typography>
 
-                                                    {/* Edit Button */}
-                                                    <Tooltip title="Edit" component={Paper}
-                                                        slotProps={{
-                                                            tooltip: {
-                                                                sx:{ fontSize: "12px", px: 2, color:"#2563eb", background: "#dee9ffff",
-                                                                    letterSpacing: 1, fontWeight: 600
-                                                                }
-                                                            }
-                                                        }}
-                                                    >
-                                                    <IconButton
-                                                            sx={{
-                                                                background: "#fff", color:"#2563eb", transition: "0.2s",
-                                                                "&:hover": { background: "#2563eb", color:"#fff" }
-                                                            }}
-                                                            onClick={() => handleEdit(item)}
-                                                        >
-                                                            <FaEdit />
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                </Box>
-                                            </TableCell>
-                                        </TableRow>
-                                    )
-                                )) : (
-                                    <TableRow>
-                                        <TableCell colSpan={6} align="center">No Question Data Found</TableCell>
-                                    </TableRow>
-                                )}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
+                                            <Typography><strong>Topic:</strong> {item.topicName} </Typography>
+
+                                            <Typography><strong>Marks:</strong> {item.marks} </Typography>
+                                        </Box>
+
+                                        {/* ACTION BUTTONS */}
+                                        <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1 }}>
+                                            {/* DELETE */}
+                                            <Tooltip title="Delete">
+                                                <Button sx={{  background: "#fff", color: "#ef4444",
+                                                        "&:hover": { background: "#dc2626", color: "#fff" },
+                                                        border: "1px solid #ff0000", textTransform: "none"
+                                                    }}
+                                                    onClick={() => handleDelete(item)}
+                                                >
+                                                    <RiDeleteBin6Line size={18} />&nbsp; Delete
+                                                </Button>
+                                            </Tooltip>
+
+                                            {/* EDIT */}
+                                            <Tooltip title="Edit">
+                                                <Button sx={{ background: "#fff", color: "#2563eb",
+                                                        "&:hover": { background: "#2563eb", color: "#fff" },
+                                                        border: "1px solid #2563eb", textTransform: "none"
+                                                    }}
+                                                    onClick={() => handleEdit(item)}
+                                                >
+                                                    <FaEdit size={18} />&nbsp; Edit
+                                                </Button>
+                                            </Tooltip>
+                                        </Box>
+                                    </AccordionDetails>
+                                </Accordion>
+                            ))
+                        ) : (
+                            <Paper sx={{ p: 3, textAlign: "center" }}> No Question Data Found </Paper>
+                        )}
+                    </Box>
                 ) : (
                     <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: 2}}>
                         {filteredQuestion.map((item, index) => (
@@ -455,6 +424,42 @@ const AddQuestions = () => {
                     </Box>
                 )}
             </Box>
+
+            {/* Delete Button Dialog */}
+            <Dialog open={deleteOpen} fullWidth onClose={() => dispatch(resetDeleteState())} 
+                disableRestoreFocus
+                slotProps={{
+                    backdrop: {
+                        sx: { backgroundColor: "rgba(0,0,0,0.35)",
+                            backdropFilter: "blur(4px)"
+                        }
+                    }
+                }}
+            >
+                <DialogTitle id="alert-dialog-title"> Confirm Delete By Clicking Delete! </DialogTitle>
+                
+                <DialogActions>
+                    <Button onClick={() => dispatch(resetDeleteState())} 
+                        variant="contained" 
+                        sx={{color: "#1e293b", background: "#fff", 
+                            '&:hover': { boxShadow: "0 0 0 2px rgba(0, 0, 0, 0.5)" }
+                        }}
+                    >
+                        Cancle
+                    </Button>
+
+                    <Button variant="contained" className="agree-button" 
+                        onClick={deleteData}
+                        sx={{background: "#ef4444", color: "#fff", transition: "0.2s ease-in-out",
+                            '&:hover': {background: "#fff", color: "#ff0000", 
+                                boxShadow: "0 0 2px rgba(255, 0, 0, 1)"
+                            }
+                        }}
+                    >
+                        Delete
+                    </Button>
+                </DialogActions>    
+            </Dialog>
         </>
     )
 }

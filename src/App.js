@@ -10,6 +10,8 @@ import RegisterPage from "./Login-&-Register/RegisterPage";
 import AddSubject from "./Admin/Subject/AddSubject";
 import AddTopic from "./Admin/Topic/AddTopic";
 import AddQuestions from "./Admin/Questions/AddQuestions";
+import ViewQuestions from "./Admin/Questions/ViewQuestions";
+import CreatePaper from "./Admin/Paper/CreatePaper";
 
 function App() {
     return (
@@ -27,6 +29,8 @@ function App() {
                                 <PrivateRoute exact path="/admin/subject" component={AddSubject} role="admin" />
                                 <PrivateRoute exact path="/admin/topic" component={AddTopic} role="admin" />
                                 <PrivateRoute exact path="/admin/question" component={AddQuestions} role="admin" />
+                                <PrivateRoute exact path="/admin/viewQuestions" component={ViewQuestions} role="admin" />
+                                <PrivateRoute exact path="/admin/create-paper" component={CreatePaper} role="admin" />
                             </Switch>
                         </Index>
                     </Route>
