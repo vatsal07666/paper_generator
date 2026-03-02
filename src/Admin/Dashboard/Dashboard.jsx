@@ -8,7 +8,7 @@ import { setSubject } from "../Subject/SubjectSlice";
 import { setTopic } from "../Topic/TopicSlice";
 import { MdOutlineTopic } from "react-icons/md";
 import { setQuestion } from "../Questions/QuestionsSlice";
-import { MdOutlineQuestionAnswer } from "react-icons/md";
+import { SlQuestion } from "react-icons/sl";
 import { GiBookshelf } from "react-icons/gi";
 
 const Dashboard = () => {
@@ -66,7 +66,7 @@ const Dashboard = () => {
             path: "/admin/topic",
         },
         {
-            icon: <MdOutlineQuestionAnswer />,
+            icon: <SlQuestion />,
             title: "Questions",
             count: questions?.length,
             path: "/admin/question",
@@ -86,7 +86,7 @@ const Dashboard = () => {
                             to={item.path}
                             sx={{ textDecoration: "none" }}
                         >
-                            <Card sx={{ width: "100%", borderRadius: 2, color: "#FFF",
+                            <Card sx={{ width: "100%", borderRadius: 5, color: "#FFF",
                                     background: "linear-gradient(135deg, #1E293B 0%, #334155 100%)",
                                     boxShadow: "0 10px 30px rgba(37, 99, 235, 0.3)",
                                     transition: "0.3s ease-in-out",
@@ -103,9 +103,9 @@ const Dashboard = () => {
                                         </Typography>
                                         <IconButton component={Paper} sx={{ p: 1.2, mb: 1, color: "#1E293B",
                                                 background: "#e4e4e4", transition: "0.3s ease-in-out",
-                                                fontSize: "20px",
+                                                fontSize: "20px", borderRadius: 3.5,
                                                 "&:hover": { background: "#1E293B", color: "#e4e4e4",
-                                                    fontWeight: 700,
+                                                    fontWeight: 700, border: 2
                                                 },
                                             }}
                                         >

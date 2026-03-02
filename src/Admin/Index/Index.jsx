@@ -20,9 +20,11 @@ import { useState } from 'react';
 import { useRef } from 'react';
 import { useSnackbar } from '../../Context/SnackbarContext';
 import { useEffect } from 'react';
-import { MdOutlineTopic, MdOutlineViewInAr } from "react-icons/md";
-import { MdOutlineQuestionAnswer } from "react-icons/md";
+import { MdOutlineTopic } from "react-icons/md";
+import { SlQuestion } from "react-icons/sl";
 import { GiBookshelf } from "react-icons/gi";
+import { RiListView } from "react-icons/ri";
+import { GiRollingEnergy } from "react-icons/gi";
 
 const drawerWidth = 240;
 
@@ -96,8 +98,8 @@ const Items = [
     { name: "Dashboard", icon: <TbLayoutDashboardFilled />, to: "/admin" },
     { name: "Subject", icon: <GiBookshelf />, to: "/admin/subject" },
     { name: "Topic", icon: <MdOutlineTopic />, to: "/admin/topic" },
-    { name: "Questions", icon: <MdOutlineQuestionAnswer />, to: "/admin/question" },
-    { name: "View Questions", icon: <MdOutlineViewInAr />, to: "/admin/viewQuestions" },
+    { name: "Questions", icon: <SlQuestion />, to: "/admin/question" },
+    { name: "View Questions", icon: <RiListView />, to: "/admin/viewQuestions" },
 ]
 
 const Index = ({children}) => {
@@ -162,15 +164,15 @@ const Index = ({children}) => {
                     <ListItem disablePadding sx={{ display: 'block' }}>
                         <Tooltip title={menu.name} placement="right"
                             slotProps={{
-                                tooltip: { sx: {background: "rgb(94, 104, 120)", color: "#ffffff", 
+                                tooltip: { sx: {background: "#1e293b", color: "#ffffff", 
                                     letterSpacing: 2, fontWeight: 600 
                                 }}
                             }}
                         >
                             <ListItemButton component={Link} to={menu.to} 
                                 sx={{  mx: 1,  my: 0.5, borderRadius: "10px", 
-                                    backgroundColor: location.pathname === menu.to ? "#e4e4e4": "transparent",
-                                    "&:hover": { backgroundColor: "#d5d5d5" },
+                                    backgroundColor: location.pathname === menu.to ? "#ecf1fc": "transparent",
+                                    "&:hover": { backgroundColor: "#ecf1fc" },
                                 }}
                             >
                                 <ListItemIcon sx={{ minWidth: 0, justifyContent: 'center', fontSize: "23px", 
@@ -212,8 +214,12 @@ const Index = ({children}) => {
                                 alignItems: "center"
                             }}
                         >
-                            <Typography variant="h6" noWrap component="div" sx={{ color: "#1E293B" }}>
-                                Paper Generator
+                            <Typography variant="h6" noWrap component="div" 
+                                sx={{ color: "#1E293B", fontWeight: 600, letterSpacing: 0.5, display: "flex",
+                                    alignItems: "center", gap: 1
+                                }}
+                            >
+                                <GiRollingEnergy /> Paper Generator
                             </Typography>
                             <Button sx={{color: "#1E293B", border: "1px solid #1E293B", px: 2, py: 0.6,
                                     transition: "0.3s ease-in-out", textTransform: "none", fontSize: {xs: "13px", sm: "15px"},

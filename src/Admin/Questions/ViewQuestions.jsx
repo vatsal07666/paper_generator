@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { Box, Card, CardContent, Typography, Checkbox, InputBase, Divider, useTheme, useMediaQuery, IconButton, 
-    Tooltip,
-    Button
+import React, { useCallback, useEffect, useState } from "react";
+import { Box, Typography, Checkbox, InputBase, Divider, useTheme, useMediaQuery, IconButton, Tooltip, Button,
+    Paper
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import Select from "react-select";
 import { useDispatch, useSelector } from "react-redux";
-import { setSearchItem } from "../Questions/QuestionsSlice";
+import { setQuestion, setSearchItem } from "../Questions/QuestionsSlice";
 import { MdIndeterminateCheckBox } from "react-icons/md";
 import { useHistory } from "react-router-dom";
+import axios from "axios";
+import { setSubject } from "../Subject/SubjectSlice";
+import { setTopic } from "../Topic/TopicSlice";
 
 const ViewQuestions = () => {
     const dispatch = useDispatch();
@@ -35,11 +37,11 @@ const ViewQuestions = () => {
     /* ---------------- Filtering Logic ---------------- */
     const filteredQuestions = questions.filter((q) => {
         return (
-        (!selectedSubject || q.subjectName === selectedSubject) &&
-        (!selectedTopic || q.topicName === selectedTopic) &&
-        (!searchItem ||
-            [q.subjectName, q.topicName, q.question].join(" ").toLowerCase()
-            .includes(searchItem.toLowerCase()))
+            (!selectedSubject || q.subjectName === selectedSubject) &&
+            (!selectedTopic || q.topicName === selectedTopic) &&
+            (!searchItem ||
+                [q.subjectName, q.topicName, q.marks, q.question].join(" ").toLowerCase()
+                .includes(searchItem.toLowerCase()))
         );
     });
 
@@ -77,11 +79,35 @@ const ViewQuestions = () => {
         });
     };
 
+    const subjectsToken = "2xzYLLbk3VRezP5s";
+    const getSubjects = useCallback(() => {
+        axios.get("https://generateapi.techsnack.online/api/subject", { headers: { Authorization: subjectsToken } })
+        .then((res) => dispatch(setSubject(res.data.Data)))
+        .catch((err) => console.error("Get Subjects error: ", err))
+    }, [dispatch])
+
+    const topicToken = "7TDdOTQs88FIYRPd";
+    const getTopics = useCallback(() => {
+        axios.get("https://generateapi.techsnack.online/api/topic", { headers: { Authorization: topicToken } })
+        .then((res) => dispatch(setTopic(res.data.Data)))
+        .catch((err) => console.error("Get Topics error: ", err))
+    }, [dispatch])
+
+    const questionToken = "5TirRDcDOTjoaVUS";
+    const getQuestions = useCallback(() => {
+        axios.get("https://generateapi.techsnack.online/api/question", { headers: { Authorization: questionToken } })
+        .then((res) => dispatch(setQuestion(res.data.Data)))
+        .catch((err) => console.error("Get Questions error: ", err))
+    }, [dispatch])
+
     useEffect(() => {
         if (selectedSubject && selectedIds.length > 0) {
             setError("");
         }
-    }, [selectedSubject, selectedIds]);
+        getSubjects();
+        getTopics();
+        getQuestions();
+    }, [selectedSubject, selectedIds, getSubjects, getTopics, getQuestions]);
 
     return (
         <Box sx={{ p: { xs: 2, md: 4 } }}>
@@ -161,7 +187,16 @@ const ViewQuestions = () => {
 
                 {selectedIds.length > 0 && (
                     <Box sx={{ mb: 1, display: "flex", alignItems: "center", gap: 2 }}>
-                        <Typography fontWeight={600}> Selected Questions: {selectedIds.length} </Typography>
+                        <Typography fontWeight={600}> Selected Questions: </Typography>
+                        <Typography fontSize={14} color="text.secondary">
+                            { Object.entries(questions.filter(q => selectedIds.includes(q._id))
+                                .reduce((acc, q) => { 
+                                    acc[q.marks] = (acc[q.marks] || 0) + 1; 
+                                    return acc; 
+                                }, {}))
+                                .map(([mark, count]) => `${mark} Marks: ${count}`).join(" | ")
+                            }
+                        </Typography>
 
                         {/* Unselect All Button */}
                         <Tooltip title={"Un-select all"} slotProps={{
@@ -189,43 +224,30 @@ const ViewQuestions = () => {
             </Box>
 
             {/* Cards */}
-            <Box sx={{ display: "grid",  gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 3 }}>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                 {filteredQuestions.length > 0 ? (
                     filteredQuestions.map((item, index) => {
                         const isChecked = selectedIds.includes(item._id);
 
                         return (
-                            <Card key={item._id}
-                                sx={{ borderRadius: 3, boxShadow: 2, transition: "0.3s ease",
-                                    backgroundColor: isChecked ? "#eff6ff" : "#fff",
+                            <Box component={Paper} sx={{ display: "flex", justifyContent: "space-between", 
+                                    alignItems: !isMobile && "center" , 
+                                    gap: 2, padding: "5px 20px 5px 10px", borderRadius: 2
                                 }}
                             >
-                                <CardContent>
-                                    {/* Check Box */}
-                                    <Box sx={{ display: "flex", justifyContent: "space-between",
-                                            alignItems: "center", mb: 1,
-                                        }}
-                                    >
-                                        <Checkbox checked={isChecked}
-                                            onChange={() => handleSelect(item._id)}
-                                        />
-                                        <Typography variant="caption" sx={{ color: "#888" }}>
-                                            #{index + 1}
-                                        </Typography>
-                                    </Box>
+                                {/* Question */}
+                                <Typography variant="body1" fontWeight={600}>
+                                    <Checkbox checked={isChecked} 
+                                        onChange={() => handleSelect(item._id)}
+                                    />
+                                    {index + 1}. {" "} {item.question}
+                                </Typography>
 
-                                    {/* Question */}
-                                    <Typography variant="body1" sx={{ fontWeight: 600, mb: 1 }}>
-                                        {item.question}
-                                    </Typography>
-
-                                    <Typography variant="body2"> <b>Subject:</b> {item.subjectName} </Typography>
-
-                                    <Typography variant="body2"> <b>Topic:</b> {item.topicName} </Typography>
-
-                                    <Typography variant="body2"> <b>Marks:</b> {item.marks} </Typography>
-                                </CardContent>
-                            </Card>
+                                {/* Subject | Topic | Marks */}
+                                <Typography fontSize={14} color="text.secondary">
+                                    {item.subjectName} | {item.topicName} | {item.marks} Marks
+                                </Typography>
+                            </Box>
                         )
                     })
                 ) : (
