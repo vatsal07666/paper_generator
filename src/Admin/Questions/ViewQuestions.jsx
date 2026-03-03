@@ -101,22 +101,22 @@ const ViewQuestions = () => {
     }, [dispatch])
 
     useEffect(() => {
-        if (selectedSubject && selectedIds.length > 0) {
-            setError("");
-        }
+        if (selectedSubject && selectedIds.length > 0) setError("");
         getSubjects();
         getTopics();
         getQuestions();
     }, [selectedSubject, selectedIds, getSubjects, getTopics, getQuestions]);
 
     return (
-        <Box sx={{ p: { xs: 2, md: 4 } }}>
+        <Box sx={{ m: isMobile ? 0 : 2 }}>
             {/* Heading */}
             <Box>
-                <Typography variant="h4" fontWeight={700} mb={1}>
+                <Typography variant={isMobile ? "h6" : "h5"} fontWeight={700}>
                     View Questions ({filteredQuestions.length})
                 </Typography>
-                <Typography sx={{ color: "#888", mb: 3 }}>Filter and select questions</Typography>
+                <Typography sx={{ color: "#888", mb: 3, fontSize: isMobile ? 14 : 16 }}>
+                    Filter and select questions
+                </Typography>
             </Box>
 
             {/* Filters Section */}
@@ -166,14 +166,17 @@ const ViewQuestions = () => {
                 <Typography component={"h5"} variant="h5" fontWeight={600}>All Questions</Typography>
             </Box>
 
-            <Divider sx={{ my: 3 }} />
+            <Divider sx={{ mb: 2 }} />
 
             {error && (
-                <Typography color="error" fontWeight={500} mb={1} align="right"> {error} </Typography>
+                <Typography color="error" fontWeight={500} mb={1} align={isMobile ? "center" : "right"}> {error} </Typography>
             )}
 
             {/* Selected Count */}
-            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <Box sx={{ display: "flex", flexDirection: isMobile ? "column" : "row", 
+                    justifyContent: "space-between" 
+                }}
+            >
                 {/* Select All */}
                 <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
                     <Checkbox checked={
@@ -186,7 +189,10 @@ const ViewQuestions = () => {
                 </Box>
 
                 {selectedIds.length > 0 && (
-                    <Box sx={{ mb: 1, display: "flex", alignItems: "center", gap: 2 }}>
+                    <Box sx={{ mb: 1, display: "flex", flexDirection: isMobile ? "column" : "row", 
+                            alignItems: "center", gap: 1 
+                        }}
+                    >
                         <Typography fontWeight={600}> Selected Questions: </Typography>
                         <Typography fontSize={14} color="text.secondary">
                             { Object.entries(questions.filter(q => selectedIds.includes(q._id))
@@ -214,7 +220,8 @@ const ViewQuestions = () => {
 
                         <Button variant="contained" size="small" onClick={handleCreatePaper}
                             sx={{ background: "linear-gradient(135deg, #1E293B 0%, #334155 100%)", color: "#fff", 
-                                px: 3, py: 1, "&:hover": { filter: "brightness(1.3)" }
+                                px: 3, py: 1, mb: isMobile ? 2 : 0, 
+                                "&:hover": { filter: "brightness(1.3)" }
                             }}
                         >
                             Create Paper
@@ -230,16 +237,17 @@ const ViewQuestions = () => {
                         const isChecked = selectedIds.includes(item._id);
 
                         return (
-                            <Box component={Paper} sx={{ display: "flex", justifyContent: "space-between", 
-                                    alignItems: !isMobile && "center" , 
-                                    gap: 2, padding: "5px 20px 5px 10px", borderRadius: 2
+                            <Box key={item._id} component={Paper} sx={{ display: "flex", flexDirection: isMobile ? "column" : "row",
+                                    justifyContent: "space-between", alignItems: !isMobile && "center" , 
+                                    gap: 1, padding: "5px 20px 5px 10px", borderRadius: 2
                                 }}
                             >
                                 {/* Question */}
-                                <Typography variant="body1" fontWeight={600}>
-                                    <Checkbox checked={isChecked} 
-                                        onChange={() => handleSelect(item._id)}
-                                    />
+                                <Typography variant="body1" fontWeight={600} display={"flex"} 
+                                    alignItems={ isMobile ? "start" : "center"}
+                                    flexDirection={isMobile && "column"}
+                                >
+                                    <Checkbox checked={isChecked} onChange={() => handleSelect(item._id)} />
                                     {index + 1}. {" "} {item.question}
                                 </Typography>
 

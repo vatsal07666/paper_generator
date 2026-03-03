@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Card, CardContent, Dialog, DialogActions, 
     DialogContent, DialogTitle, Divider, InputBase, Paper, Tooltip, Typography, useMediaQuery, useTheme 
 } from '@mui/material';
@@ -19,6 +19,8 @@ import Select from "react-select";
 import { MdOutlineViewInAr } from 'react-icons/md';
 import { NavLink } from "react-router-dom";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { setSubject } from '../Subject/SubjectSlice';
+import { setTopic } from '../Topic/TopicSlice';
 
 const AddQuestions = () => {
     const { list: questions = [], openForm, formValues, searchItem, deleteOpen, deleteId, editId } = useSelector((state) => state.questionStore);
@@ -26,7 +28,9 @@ const AddQuestions = () => {
     const { list: topics = [] } = useSelector((state) => state.topicStore);
     const dispatch = useDispatch();
     const { ShowSnackbar } = useSnackbar();
-    const [expanded, setExpanded] = React.useState(false);
+    const [expanded, setExpanded] = useState(false);
+    const [selectedSubject, setSelectedSubject] = useState("");
+    const [selectedTopic, setSelectedTopic] = useState("");
 
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -38,6 +42,25 @@ const AddQuestions = () => {
         marks: Yup.number().typeError("Marks Must be Number").required("Marks is Required")
                 .min(0, "Marks cannot be negative"),
     })
+
+    const subjectsToken = "2xzYLLbk3VRezP5s";
+    const getSubjects = useCallback(() => {
+        axios.get("https://generateapi.techsnack.online/api/subject", { headers: { Authorization: subjectsToken } })
+        .then((res) => dispatch(setSubject(res.data.Data)))
+        .catch((err) => console.error("Get Subjects error: ", err))
+    }, [dispatch])
+    
+    const topicToken = "7TDdOTQs88FIYRPd";
+    const getTopics = useCallback(() => {
+        axios.get("https://generateapi.techsnack.online/api/topic", { headers: { Authorization: topicToken } })
+        .then((res) => dispatch(setTopic(res.data.Data)))
+        .catch((err) => console.error("Get Topics error: ", err))
+    }, [dispatch])
+
+    useEffect(() => {
+        getSubjects();
+        getTopics();
+    }, [getSubjects, getTopics])
 
     const token = "5TirRDcDOTjoaVUS";
     
@@ -144,11 +167,19 @@ const AddQuestions = () => {
     }
 
     /* ---------------- Search ---------------- */
-    const filteredQuestion = questions.filter(l =>
-        [l.subjectName, l.topicName, l.question].join(" ").toLowerCase().includes(searchItem.toLowerCase())
-    )
+    const filteredQuestions = questions.filter((q) => {
+        return (
+            (!selectedSubject || q.subjectName === selectedSubject) &&
+            (!selectedTopic || q.topicName === selectedTopic) &&
+            (!searchItem ||
+                [q.subjectName, q.topicName, q.marks, q.question].join(" ").toLowerCase()
+                .includes(searchItem.toLowerCase()))
+        );
+    });
 
     const subjectOptions = subjects.map((s) => ({ value: s.subjectName, label: s.subjectName }));
+    const topicOptions = topics.filter((t) => selectedSubject ? t.subjectName === selectedSubject : true)
+        .map((t) => ({ value: t.topicName, label: t.topicName }));
 
     const getFilteredTopics = (selectedSubject) => {
     if (!selectedSubject) {
@@ -160,33 +191,32 @@ const AddQuestions = () => {
         }));
     };
 
-    const handleAccordionChange = (panel) => (event, isExpanded) => {
+    const handleAccordionChange = (panel) => (isExpanded) => {
         setExpanded(isExpanded ? panel : false);
     };
 
     return (
         <>
-            <Box>
+            <Box sx={{ m: isMobile ? 0 : 2 }}>
                 {/* Heading & Add Question Button */}
-                <Box sx={{display: "flex", flexDirection: {xs: "column", sm: "row"}, justifyContent: "space-between", 
-                        alignItems: {xs: "flex-start", sm: "center"}
-                    }}
-                >
+                <Box sx={{display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <Box>
-                        <h1>Questions ({questions.length})</h1>
-                        <Typography variant='span' sx={{color: "#888888", fontSize: "15px"}}>
-                            List of all questions
+                        <Typography component={"h1"} variant={isMobile ? "h6" : "h5"} fontWeight={600}>
+                            Questions ({questions.length})
+                        </Typography>
+                        <Typography variant='span' sx={{color: "#888888", fontSize: isMobile ? 14 : 16}}>
+                            List of all Questions
                         </Typography>
                     </Box>
                     
                     <Button  onClick={() => dispatch(setOpenForm(true))}
                         sx={{background: "linear-gradient(135deg, #1E293B 0%, #334155 100%)", color: "#fff", 
-                            p: "8px 14px", borderRadius: 2, mt: {xs: 2, sm: 0}, whiteSpace: "none", 
-                            textTransform: "none", "&:hover": { filter: "brightness(1.3)" }
+                            p: "8px 14px", borderRadius: 2, whiteSpace: "none", textTransform: "none", 
+                            "&:hover": { filter: "brightness(1.3)" }
                         }}
                         startIcon={<IoMdAdd />}
                     >
-                        Add Question
+                        {isMobile ? "Add" : "Add Question"}
                     </Button>
                 </Box>
 
@@ -217,7 +247,7 @@ const AddQuestions = () => {
                                     >
                                         <Box sx={{ display: "flex", flexDirection: "column", gap: 1, flex: 1 }}>
                                             <label htmlFor="subjectName">Subject Name</label>                                            
-                                            <Select options={subjectOptions} placeholder="Search and select subject"
+                                            <Select options={subjectOptions} placeholder="Select Subject"
                                                 value={subjectOptions.find(
                                                     (option) => option.value === values.subjectName
                                                 ) || null}
@@ -225,7 +255,9 @@ const AddQuestions = () => {
                                                 isSearchable
                                                 isClearable
                                                 menuPortalTarget={document.body}
-                                                styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+                                                styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }),
+                                                    placeholder: (base) => ({ ...base, fontSize: 14, }),
+                                                }}
                                             />
                                             {errors.subjectName && touched.subjectName && (
                                                 <div style={{ color: "#ff0000" }}>{errors.subjectName}</div>
@@ -234,7 +266,7 @@ const AddQuestions = () => {
 
                                         <Box sx={{ display: "flex", flexDirection: "column", gap: 1, flex: 1 }}>
                                             <label htmlFor="topicName">Topic Name</label>                                            
-                                            <Select options={getFilteredTopics(values.subjectName)} placeholder="Search and select topic"
+                                            <Select options={getFilteredTopics(values.subjectName)} placeholder="Select Topic"
                                                 value={ getFilteredTopics(values.subjectName).find(
                                                         (option) => option.value === values.topicName
                                                     ) || null
@@ -243,7 +275,9 @@ const AddQuestions = () => {
                                                 isSearchable
                                                 isClearable
                                                 menuPortalTarget={document.body}
-                                                styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+                                                styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }),
+                                                    placeholder: (base) => ({ ...base, fontSize: 14, }),
+                                                }}
                                             />
                                             {errors.topicName && touched.topicName && (
                                                 <div style={{ color: "#ff0000" }}>{errors.topicName}</div>
@@ -288,40 +322,64 @@ const AddQuestions = () => {
                     </DialogContent>
                 </Dialog>
 
-                <Box sx={{display: "flex", flexDirection: {xs: "column", sm: "row"}, justifyContent: "space-between", 
-                        alignItems: {xs: "stretch", sm: "center"}, gap: {xs: 1, sm: 0}, my: 2
-                    }}
-                >
-                    <Box sx={{mr: {xs: 0, sm: 2}}}>
-                        <Button component={NavLink} to="/admin/viewQuestions" 
-                            sx={{ borderRadius: 2, color: "#fff",
-                                background: "linear-gradient(135deg, #1E293B 0%, #334155 100%)",
-                                textTransform: "none", transition: "all 0.3s ease-in-out",
-                                '&:hover': { filter: "brightness(1.3)" }
-                            }}
-                        >
-                            <MdOutlineViewInAr size={20} />&nbsp; View Questions
-                        </Button>
-                    </Box>
-
-                    {/* Search Field */}
-                    <Box sx={{ position: "relative", borderRadius: 2, border: "1px solid #ddd",
-                            width: { xs: "100%", sm: "60%", md: "50%" }, py: 0.5, my: 2, background: "#fff",
-                            boxShadow: "0 6px 16px rgba(0,0,0,0.1)"
+                <Box sx={{ mr: {xs: 0, sm: 2}, my: 3}}>
+                    <Button component={NavLink} to="/admin/viewQuestions" 
+                        sx={{ borderRadius: 2, color: "#fff",
+                            background: "linear-gradient(135deg, #1E293B 0%, #334155 100%)",
+                            textTransform: "none", transition: "all 0.3s ease-in-out",
+                            '&:hover': { filter: "brightness(1.3)" }
                         }}
                     >
-                        <InputBase name="search" placeholder="Search Questions" value={searchItem ?? ""}
-                            onChange={(e) => dispatch(setSearchItem(e.target.value))}
-                            sx={{ paddingLeft: '40px', width: '100%', boxSizing: "border-box" }}
+                        <MdOutlineViewInAr size={20} />&nbsp; View Questions
+                    </Button>
+                </Box>
+
+                {/* Filters Section */}
+                <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, gap: 2, mb: 3 }}>
+                    {/* Subject Filter */}
+                    <Box sx={{ flex: 1 }}>
+                        <Select options={subjectOptions} placeholder="Filter by Subject"
+                            value={ subjectOptions.find((opt) => opt.value === selectedSubject ) || null }
+                            onChange={(option) => {
+                                const value = option ? option.value : "";
+                                setSelectedSubject(value);
+                                setSelectedTopic(""); // reset topic
+                            }}
+                            isSearchable
+                            isClearable
                         />
-                        <SearchIcon sx={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)'}} />
+                    </Box>
+                
+                    {/* Topic Filter */}
+                    <Box sx={{ flex: 1 }}>
+                        <Select options={topicOptions} placeholder="Filter by Topic"
+                            value={ topicOptions.find((opt) => opt.value === selectedTopic) || null }
+                            onChange={(option) => setSelectedTopic(option ? option.value : "")}
+                            isSearchable
+                            isClearable
+                        />
+                    </Box>
+                
+                    {/* Search */}
+                    <Box sx={{ position: "relative", border: "1px solid #ddd", borderRadius: 2, flex: 1,
+                            py: 0.5, background: "#fff", boxShadow: "0 6px 16px rgba(0,0,0,0.1)"
+                        }}
+                    >
+                        <InputBase placeholder="Search Questions..." value={searchItem ?? ""}
+                            onChange={(e) => dispatch(setSearchItem(e.target.value))}
+                            sx={{ paddingLeft: "40px", width: "100%" }}
+                        />
+                        <SearchIcon sx={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)",
+                                color: "#888",
+                            }}
+                        />
                     </Box>
                 </Box>
 
                 {!isMobile ? (
                     <Box>
-                        {filteredQuestion.length > 0 ? (
-                            filteredQuestion.map((item, index) => (
+                        {filteredQuestions.length > 0 ? (
+                            filteredQuestions.map((item, index) => (
                                 <Accordion key={item._id ?? index} expanded={expanded === item._id}
                                     onChange={handleAccordionChange(item._id)}
                                     sx={{ mb: 1.5, borderRadius: 2, overflow: "hidden", border: "1px solid #e2e8f0",
@@ -330,7 +388,7 @@ const AddQuestions = () => {
                                 >
                                     {/* ================= SUMMARY ================= */}
                                     <AccordionSummary expandIcon={<ExpandMoreIcon />}
-                                        sx={{ background: index % 2 === 0 ? "#f8fafc" : "#ffffff",
+                                        sx={{ background: index % 2 === 0 ? "#ffffff" : "#f8fafc",
                                             "&:hover": { backgroundColor: "#e9f5fd" }
                                         }}
                                     >
@@ -391,7 +449,7 @@ const AddQuestions = () => {
                     </Box>
                 ) : (
                     <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: 2}}>
-                        {filteredQuestion.map((item, index) => (
+                        {filteredQuestions.map((item, index) => (
                             <Card key={item._id ?? index}
                                 sx={{ borderRadius: 3, boxShadow: 2, display: "flex", flexDirection: "column" }}
                             >

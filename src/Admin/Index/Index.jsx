@@ -3,7 +3,6 @@ import { styled, useTheme } from '@mui/material/styles';
 import {  Box, Button, Container, CssBaseline, Drawer, Toolbar, Tooltip, Typography, useMediaQuery } from '@mui/material';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar from '@mui/material/AppBar';
-import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -24,7 +23,7 @@ import { MdOutlineTopic } from "react-icons/md";
 import { SlQuestion } from "react-icons/sl";
 import { GiBookshelf } from "react-icons/gi";
 import { RiListView } from "react-icons/ri";
-import { GiRollingEnergy } from "react-icons/gi";
+import webLogo from "../../webLogo.png";
 
 const drawerWidth = 240;
 
@@ -160,36 +159,34 @@ const Index = ({children}) => {
             </DrawerHeader>
             <Divider />
             {Items.map((menu) => (
-                <List key={menu.name}>
-                    <ListItem disablePadding sx={{ display: 'block' }}>
-                        <Tooltip title={menu.name} placement="right"
-                            slotProps={{
-                                tooltip: { sx: {background: "#1e293b", color: "#ffffff", 
-                                    letterSpacing: 2, fontWeight: 600 
-                                }}
+                <ListItem key={menu.name} disablePadding sx={{ display: 'block' }}>
+                    <Tooltip title={menu.name} placement="right"
+                        slotProps={{
+                            tooltip: { sx: {background: "#1e293b", color: "#ffffff", 
+                                letterSpacing: 2, fontWeight: 600 
+                            }}
+                        }}
+                    >
+                        <ListItemButton component={Link} to={menu.to} 
+                            sx={{  mx: 1,  my: 0.5, borderRadius: "10px", 
+                                backgroundColor: location.pathname === menu.to ? "#ecf1fc": "transparent",
+                                "&:hover": { backgroundColor: "#ecf1fc" },
                             }}
                         >
-                            <ListItemButton component={Link} to={menu.to} 
-                                sx={{  mx: 1,  my: 0.5, borderRadius: "10px", 
-                                    backgroundColor: location.pathname === menu.to ? "#ecf1fc": "transparent",
-                                    "&:hover": { backgroundColor: "#ecf1fc" },
+                            <ListItemIcon sx={{ minWidth: 0, justifyContent: 'center', fontSize: "23px", 
+                                    transition: "0.2s ease", mr: open ? 3 : 'auto', color: "#1E293B", 
+                                    ".MuiListItemButton-root:hover &": { color: "#1E293B" },
                                 }}
                             >
-                                <ListItemIcon sx={{ minWidth: 0, justifyContent: 'center', fontSize: "23px", 
-                                        transition: "0.2s ease", mr: open ? 3 : 'auto', color: "#1E293B", 
-                                        ".MuiListItemButton-root:hover &": { color: "#1E293B" },
-                                    }}
-                                >
-                                    {menu.icon}
-                                </ListItemIcon>
-                                <ListItemText primary={menu.name}
-                                    sx={{ opacity: open ? 1 : 0, 
-                                        color: location.pathname === menu.to ? "#1E293B" : "#475569",}}
-                                />
-                            </ListItemButton>
-                        </Tooltip>
-                    </ListItem>
-                </List>
+                                {menu.icon}
+                            </ListItemIcon>
+                            <ListItemText primary={menu.name}
+                                sx={{ opacity: open ? 1 : 0, 
+                                    color: location.pathname === menu.to ? "#1E293B" : "#475569",}}
+                            />
+                        </ListItemButton>
+                    </Tooltip>
+                </ListItem>
             ))}
         </>
     )
@@ -205,7 +202,9 @@ const Index = ({children}) => {
                     <Toolbar>
                         <IconButton color="inherit" aria-label="open drawer"
                             onClick={handleDrawerOpen} edge="start"
-                            sx={{ mr: 2, display: { md: open ? "none" : "inline-flex" }, color: "#1E293B" }}
+                            sx={{ display: { md: open ? "none" : "inline-flex" }, color: "#1E293B",
+                                mr: isMobile ? 0 : 2
+                            }}
                         >
                             <MenuIcon />
                         </IconButton>
@@ -214,15 +213,21 @@ const Index = ({children}) => {
                                 alignItems: "center"
                             }}
                         >
-                            <Typography variant="h6" noWrap component="div" 
-                                sx={{ color: "#1E293B", fontWeight: 600, letterSpacing: 0.5, display: "flex",
-                                    alignItems: "center", gap: 1
-                                }}
-                            >
-                                <GiRollingEnergy /> Paper Generator
-                            </Typography>
-                            <Button sx={{color: "#1E293B", border: "1px solid #1E293B", px: 2, py: 0.6,
-                                    transition: "0.3s ease-in-out", textTransform: "none", fontSize: {xs: "13px", sm: "15px"},
+                            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                <img src={webLogo} alt="website-logo"
+                                    style={{ width: isMobile ? 35 : 50, height: 50, objectFit: "contain" }} 
+                                />
+                                <Typography variant="h6" noWrap component="div" 
+                                    sx={{ color: "#1E293B", fontWeight: 600, letterSpacing: 0.5, display: "flex",
+                                        alignItems: "center", gap: 1, fontSize: isMobile ? 16 : 20
+                                    }}
+                                >
+                                    Paper Generator
+                                </Typography>
+                            </Box>
+                            <Button sx={{color: "#1E293B", border: "1px solid #1E293B", px: isMobile ? 1 : 2, 
+                                    py: 0.4, transition: "0.3s ease-in-out", textTransform: "none",
+                                    fontSize: {xs: "13px", sm: "15px"},
                                     '&:hover': { background: "#1E293B", color: "#ffffff" },
                                 }}
                                 onClick={() => { isLoggedIn ? handleLogout() : history.push("/login") }}

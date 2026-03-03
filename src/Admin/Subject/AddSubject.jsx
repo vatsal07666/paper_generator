@@ -144,27 +144,26 @@ const AddSubject = () => {
 
     return (
         <>
-            <Box>
+            <Box sx={{ m: isMobile ? 0 : 2 }}>
                 {/* Heading & Add Subject Button */}
-                <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" },
-                        justifyContent: "space-between", alignItems: { xs: "flex-start", sm: "center" },
-                    }}
-                >
+                <Box sx={{display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <Box>
-                        <h1>Subjects ({subjects.length})</h1>
-                        <Typography variant="span" sx={{ color: "#888888", fontSize: "15px" }} >
+                        <Typography component={"h1"} variant={isMobile ? "h6" : "h5"} fontWeight={600}>
+                            Subjects ({subjects.length})
+                        </Typography>
+                        <Typography variant="span" sx={{ color: "#888888", fontSize: isMobile ? 14 : 16 }}>
                             List of all subjects
                         </Typography>
                     </Box>
 
                     <Button onClick={() => dispatch(setOpenForm(true))}
-                        sx={{ background: "linear-gradient(135deg, #1E293B 0%, #334155 100%)",
-                            color: "#fff", p: "8px 14px", borderRadius: 2, mt: { xs: 2, sm: 0 },
-                            whiteSpace: "none", textTransform: "none", "&:hover": { filter: "brightness(1.3)" }
+                        sx={{ background: "linear-gradient(135deg, #1E293B 0%, #334155 100%)", color: "#fff", 
+                            p: "8px 14px", borderRadius: 2, whiteSpace: "none", textTransform: "none", 
+                            "&:hover": { filter: "brightness(1.3)" }
                         }}
                         startIcon={<IoMdAdd />}
                     >
-                        Add Subject
+                        {isMobile ? "Add" : "Add Subject"}
                     </Button>
                 </Box>
 
@@ -228,7 +227,7 @@ const AddSubject = () => {
                                 >
                                     <Box sx={{ display: "flex", flexDirection: "column", gap: 1, flex: 1 }}>
                                         <label htmlFor="status">Status</label>
-                                        <Select options={statusOptions} placeholder="Search and select subject"
+                                        <Select options={statusOptions} placeholder="Select Status"
                                             value={statusOptions.find(
                                                 (option) => option.value === values.status
                                             ) || null}
@@ -236,7 +235,9 @@ const AddSubject = () => {
                                             isSearchable
                                             isClearable
                                             menuPortalTarget={document.body}
-                                            styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+                                            styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }),
+                                                placeholder: (base) => ({ ...base, fontSize: 14, }),
+                                            }}
                                         />
                                         {errors.status && touched.status && (
                                             <div style={{ color: "#ff0000" }}>{errors.status}</div>
