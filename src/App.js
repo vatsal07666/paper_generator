@@ -5,21 +5,22 @@ import Dashboard from "./Admin/Dashboard/Dashboard";
 import HomePage from "./User/HomePage/HomePage";
 import PrivateRoute from "./Route/PrivateRoute";
 import Layout from "./User/Layout/Layout";
-import LoginPage from "./Login-&-Register/LoginPage";
-import RegisterPage from "./Login-&-Register/RegisterPage";
+import LoginPage from "./Login-Register/LoginPage";
+import RegisterPage from "./Login-Register/RegisterPage";
 import AddSubject from "./Admin/Subject/AddSubject";
 import AddTopic from "./Admin/Topic/AddTopic";
 import AddQuestions from "./Admin/Questions/AddQuestions";
 import ViewQuestions from "./Admin/Questions/ViewQuestions";
 import CreatePaper from "./Admin/Paper/CreatePaper";
+import PublicRoute from "./Route/PublicRoute";
 
 function App() {
     return (
         <>
             <Router>
                 <Switch>
-                    <Route exact path="/login" component={LoginPage} />
-                    <Route exact path="/register" component={RegisterPage} />
+                    <PublicRoute exact path="/login" component={LoginPage} />
+                    <PublicRoute exact path="/register" component={RegisterPage} />
 
                     {/* Admin Routes */}
                     <Route path="/admin">
