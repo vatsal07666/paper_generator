@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, NavLink } from "react-router-dom";
 import { Box, Typography, Divider, Button, TextField, Paper } from "@mui/material";
-import logo from "../../university-college-academy.png";
+import logo from "../../Images/university-college-academy.png";
 import jsPDF from "jspdf";
 import { IoIosArrowRoundBack } from "react-icons/io";
 

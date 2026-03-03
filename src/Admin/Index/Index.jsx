@@ -23,7 +23,7 @@ import { MdOutlineTopic } from "react-icons/md";
 import { SlQuestion } from "react-icons/sl";
 import { GiBookshelf } from "react-icons/gi";
 import { RiListView } from "react-icons/ri";
-import webLogo from "../../webLogo.png";
+import webLogo from "../../Images/webLogo.png";
 
 const drawerWidth = 240;
 
