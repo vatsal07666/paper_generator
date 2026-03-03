@@ -27,10 +27,11 @@ const CreatePaper = () => {
         if (!paperDetails.semester.trim()) return "Semester is required.";
         if (!paperDetails.examType.trim()) return "Exam type is required.";
         if (!paperDetails.examDate) return "Exam date is required.";
-
-        if (!paperDetails.examDurationHours || !paperDetails.examDurationMinutes) {
+        if (!paperDetails.examDurationHours || !paperDetails.examDurationMinutes)
             return "Exam Duration Hour and Minute are required.";
-        }
+        if (paperDetails.examDurationHours < 0) return "Hours cannot be negative.";
+        if (paperDetails.examDurationMinutes < 0 || paperDetails.examDurationMinutes > 59)
+            return "Minutes must be between 0 and 59.";
         return null;
     };
 
@@ -224,19 +225,19 @@ const CreatePaper = () => {
                 <Divider sx={{ my: 2 }} />
 
                 {/* Subject, Semester, Exam Type */}
-                <Typography align="center" fontWeight={600} mb={1}>
+                <Typography component={"div"} align="center" fontWeight={600} mb={1}>
                     <TextField variant="standard" value={paperDetails.subject}
                         onChange={(e) => setPaperDetails({ ...paperDetails, subject: e.target.value })} 
                     /> {" "}
                     ( Sem - {" "}
                         <TextField variant="standard" value={paperDetails.semester}
                             onChange={(e) => setPaperDetails({ ...paperDetails, semester: e.target.value })}
-                            sx={{ width: 15 }} 
+                            sx={{ width: 50 }} 
                         /> 
                     )
                 </Typography>
 
-                <Typography align="center" fontWeight={600}>
+                <Typography component={"div"} align="center" fontWeight={600}>
                     <TextField variant="standard" value={paperDetails.examType}
                         onChange={(e) => setPaperDetails({ ...paperDetails, examType: e.target.value })} 
                     />{" "}
@@ -255,6 +256,7 @@ const CreatePaper = () => {
                             }
                             sx={{ width: 60, mx: 0.5 }}
                         /> Hours
+
                         <TextField type="number" variant="standard" value={paperDetails.examDurationMinutes}
                             onChange={(e) =>
                                 setPaperDetails({ ...paperDetails, examDurationMinutes: e.target.value })
