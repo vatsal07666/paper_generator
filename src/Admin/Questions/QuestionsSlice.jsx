@@ -12,7 +12,10 @@ const initialState = {
     searchItem: '',
     deleteOpen: false,
     deleteId: null,
-    editId: null
+    editId: null,
+    selectedSubject: "",
+    selectedTopic: "",
+    selectedIds: []
 }
 
 export const QuestionsSlice = createSlice({
@@ -65,11 +68,22 @@ export const QuestionsSlice = createSlice({
 
         setSearchItem: (state, action) => {
             state.searchItem = action.payload;
+        },
+
+        setSelectedSubject: (state, action) => {
+            state.selectedSubject = action.payload;
+        },
+        setSelectedTopic: (state, action) => {
+            state.selectedTopic = action.payload;
+        },
+        setSelectedIds: (state, action) => {
+            state.selectedIds = action.payload;
         }
     }
 })
 
 export const { setQuestion, addQuestion, deleteQuestion, updateQuestion, setFormValues, resetFormValues, 
-    setEditId, resetUIstate, setOpenForm, setDeleteOpen, setDeleteId, resetDeleteState, setSearchItem
+    setEditId, resetUIstate, setOpenForm, setDeleteOpen, setDeleteId, resetDeleteState, setSearchItem,
+    setSelectedIds, setSelectedSubject, setSelectedTopic
 } = QuestionsSlice.actions;
 export default QuestionsSlice.reducer;

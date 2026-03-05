@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, NavLink } from "react-router-dom";
-import { Box, Typography, Divider, Button, TextField, Paper } from "@mui/material";
+import { Box, Typography, Divider, Button, TextField, Paper, useTheme, useMediaQuery, FormControl, Select, 
+    MenuItem, 
+} from "@mui/material";
 import logo from "../../Images/university-college-academy.png";
 import jsPDF from "jspdf";
 import { IoIosArrowRoundBack } from "react-icons/io";
@@ -9,6 +11,10 @@ const CreatePaper = () => {
     const location = useLocation();
     const { questions = [], subject } = location.state || {};
     const [error, setError] = useState("");
+    const exams = [ "Internal", "External" ];
+
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
     const [paperDetails, setPaperDetails] = useState({
         university: "ABC University",
@@ -26,10 +32,16 @@ const CreatePaper = () => {
         if (!paperDetails.subject.trim()) return "Subject is required.";
         if (!paperDetails.semester.trim()) return "Semester is required.";
         if (!paperDetails.examType.trim()) return "Exam type is required.";
+
         if (!paperDetails.examDate) return "Exam date is required.";
+        const today = new Date().toISOString().split("T")[0];
+        if (paperDetails.examDate < today) return "Past dates are not allowed.";
+
         if (!paperDetails.examDurationHours || !paperDetails.examDurationMinutes)
             return "Exam Duration Hour and Minute are required.";
+
         if (paperDetails.examDurationHours < 0) return "Hours cannot be negative.";
+
         if (paperDetails.examDurationMinutes < 0 || paperDetails.examDurationMinutes > 59)
             return "Minutes must be between 0 and 59.";
         return null;
@@ -54,9 +66,7 @@ const CreatePaper = () => {
             }, {});
 
             // Sort marks ascending (2 → 5 → 10)
-            const sortedMarks = Object.keys(groupedByMarks)
-                .map(Number)
-                .sort((a, b) => a - b);
+            const sortedMarks = Object.keys(groupedByMarks).map(Number).sort((a, b) => a - b);
 
             // Create sections dynamically (A, B, C...)
             const newSections = sortedMarks.map((marks, index) => ({
@@ -171,32 +181,82 @@ const CreatePaper = () => {
             pdf.setFont("helvetica", "bold");
             pdf.text("------- Best of Luck -------", pageWidth / 2, pageHeight - 15, { align: "center" });
 
+            const savedPaper = {
+                id: Date.now(),
+                paperDetails,
+                sections,
+                totalMarks,
+            };
+
+            const existingPapers = JSON.parse(localStorage.getItem("savedPapers")) || [];
+
+            existingPapers.push(savedPaper);
+
+            localStorage.setItem("savedPapers", JSON.stringify(existingPapers));
+
             pdf.save(`${paperDetails.subject || "Question_Paper"}.pdf`);
         };
     };
 
-    return (
-        <Box p={4}>
-            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <Box>
-                    <Button variant="contained" onClick={handleDownload}
-                        sx={{ background: "#334155", color: "#fff", mb: 3 }}
-                    >
-                        Download PDF
-                    </Button>
-                    {error && ( <Typography color="error" fontWeight={500} mb={2}> {error} </Typography> )}
-                </Box>
+    const handleClearPaper = () => {
+        setPaperDetails({
+            university: "ABC University",
+            subject: "",
+            semester: "",
+            examType: "",
+            examDate: "",
+            examDurationHours: "",
+            examDurationMinutes: "",
+            instructions: "Answer all questions.",
+        });
 
+        setSections([]);
+        setError("");
+    };
+
+    const sems = [ "1", "2", "3", "4", "5", "6", "7", "8" ];
+
+    return (
+        <Box>
+            {/* Validation */}
+            {error && ( <Typography color="error" fontWeight={500} mb={2} align="right"> {error} </Typography> )}
+            
+            {/* View Questions, Clear & Download Button */}
+            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center",
+                    flexDirection: isMobile ? "column" : "row"
+                }}
+            >
+                {/* Goto View Question Button */}
                 <Box>
-                    <Button component={NavLink} to="/admin/viewQuestions" 
+                    <Button component={NavLink} to="/admin/view-questions" 
                         sx={{background: "#334155", color: "#fff", mb: 3, borderRadius: 2,
-                            "&:hover": { filter: "brightness(1.3)" }
+                            "&:hover": { filter: "brightness(1.3)" }, textTransform: "none"
                         }}
                     >
                         <IoIosArrowRoundBack size={30} /> 
                         <Typography component={"span"} sx={{fontSize: "15px", fontWeight: 600}}>
-                            Back To View Questions
+                            Go To View Questions
                         </Typography>
+                    </Button>
+                </Box>
+
+                {/* Clear & Download Button */}
+                <Box sx={{ display: "flex", justifyContent: isMobile && "center", alignItems: "center",
+                        flexDirection: isMobile ? "column" : "row", gap: isMobile ? 0 : 2
+                    }}
+                >
+                    {/* Clear Button */}
+                    <Button variant="outlined" color="error" onClick={handleClearPaper}
+                        sx={{ mb: 3, textTransform: "none" }}
+                    >
+                        Clear Paper
+                    </Button>
+
+                    {/* Download Button */}
+                    <Button variant="contained" onClick={handleDownload}
+                        sx={{ background: "#334155", color: "#fff", mb: 3, textTransform: "none" }}
+                    >
+                        Download PDF
                     </Button>
                 </Box>
             </Box>
@@ -207,76 +267,106 @@ const CreatePaper = () => {
                     flexDirection: "column", boxSizing: "border-box"
                 }}
             >
-                {/* Header */}
-                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 2, flexWrap: "wrap" }}>
+                {/* University & Date Section */}
+                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2,
+                        flexDirection: isMobile ? "column" : "row", gap: 2
+                    }}
+                >
+                    {/* University Field */}
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                         <img src={logo} alt="University-logo"
                             style={{ width: 50, height: 50, objectFit: "contain" }} 
                         />
-                        <TextField variant="standard" value={paperDetails.university}
+                        <TextField variant="standard" value={paperDetails.university || ""}
                             onChange={(e) => setPaperDetails({ ...paperDetails, university: e.target.value })} 
                         />
                     </Box>
-                    <TextField type="date" variant="standard" value={paperDetails.examDate}
+
+                    {/* Date Field */}
+                    <TextField type="date" variant="standard" value={paperDetails.examDate || ""}
                         onChange={(e) => setPaperDetails({ ...paperDetails, examDate: e.target.value })} 
                     />
                 </Box>
 
                 <Divider sx={{ my: 2 }} />
 
-                {/* Subject, Semester, Exam Type */}
-                <Typography component={"div"} align="center" fontWeight={600} mb={1}>
-                    <TextField variant="standard" value={paperDetails.subject}
-                        onChange={(e) => setPaperDetails({ ...paperDetails, subject: e.target.value })} 
-                    /> {" "}
-                    ( Sem - {" "}
-                        <TextField variant="standard" value={paperDetails.semester}
-                            onChange={(e) => setPaperDetails({ ...paperDetails, semester: e.target.value })}
-                            sx={{ width: 50 }} 
-                        /> 
-                    )
-                </Typography>
+                {/* Subject & Exam Type Section */}
+                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3,
+                        flexDirection: isMobile ? "column" : "row", gap: 2
+                    }}
+                >
+                    {/* Subject Field */}
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <Typography component={"span"} fontWeight={600}>Subject: </Typography>
+                        <TextField variant="standard" value={paperDetails.subject || ""} sx={{ pl: 1 }} />
+                    </Box>
 
-                <Typography component={"div"} align="center" fontWeight={600}>
-                    <TextField variant="standard" value={paperDetails.examType}
-                        onChange={(e) => setPaperDetails({ ...paperDetails, examType: e.target.value })} 
-                    />{" "}
-                    Exam
-                </Typography>
+                    {/* Exam Type Field */}
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <Typography fontWeight={600}>Exam:</Typography>
+
+                        <FormControl variant="standard" sx={{ width: 150, pl: 1 }}>
+                            <Select value={paperDetails.examType || ""}
+                                onChange={(e) => setPaperDetails({ ...paperDetails, examType: e.target.value })}
+                            >
+                                <MenuItem value="">None</MenuItem>
+                                {exams.map((ex) => <MenuItem key={ex} value={ex}> {ex} </MenuItem> )}
+                            </Select>
+                        </FormControl>
+                    </Box>
+                </Box>
+
+                {/* Semester Field Section */}
+                <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                    <Typography component={"span"} fontWeight={600}>Semester: </Typography>
+                    <FormControl variant="standard" sx={{ width: 50, textAlign: "center", pl: 1 }}>
+                        <Select value={paperDetails.semester || ""}
+                            onChange={(e) => setPaperDetails({ ...paperDetails, semester: e.target.value })}
+                        >
+                            {sems.map((s) => <MenuItem key={s} value={s}> {s} </MenuItem>)}
+                        </Select>
+                    </FormControl>
+                </Box>
 
                 <Divider sx={{ my: 2 }} />
 
-                {/* Time and Total Marks */}
-                <Box display="flex" justifyContent="space-between" mb={2}>
-                    <Box display="flex" alignItems="center" flexWrap={"wrap"}>
+                {/* Time and Total Marks Section */}
+                <Box sx={{display: "flex", justifyContent: "space-between", alignItems: "center",
+                        flexDirection: isMobile ? "column" : "row", mb: 2, gap: 2 
+                    }}
+                >
+                    <Box display="flex" alignItems="center" flexWrap={"wrap"} gap={1}>
                         <b>Time Duration :</b>
-                        <TextField type="number" variant="standard" value={paperDetails.examDurationHours}
+                        <TextField type="number" variant="standard" value={paperDetails.examDurationHours || ""}
                             onChange={(e) =>
                                 setPaperDetails({ ...paperDetails, examDurationHours: e.target.value })
                             }
-                            sx={{ width: 60, mx: 0.5 }}
+                            sx={{ width: 40, mx: 0.5 }}
                         /> Hours
 
-                        <TextField type="number" variant="standard" value={paperDetails.examDurationMinutes}
+                        <TextField type="number" variant="standard" value={paperDetails.examDurationMinutes || ""}
                             onChange={(e) =>
                                 setPaperDetails({ ...paperDetails, examDurationMinutes: e.target.value })
                             }
-                            sx={{ width: 60, mx: 0.5 }}
+                            sx={{ width: 40, mx: 0.5 }}
                         /> Minutes
                     </Box>
 
+                    {/* Total Marks Field */}
                     <Typography><b>Total Marks:</b> {totalMarks}</Typography>
                 </Box>
 
                 <Divider sx={{ my: 2 }} />
 
-                {/* Instructions */}
-                <Typography fontWeight={600}>Instructions:</Typography>
+                {/* Instructions Section */}
+                <Box>
+                    <Typography fontWeight={600}>Instructions:</Typography>
 
-                <TextField variant="standard" multiline fullWidth rows={2}
-                    value={paperDetails.instructions}
-                    onChange={(e) => setPaperDetails({ ...paperDetails, instructions: e.target.value })} 
-                />
+                    <TextField variant="standard" multiline fullWidth rows={2}
+                        value={paperDetails.instructions || ""}
+                        onChange={(e) => setPaperDetails({ ...paperDetails, instructions: e.target.value })} 
+                    />
+                </Box>
 
                 <Divider sx={{ my: 2 }} />
 
@@ -288,14 +378,18 @@ const CreatePaper = () => {
                         </Typography>
 
                         {sec.questions.map((q, idx) => (
-                            <Box key={idx} sx={{ display: "flex", justifyContent: "space-between", ml: 2 }}>
+                            <Box key={idx} sx={{ display: "flex", justifyContent: "space-between", ml: 2,
+                                    flexDirection: isMobile ? "column" : "row"
+                                }}
+                            >
                                 <Typography>{idx + 1}. {q.question}</Typography>
-                                <Typography>({sec.marksPerQuestion})</Typography>
+                                <Typography sx={{ textAlign: isMobile && "right" }}>({sec.marksPerQuestion})</Typography>
                             </Box>
                         ))}
                     </Box>
                 ))}
 
+                {/* Footer */}
                 <Box mt={6}>
                     <Divider sx={{ mb: 3 }} />
                     <Typography align="center" fontWeight={600}>------- Best of Luck -------</Typography>

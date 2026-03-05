@@ -1,9 +1,9 @@
 import "./App.css";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import PrivateRoute from "./Route/PrivateRoute";
 import Index from "./Admin/Index/Index";
 import Dashboard from "./Admin/Dashboard/Dashboard";
 import HomePage from "./User/HomePage/HomePage";
-import PrivateRoute from "./Route/PrivateRoute";
 import Layout from "./User/Layout/Layout";
 import LoginPage from "./Login-Register/LoginPage";
 import RegisterPage from "./Login-Register/RegisterPage";
@@ -30,7 +30,7 @@ function App() {
                                 <PrivateRoute exact path="/admin/subject" component={AddSubject} role="admin" />
                                 <PrivateRoute exact path="/admin/topic" component={AddTopic} role="admin" />
                                 <PrivateRoute exact path="/admin/question" component={AddQuestions} role="admin" />
-                                <PrivateRoute exact path="/admin/viewQuestions" component={ViewQuestions} role="admin" />
+                                <PrivateRoute exact path="/admin/view-questions" component={ViewQuestions} role="admin" />
                                 <PrivateRoute exact path="/admin/create-paper" component={CreatePaper} role="admin" />
                             </Switch>
                         </Index>

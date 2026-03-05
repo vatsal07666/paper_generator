@@ -5,7 +5,7 @@ import { Box, Typography, Checkbox, InputBase, Divider, useTheme, useMediaQuery,
 import SearchIcon from "@mui/icons-material/Search";
 import Select from "react-select";
 import { useDispatch, useSelector } from "react-redux";
-import { setQuestion, setSearchItem } from "../Questions/QuestionsSlice";
+import { setQuestion, setSearchItem, setSelectedIds, setSelectedSubject, setSelectedTopic } from "../Questions/QuestionsSlice";
 import { MdIndeterminateCheckBox } from "react-icons/md";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
@@ -19,14 +19,9 @@ const ViewQuestions = () => {
     const history = useHistory();
     const [error, setError] = useState("");
 
-    const { list: questions = [], searchItem } = useSelector((state) => state.questionStore);
+    const { list: questions = [], searchItem, selectedIds = [], selectedSubject, selectedTopic } = useSelector((state) => state.questionStore);
     const { list: subjects = [] } = useSelector((state) => state.subjectStore);
     const { list: topics = [] } = useSelector((state) => state.topicStore);
-
-    /* ---------------- Local Filter State ---------------- */
-    const [selectedSubject, setSelectedSubject] = useState("");
-    const [selectedTopic, setSelectedTopic] = useState("");
-    const [selectedIds, setSelectedIds] = useState([]);
 
     /* ---------------- Dropdown Options ---------------- */
     const subjectOptions = subjects.map((s) => ({ value: s.subjectName, label: s.subjectName }));
@@ -47,17 +42,17 @@ const ViewQuestions = () => {
 
     /* ---------------- Checkbox Logic ---------------- */
     const handleSelect = (id) => {
-        setSelectedIds((prev) =>
-        prev.includes(id)
-            ? prev.filter((item) => item !== id)
-            : [...prev, id]
-        );
-
+        const updatedIds = selectedIds.includes(id)
+            ? selectedIds.filter(item => item !== id)
+            : [...selectedIds, id];
+        
+        dispatch(setSelectedIds(updatedIds));
         setError("");
     };
 
     const handleSelectAll = (checked) => {
-        setSelectedIds(checked ? filteredQuestions.map((item) => item._id) : []);
+        const allIds = checked ? filteredQuestions.map(item => item._id) : [];
+        dispatch(setSelectedIds(allIds));
         setError("");
     };
     
@@ -67,7 +62,9 @@ const ViewQuestions = () => {
             return;
         }
 
-        const selectedQuestions = questions.filter((q) => selectedIds.includes(q._id));
+        const selectedQuestions = questions.filter(
+            (q) => Array.isArray(selectedIds) && selectedIds.includes(q._id)
+        );
 
         if (selectedQuestions.length === 0) {
             setError("Please select at least one question."); 
@@ -127,8 +124,8 @@ const ViewQuestions = () => {
                         value={ subjectOptions.find((opt) => opt.value === selectedSubject ) || null }
                         onChange={(option) => {
                             const value = option ? option.value : "";
-                            setSelectedSubject(value);
-                            setSelectedTopic(""); // reset topic
+                            dispatch(setSelectedSubject(value));
+                            dispatch(setSelectedTopic("")); // reset topic
                             if (value) { setError("") }
                         }}
                         isSearchable
@@ -140,7 +137,7 @@ const ViewQuestions = () => {
                 <Box sx={{ flex: 1 }}>
                     <Select options={topicOptions} placeholder="Filter by Topic"
                         value={ topicOptions.find((opt) => opt.value === selectedTopic) || null }
-                        onChange={(option) => setSelectedTopic(option ? option.value : "")}
+                        onChange={(option) => dispatch(setSelectedTopic(option ? option.value : ""))}
                         isSearchable
                         isClearable
                     />
@@ -174,7 +171,7 @@ const ViewQuestions = () => {
 
             {/* Selected Count */}
             <Box sx={{ display: "flex", flexDirection: isMobile ? "column" : "row", 
-                    justifyContent: "space-between" 
+                    justifyContent: "space-between", flexWrap: "wrap" 
                 }}
             >
                 {/* Select All */}
@@ -189,8 +186,8 @@ const ViewQuestions = () => {
                 </Box>
 
                 {selectedIds.length > 0 && (
-                    <Box sx={{ mb: 1, display: "flex", flexDirection: isMobile ? "column" : "row", 
-                            alignItems: "center", gap: 1 
+                    <Box sx={{ mb: 2, display: "flex", flexDirection: isMobile ? "column" : "row", 
+                            alignItems: "center", gap: 1, flexWrap: "wrap" 
                         }}
                     >
                         <Typography fontWeight={600}> Selected Questions: </Typography>
@@ -210,7 +207,7 @@ const ViewQuestions = () => {
                                 sx: { letterSpacing: 0.5, background: "#475569", color: "#fff" }
                             }
                         }}>
-                            <IconButton size="small" onClick={() => {setSelectedIds([]); setError("")}}
+                            <IconButton size="small" onClick={() => {dispatch(setSelectedIds([])); setError("")}}
                                 sx={{ fontSize: "22px", color: "#1F51FF" }}    
                             >
                                 <MdIndeterminateCheckBox />

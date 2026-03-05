@@ -28,7 +28,7 @@ const AddQuestions = () => {
     const { list: topics = [] } = useSelector((state) => state.topicStore);
     const dispatch = useDispatch();
     const { ShowSnackbar } = useSnackbar();
-    const [expanded, setExpanded] = useState(false);
+    const [expanded, setExpanded] = useState(null);
     const [selectedSubject, setSelectedSubject] = useState("");
     const [selectedTopic, setSelectedTopic] = useState("");
 
@@ -191,9 +191,7 @@ const AddQuestions = () => {
         }));
     };
 
-    const handleAccordionChange = (panel) => (isExpanded) => {
-        setExpanded(isExpanded ? panel : false);
-    };
+    const handleAccordionToggle = (id) => setExpanded(prev => (prev === id ? null : id));
 
     return (
         <>
@@ -323,7 +321,7 @@ const AddQuestions = () => {
                 </Dialog>
 
                 <Box sx={{ mr: {xs: 0, sm: 2}, my: 3}}>
-                    <Button component={NavLink} to="/admin/viewQuestions" 
+                    <Button component={NavLink} to="/admin/view-questions" 
                         sx={{ borderRadius: 2, color: "#fff",
                             background: "linear-gradient(135deg, #1E293B 0%, #334155 100%)",
                             textTransform: "none", transition: "all 0.3s ease-in-out",
@@ -381,7 +379,7 @@ const AddQuestions = () => {
                         {filteredQuestions.length > 0 ? (
                             filteredQuestions.map((item, index) => (
                                 <Accordion key={item._id ?? index} expanded={expanded === item._id}
-                                    onChange={handleAccordionChange(item._id)}
+                                    onChange={() => handleAccordionToggle(item._id)}
                                     sx={{ mb: 1.5, borderRadius: 2, overflow: "hidden", border: "1px solid #e2e8f0",
                                         "&:before": { display: "none" }
                                     }}

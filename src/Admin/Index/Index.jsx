@@ -98,15 +98,15 @@ const Items = [
     { name: "Subject", icon: <GiBookshelf />, to: "/admin/subject" },
     { name: "Topic", icon: <MdOutlineTopic />, to: "/admin/topic" },
     { name: "Questions", icon: <SlQuestion />, to: "/admin/question" },
-    { name: "View Questions", icon: <RiListView />, to: "/admin/viewQuestions" },
+    { name: "View Questions", icon: <RiListView />, to: "/admin/view-questions" },
 ]
 
 const Index = ({children}) => {
-    const theme = useTheme();
     const [open, setOpen] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const { ShowSnackbar } = useSnackbar();
     const history = useHistory();
+    const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
     const location = useLocation();
     const prevPathRef = useRef(location.pathname);
