@@ -362,47 +362,6 @@ const AddSubject = () => {
                                                         </IconButton>
                                                     </Tooltip>
 
-                                                    {/* Delete Button Dialog */}
-                                                    <Dialog open={deleteOpen} fullWidth
-                                                        onClose={() => dispatch(resetDeleteState())}
-                                                        disableRestoreFocus
-                                                        slotProps={{
-                                                            backdrop: {
-                                                                sx: { backgroundColor: "rgba(0,0,0,0.35)",
-                                                                    backdropFilter: "blur(4px)",
-                                                                },
-                                                            },
-                                                        }}
-                                                    >
-                                                        <DialogTitle id="alert-dialog-title">
-                                                            {" "} Confirm Delete By Clicking Delete!{" "}
-                                                        </DialogTitle>
-
-                                                        <DialogActions>
-                                                            <Button onClick={() => dispatch(resetDeleteState())}
-                                                                variant="contained"
-                                                                sx={{ color: "#1e293b", background: "#fff",
-                                                                    "&:hover": { boxShadow: "0 0 0 2px rgba(0, 0, 0, 0.5)"  },
-                                                                }}
-                                                            >
-                                                                Cancle
-                                                            </Button>
-
-                                                            <Button variant="contained" className="agree-button"
-                                                                onClick={deleteData}
-                                                                sx={{ background: "#ef4444", color: "#fff",
-                                                                    transition: "0.2s ease-in-out",
-                                                                    "&:hover": { background: "#fff",
-                                                                        color: "#ff0000",
-                                                                        boxShadow: "0 0 2px rgba(255, 0, 0, 1)",
-                                                                    },
-                                                                }}
-                                                            >
-                                                                Delete
-                                                            </Button>
-                                                        </DialogActions>
-                                                    </Dialog>
-
                                                     {/* Edit Button */}
                                                     <Tooltip title="Edit" component={Paper}
                                                         slotProps={{
@@ -429,62 +388,98 @@ const AddSubject = () => {
                                     ))
                                 ) : (
                                     <TableRow>
-                                        <TableCell colSpan={5} align="center"> No Language Data Found </TableCell>
+                                        <TableCell colSpan={5} align="center"> Language Data Not Found ! </TableCell>
                                     </TableRow>
                                 )}
                             </TableBody>
                         </Table>
                     </TableContainer>
                 ) : (
-                <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: 2 }}>
-                    {filteredSubject.map((item, index) => (
-                        <Card key={item._id ?? index} sx={{ borderRadius: 3, boxShadow: 2, display: "flex",
-                                flexDirection: "column",
-                            }}
-                        >
-                            {/* CONTENT */}
-                            <CardContent sx={{ flexGrow: 1 }}>
-                                <Typography variant="body2">
-                                    <b>Subject Name:</b> {item.subjectName}
-                                </Typography>
-                                <Typography variant="body2">
-                                    <b>Subject Code:</b> {item.subjectCode}
-                                </Typography>
-                                <Typography variant="body2" sx={{ mt: 1 }}>
-                                    <b>Status:&nbsp;</b>
-                                    <span style={{ background: item.status === "Active" ? "#4caf50" : "#f44336",
-                                            padding: "4px 10px", borderRadius: "20px", fontSize: "13px",
-                                            color: "#fff",
+                    <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: 2 }}>
+                        {filteredSubject.map((item, index) => (
+                            <Card key={item._id ?? index} sx={{ borderRadius: 3, boxShadow: 2, display: "flex",
+                                    flexDirection: "column",
+                                }}
+                            >
+                                {/* CONTENT */}
+                                <CardContent sx={{ flexGrow: 1 }}>
+                                    <Typography variant="body2">
+                                        <b>Subject Name:</b> {item.subjectName}
+                                    </Typography>
+                                    <Typography variant="body2">
+                                        <b>Subject Code:</b> {item.subjectCode}
+                                    </Typography>
+                                    <Typography variant="body2" sx={{ mt: 1 }}>
+                                        <b>Status:&nbsp;</b>
+                                        <span style={{ background: item.status === "Active" ? "#4caf50" : "#f44336",
+                                                padding: "4px 10px", borderRadius: "20px", fontSize: "13px",
+                                                color: "#fff",
+                                            }}
+                                        >
+                                            {item.status}
+                                        </span>
+                                    </Typography>
+                                </CardContent>
+
+                                {/* ACTIONS — ALWAYS AT BOTTOM */}
+                                <Box sx={{ display: "flex", justifyContent: "center", gap: 1, p: 2, mt: "auto" }}>
+                                    <Button sx={{ background: "#fff", color: "#ef4444", border: 1,
+                                            whiteSpace: "nowrap",
                                         }}
+                                        onClick={() => dispatch(setDeleteOpen(true))}
                                     >
-                                        {item.status}
-                                    </span>
-                                </Typography>
-                            </CardContent>
+                                        <RiDeleteBin6Line />&nbsp; Delete
+                                    </Button>
 
-                            {/* ACTIONS — ALWAYS AT BOTTOM */}
-                            <Box sx={{ display: "flex", justifyContent: "center", gap: 1, p: 2, mt: "auto" }}>
-                                <Button sx={{ background: "#fff", color: "#ef4444", border: 1,
-                                        whiteSpace: "nowrap",
-                                    }}
-                                    onClick={() => dispatch(setDeleteOpen(true))}
-                                >
-                                    <RiDeleteBin6Line />&nbsp; Delete
-                                </Button>
-
-                                <Button sx={{ background: "#fff", color: "#2563eb", border: 1,
-                                        whiteSpace: "nowrap",
-                                    }}
-                                    onClick={() => handleEdit(item)}
-                                >
-                                    <FaEdit />&nbsp; Edit
-                                </Button>
-                            </Box>
-                        </Card>
-                    ))}
-                </Box>
+                                    <Button sx={{ background: "#fff", color: "#2563eb", border: 1,
+                                            whiteSpace: "nowrap",
+                                        }}
+                                        onClick={() => handleEdit(item)}
+                                    >
+                                        <FaEdit />&nbsp; Edit
+                                    </Button>
+                                </Box>
+                            </Card>
+                        ))}
+                    </Box>
                 )}
             </Box>
+
+            {/* Delete Button Dialog */}
+            <Dialog open={deleteOpen} fullWidth onClose={() => dispatch(resetDeleteState())}
+                disableRestoreFocus
+                slotProps={{
+                    backdrop: {
+                        sx: { backgroundColor: "rgba(0,0,0,0.35)",
+                            backdropFilter: "blur(4px)",
+                        },
+                    },
+                }}
+            >
+                <DialogTitle id="alert-dialog-title"> Confirm Delete By Clicking Delete! </DialogTitle>
+
+                <DialogActions>
+                    <Button onClick={() => dispatch(resetDeleteState())}
+                        variant="contained"
+                        sx={{ color: "#1e293b", background: "#fff",
+                            "&:hover": { boxShadow: "0 0 0 2px rgba(0, 0, 0, 0.5)" },
+                        }}
+                    >
+                        Cancle
+                    </Button>
+
+                    <Button variant="contained" className="agree-button"
+                        onClick={deleteData}
+                        sx={{ background: "#ef4444", color: "#fff", transition: "0.2s ease-in-out",
+                            "&:hover": { background: "#fff", color: "#ff0000",
+                                boxShadow: "0 0 2px rgba(255, 0, 0, 1)",
+                            },
+                        }}
+                    >
+                        Delete
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </>
     );
 };

@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect } from "react";
 import * as Yup from "yup";
 import { Box, Button, Card, CardContent, Dialog, DialogActions, DialogContent, DialogTitle, Divider,
-    InputBase, Typography,
+    InputBase, Paper, Typography,
     useMediaQuery,
     useTheme,
 } from "@mui/material";
@@ -304,101 +304,98 @@ const AddSubject = () => {
                 </Box>
 
                 <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: 2 }}>
-                    {filteredTopic.map((item, index) => (
-                        <Card key={item._id ?? index}
-                            sx={{ borderRadius: 3, boxShadow: 2, display: "flex", flexDirection: "column" }}
-                        >
-                            {/* CONTENT */}
-                            <CardContent sx={{ flexGrow: 1 }}>
-                                <Box sx={{ display: "flex", justifyContent: "space-between", gap: 1 }}>
-                                    <Box sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 0.6 }}>
-                                        <Typography variant="body2" fontSize={"16px"}>
-                                            <b>Topic Name:</b> {item.topicName}
-                                        </Typography>
-                                        <Typography variant="body2" fontSize={"14.5px"} color="text.secondary">
-                                            <b>Subject Name:</b> {item.subjectName}
+                    {filteredTopic.length > 0 ? (
+                        filteredTopic.map((item, index) => (
+                            <Card key={item._id ?? index}
+                                sx={{ borderRadius: 3, boxShadow: 2, display: "flex", flexDirection: "column" }}
+                            >
+                                {/* CONTENT */}
+                                <CardContent sx={{ flexGrow: 1 }}>
+                                    <Box sx={{ display: "flex", justifyContent: "space-between", gap: 1 }}>
+                                        <Box sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 0.6 }}>
+                                            <Typography variant="body2" fontSize={"16px"}>
+                                                <b>Topic Name:</b> {item.topicName}
+                                            </Typography>
+                                            <Typography variant="body2" fontSize={"14.5px"} color="text.secondary">
+                                                <b>Subject Name:</b> {item.subjectName}
+                                            </Typography>
+                                        </Box>
+
+                                        <Typography variant="body2" sx={{ textAlign: "right" }}>
+                                            <span style={{ background: item.status === "Active" ? "#4caf50" : "#f44336",
+                                                    padding: "4px 10px", borderRadius: "20px", fontSize: "13px",
+                                                    color: "#fff",
+                                                }}
+                                            >
+                                                {item.status}
+                                            </span>
                                         </Typography>
                                     </Box>
+                                </CardContent>
 
-                                    <Typography variant="body2" sx={{ textAlign: "right" }}>
-                                        <span style={{ background: item.status === "Active" ? "#4caf50" : "#f44336",
-                                                padding: "4px 10px", borderRadius: "20px", fontSize: "13px",
-                                                color: "#fff",
-                                            }}
-                                        >
-                                            {item.status}
-                                        </span>
-                                    </Typography>
+                                {/* ACTIONS — ALWAYS AT BOTTOM */}
+                                <Box sx={{ display: "flex", justifyContent: "center", gap: 1, pb: 2,
+                                    }}
+                                >
+                                    <Button sx={{ background: "#fff", color: "#ef4444", border: 1,
+                                            whiteSpace: "nowrap", textTransform: "none"
+                                        }}
+                                        onClick={() => handleDelete(item)}
+                                    >
+                                        <RiDeleteBin6Line />&nbsp; Delete
+                                    </Button>
+
+                                    <Button sx={{ background: "#fff", color: "#2563eb", border: 1,
+                                            whiteSpace: "nowrap", textTransform: "none"
+                                        }}
+                                        onClick={() => handleEdit(item)}
+                                    >
+                                        <FaEdit />&nbsp; Edit
+                                    </Button>
                                 </Box>
-                            </CardContent>
-
-                            {/* ACTIONS — ALWAYS AT BOTTOM */}
-                            <Box sx={{ display: "flex", justifyContent: "center", gap: 1, pb: 2,
-                                }}
-                            >
-                                <Button sx={{ background: "#fff", color: "#ef4444", border: 1,
-                                        whiteSpace: "nowrap", textTransform: "none"
-                                    }}
-                                    onClick={() => handleDelete(item)}
-                                >
-                                    <RiDeleteBin6Line />&nbsp; Delete
-                                </Button>
-
-                                <Button sx={{ background: "#fff", color: "#2563eb", border: 1,
-                                        whiteSpace: "nowrap", textTransform: "none"
-                                    }}
-                                    onClick={() => handleEdit(item)}
-                                >
-                                    <FaEdit />&nbsp; Edit
-                                </Button>
-                            </Box>
-                        </Card>
-                    ))}
+                            </Card>
+                        ))
+                    ) : (   
+                        <Paper sx={{ p: 3, textAlign: "center" }}> Topics Data Not Found ! </Paper>
+                    )}
                 </Box>
-
-                {/* Delete Button Dialog */}
-                <Dialog open={deleteOpen} fullWidth
-                    onClose={() => dispatch(resetDeleteState())}
-                    disableRestoreFocus
-                    slotProps={{
-                        backdrop: {
-                            sx: { backgroundColor: "rgba(0,0,0,0.35)",
-                                backdropFilter: "blur(4px)",
-                            },
-                        },
-                    }}
-                >
-                    <DialogTitle id="alert-dialog-title"> 
-                        Confirm Delete By Clicking Delete!
-                    </DialogTitle>
-
-                    <DialogActions>
-                        <Button onClick={() => dispatch(resetDeleteState())}
-                            variant="contained"
-                            sx={{ color: "#1e293b", background: "#fff",
-                                "&:hover": {
-                                    boxShadow: "0 0 0 2px rgba(0, 0, 0, 0.5)",
-                                },
-                            }}
-                        >
-                            Cancle
-                        </Button>
-
-                        <Button variant="contained" className="agree-button"
-                            onClick={deleteData}
-                            sx={{ background: "#ef4444", color: "#fff",
-                                transition: "0.2s ease-in-out",
-                                "&:hover": { background: "#fff",
-                                    color: "#ff0000",
-                                    boxShadow: "0 0 2px rgba(255, 0, 0, 1)",
-                                },
-                            }}
-                        >
-                            Delete
-                        </Button>
-                    </DialogActions>
-                </Dialog>
             </Box>
+
+            {/* Delete Button Dialog */}
+            <Dialog open={deleteOpen} fullWidth onClose={() => dispatch(resetDeleteState())}
+                disableRestoreFocus
+                slotProps={{
+                    backdrop: {
+                        sx: { backgroundColor: "rgba(0,0,0,0.35)",
+                            backdropFilter: "blur(4px)",
+                        },
+                    },
+                }}
+            >
+                <DialogTitle id="alert-dialog-title"> Confirm Delete By Clicking Delete! </DialogTitle>
+
+                <DialogActions>
+                    <Button onClick={() => dispatch(resetDeleteState())}
+                        variant="contained"
+                        sx={{ color: "#1e293b", background: "#fff",
+                            "&:hover": { boxShadow: "0 0 0 2px rgba(0, 0, 0, 0.5)" },
+                        }}
+                    >
+                        Cancle
+                    </Button>
+
+                    <Button variant="contained" className="agree-button"
+                        onClick={deleteData}
+                        sx={{ background: "#ef4444", color: "#fff", transition: "0.2s ease-in-out",
+                            "&:hover": { background: "#fff", color: "#ff0000",
+                                boxShadow: "0 0 2px rgba(255, 0, 0, 1)",
+                            },
+                        }}
+                    >
+                        Delete
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </>
     );
 };

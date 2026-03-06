@@ -442,7 +442,7 @@ const AddQuestions = () => {
                                 </Accordion>
                             ))
                         ) : (
-                            <Paper sx={{ p: 3, textAlign: "center" }}> No Question Data Found </Paper>
+                            <Paper sx={{ p: 3, textAlign: "center" }}> Questions Data Not Found ! </Paper>
                         )}
                     </Box>
                 ) : (

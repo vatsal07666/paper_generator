@@ -157,9 +157,14 @@ const Index = ({children}) => {
                     {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
                 </IconButton>
             </DrawerHeader>
+
             <Divider />
+            
             {Items.map((menu) => (
-                <ListItem key={menu.name} disablePadding sx={{ display: 'block' }}>
+                <ListItem key={menu.name} sx={{ display: 'block', p: 0, alignItems: "center", 
+                        justifyContent: "center" 
+                    }}
+                >
                     <Tooltip title={menu.name} placement="right"
                         slotProps={{
                             tooltip: { sx: {background: "#1e293b", color: "#ffffff", 
@@ -168,13 +173,13 @@ const Index = ({children}) => {
                         }}
                     >
                         <ListItemButton component={Link} to={menu.to} 
-                            sx={{  mx: 1,  my: 0.5, borderRadius: "10px", 
+                            sx={{ m: 0.5, borderRadius: "10px", 
                                 backgroundColor: location.pathname === menu.to ? "#ecf1fc": "transparent",
                                 "&:hover": { backgroundColor: "#ecf1fc" },
                             }}
                         >
-                            <ListItemIcon sx={{ minWidth: 0, justifyContent: 'center', fontSize: "23px", 
-                                    transition: "0.2s ease", mr: open ? 3 : 'auto', color: "#1E293B", 
+                            <ListItemIcon sx={{ minWidth: 0, fontSize: "23px", 
+                                    transition: "0.2s ease", mr: open ? 2 : 'auto', color: "#1E293B", 
                                     ".MuiListItemButton-root:hover &": { color: "#1E293B" },
                                 }}
                             >
