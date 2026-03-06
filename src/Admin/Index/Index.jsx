@@ -93,7 +93,7 @@ const DesktopDrawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 
     }),
 );
 
-{/* Drawer Item Details */}
+/* ---------------- Drawer Item Details ---------------- */
 const Items = [
     { name: "Dashboard", icon: <TbLayoutDashboardFilled />, to: "/admin" },
     { name: "Subject", icon: <GiBookshelf />, to: "/admin/subject" },
@@ -120,7 +120,7 @@ const Index = ({children}) => {
         setOpen(false);
     };
 
-    // ROLE CHECK
+    /* ---------------- Role Check Logic ---------------- */
     useEffect(() => {
         const token = localStorage.getItem("authToken");
         const role = localStorage.getItem("role");
@@ -141,6 +141,7 @@ const Index = ({children}) => {
         }
     }, [location.pathname, isMobile, open]); // route change only
 
+    /* ---------------- Log out Logic ---------------- */
     const handleLogout = () => {
         localStorage.removeItem("authToken");
         localStorage.removeItem("role");
@@ -151,6 +152,7 @@ const Index = ({children}) => {
 
     if (!isLoggedIn) return null; // Prevent rendering before role check
 
+    /* ---------------- Drawer Content ---------------- */
     const DrawerContent = (
         <>
             <DrawerHeader>

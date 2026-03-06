@@ -35,7 +35,7 @@ const AddQuestions = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
-    {/* ---------------- Validation ---------------- */}
+    /* ---------------- Validation ---------------- */
     const validationSchema = Yup.object({
         subjectName: Yup.string().required("Subject Name is Required*"),
         topicName: Yup.string().required("Topic Name is Required*"),
@@ -44,7 +44,7 @@ const AddQuestions = () => {
                 .min(0, "Marks cannot be negative"),
     })
 
-    {/* ---------------- Call Api to get Subject & Tpic Data ---------------- */}
+    /* ---------------- Call Api to get Subject & Tpic Data ---------------- */
     const subjectsToken = "2xzYLLbk3VRezP5s";
     const getSubjects = useCallback(() => {
         axios.get("https://generateapi.techsnack.online/api/subject", { headers: { Authorization: subjectsToken } })
@@ -66,7 +66,7 @@ const AddQuestions = () => {
 
     const token = "5TirRDcDOTjoaVUS";
     
-    {/* ---------------- Get Question ---------------- */}
+    /* ---------------- Get Question ---------------- */
     const getData = () => {
         axios.get("https://generateapi.techsnack.online/api/question", {
             headers: { Authorization: token }
@@ -78,13 +78,13 @@ const AddQuestions = () => {
         .catch((err) => console.error("GET error: ", err));
     }
 
-    {/* ---------------- Load Data ---------------- */}
+    /* ---------------- Load Data ---------------- */
     useEffect(() => { 
         getData() 
         // eslint-disable-next-line 
     }, [])
 
-    {/* ---------------- Post/Save Question ---------------- */}
+    /* ---------------- Post/Save Question ---------------- */
     const postData = (values, resetForm) => {
         const data = { subjectName: values.subjectName, topicName: values.topicName, marks: Number(values.marks),
             question: values.question
@@ -106,7 +106,7 @@ const AddQuestions = () => {
         .catch((err) => console.error("POST error: ", err));
     }
 
-    {/* ---------------- Delete Question ---------------- */}
+    /* ---------------- Delete Question ---------------- */
     const deleteData = () => {
         axios.delete(`https://generateapi.techsnack.online/api/question/${deleteId}`, {
             headers: { Authorization: token }
@@ -124,7 +124,7 @@ const AddQuestions = () => {
         })
     }
 
-    {/* ---------------- Patch/Update/Edit Question ---------------- */}
+    /* ---------------- Patch/Update/Edit Question ---------------- */
     const patchData = (id, values, resetForm) => {
         axios.patch(`https://generateapi.techsnack.online/api/question/${id}`, values, {
             headers: { Authorization: token }
@@ -145,7 +145,7 @@ const AddQuestions = () => {
         })
     }
 
-    {/* ---------------- Submission Logic ---------------- */}
+    /* ---------------- Submission Logic ---------------- */
     const handleSubmit = (values, { resetForm }) => {
         if(editId !== null){
             patchData(editId, values, resetForm);
@@ -154,20 +154,20 @@ const AddQuestions = () => {
         }
     }
 
-    {/* ---------------- Cancle Logic ---------------- */}
+    /* ---------------- Cancle Logic ---------------- */
     const handleCancel = (resetForm) => {
         resetForm();
         dispatch(resetUIstate());
         dispatch(resetFormValues());
     }
 
-    {/* ---------------- Delete Logic ---------------- */}
+    /* ---------------- Delete Logic ---------------- */
     const handleDelete = (item) => {
         dispatch(setDeleteOpen(true));
         dispatch(setDeleteId(item._id));
     }
 
-    {/* ---------------- Edit Logic ---------------- */}
+    /* ---------------- Edit Logic ---------------- */
     const handleEdit = (item) => {
         dispatch(setOpenForm(true));
         dispatch(setEditId(item._id));
@@ -177,7 +177,7 @@ const AddQuestions = () => {
         }));
     }
 
-    {/* ---------------- Search/Filter Logic ---------------- */}
+    /* ---------------- Search/Filter Logic ---------------- */
     const filteredQuestions = questions.filter((q) => {
         return (
             (!selectedSubject || q.subjectName === selectedSubject) &&
@@ -202,7 +202,7 @@ const AddQuestions = () => {
         }));
     };
 
-    {/* ---------------- Accordion Open-Close Logic ---------------- */}
+    /* ---------------- Accordion Open-Close Logic ---------------- */
     const handleAccordionToggle = (id) => setExpanded(prev => (prev === id ? null : id));
 
     return (

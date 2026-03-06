@@ -32,14 +32,14 @@ const AddSubject = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
-    {/* ---------------- Validation ---------------- */}
+    /* ---------------- Validation ---------------- */
     const validationSchema = Yup.object({
         topicName: Yup.string().required("Subject Name is Required*"),
         subjectName: Yup.string().required("Subject Code is Required*"),
         status: Yup.string().required("Status is Required*"),
     });
 
-    {/* ---------------- Call Api to get Subject Data ---------------- */}
+    /* ---------------- Call Api to get Subject Data ---------------- */
     const getsubjectName = useCallback(() => {
         return axios.get("https://generateapi.techsnack.online/api/subject", {
             headers: { Authorization: "2xzYLLbk3VRezP5s" },
@@ -54,7 +54,7 @@ const AddSubject = () => {
 
     const token = "7TDdOTQs88FIYRPd";
 
-    {/* ---------------- Get Topic ---------------- */}
+    /* ---------------- Get Topic ---------------- */
     const getData = () => {
         axios.get("https://generateapi.techsnack.online/api/topic", {
             headers: { Authorization: token },
@@ -66,13 +66,13 @@ const AddSubject = () => {
         .catch((err) => console.error("GET error: ", err));
     };
 
-    {/* ---------------- Load Data ---------------- */}
+    /* ---------------- Load Data ---------------- */
     useEffect(() => {
         getData();
         // eslint-disable-next-line
     }, []);
 
-    {/* ---------------- Post/Save Topic ---------------- */}
+    /* ---------------- Post/Save Topic ---------------- */
     const postData = (values, resetForm) => {
         const topicData = { topicName: values.topicName, subjectName: values.subjectName,
             status: values.status,
@@ -94,7 +94,7 @@ const AddSubject = () => {
         .catch((err) => console.error("POST error: ", err));
     };
 
-    {/* ---------------- Delete Topic ---------------- */}
+    /* ---------------- Delete Topic ---------------- */
     const deleteData = () => {
         axios.delete(`https://generateapi.techsnack.online/api/topic/${deleteId}`, {
             headers: { Authorization: token },
@@ -112,7 +112,7 @@ const AddSubject = () => {
         });
     };
 
-    {/* ---------------- Patch/Update/Edit Topic ---------------- */}
+    /* ---------------- Patch/Update/Edit Topic ---------------- */
     const patchData = (id, values, resetForm) => {
         axios.patch(`https://generateapi.techsnack.online/api/topic/${id}`, values, {
             headers: { Authorization: token },
@@ -132,7 +132,7 @@ const AddSubject = () => {
         });
     };
 
-    {/* ---------------- Submission Logic ---------------- */}
+    /* ---------------- Submission Logic ---------------- */
     const handleSubmit = (values, { resetForm }) => {
         if (editId !== null) {
             patchData(editId, values, resetForm);
@@ -141,20 +141,20 @@ const AddSubject = () => {
         }
     };
 
-    {/* ---------------- Cancle Logic ---------------- */}
+    /* ---------------- Cancle Logic ---------------- */
     const handleCancel = (resetForm) => {
         resetForm();
         dispatch(resetUIstate());
         dispatch(resetFormValues());
     };
 
-    {/* ---------------- Delete Logic ---------------- */}
+    /* ---------------- Delete Logic ---------------- */
     const handleDelete = (item) => {
         dispatch(setDeleteOpen(true));
         dispatch(setDeleteId(item._id));
     };
 
-    {/* ---------------- Edit Logic ---------------- */}
+    /* ---------------- Edit Logic ---------------- */
     const handleEdit = (item) => {
         dispatch(setOpenForm(true));
         dispatch(setEditId(item._id));
@@ -164,7 +164,7 @@ const AddSubject = () => {
         );
     };
 
-    {/* ---------------- Search/Filter Logic ---------------- */}
+    /* ---------------- Search/Filter Logic ---------------- */
     const filteredTopic = topics.filter((l) =>
         [l.topicName, l.subjectName, l.status].join(" ").toLowerCase().includes(searchItem.toLowerCase()),
     );

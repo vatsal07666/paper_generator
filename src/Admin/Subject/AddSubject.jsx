@@ -28,7 +28,7 @@ const AddSubject = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
-    {/* ---------------- Validation ---------------- */}
+    /* ---------------- Validation ---------------- */
     const validationSchema = Yup.object({
         subjectName: Yup.string().required("Subject Name is Required*"),
         subjectCode: Yup.string().required("Subject Code is Required*"),
@@ -37,7 +37,7 @@ const AddSubject = () => {
 
     const token = "2xzYLLbk3VRezP5s";
 
-    {/* ---------------- Get Subject ---------------- */}
+    /* ---------------- Get Subject ---------------- */
     const getData = () => {
         axios.get("https://generateapi.techsnack.online/api/subject", { headers: { Authorization: token } })
         .then((res) => {
@@ -47,13 +47,13 @@ const AddSubject = () => {
         .catch((err) => console.error("GET error: ", err));
     };
 
-    {/* ---------------- Load Data ---------------- */}
+    /* ---------------- Load Data ---------------- */
     useEffect(() => {
         getData();
         // eslint-disable-next-line
     }, []);
 
-    {/* ---------------- Post/Save Subject ---------------- */}
+    /* ---------------- Post/Save Subject ---------------- */
     const postData = (values, resetForm) => {
         const data = { subjectName: values.subjectName, subjectCode: values.subjectCode, 
             status: values.status,
@@ -75,7 +75,7 @@ const AddSubject = () => {
         .catch((err) => console.error("POST error: ", err));
     };
 
-    {/* ---------------- Delete Subject ---------------- */}
+    /* ---------------- Delete Subject ---------------- */
     const deleteData = () => {
         axios.delete(`https://generateapi.techsnack.online/api/subject/${deleteId}`, {
             headers: { Authorization: token },
@@ -93,7 +93,7 @@ const AddSubject = () => {
         });
     };
 
-    {/* ---------------- Patch/Update/Edit Subject ---------------- */}
+    /* ---------------- Patch/Update/Edit Subject ---------------- */
     const patchData = (id, values, resetForm) => {
         axios.patch(`https://generateapi.techsnack.online/api/subject/${id}`, values, {
             headers: { Authorization: token },
@@ -113,7 +113,7 @@ const AddSubject = () => {
         });
     };
 
-    {/* ---------------- Submission Logic ---------------- */}
+    /* ---------------- Submission Logic ---------------- */
     const handleSubmit = (values, { resetForm }) => {
         if (editId !== null) {
             patchData(editId, values, resetForm);
@@ -122,20 +122,20 @@ const AddSubject = () => {
         }
     };
 
-    {/* ---------------- Cancle Logic ---------------- */}
+    /* ---------------- Cancle Logic ---------------- */
     const handleCancel = (resetForm) => {
         resetForm();
         dispatch(resetUIstate());
         dispatch(resetFormValues());
     };
 
-    {/* ---------------- Delete Logic ---------------- */}
+    /* ---------------- Delete Logic ---------------- */
     const handleDelete = (item) => {
         dispatch(setDeleteOpen(true));
         dispatch(setDeleteId(item._id));
     };
 
-    {/* ---------------- Edit Logic ---------------- */}
+    /* ---------------- Edit Logic ---------------- */
     const handleEdit = (item) => {
         dispatch(setOpenForm(true));
         dispatch(setEditId(item._id));
@@ -145,7 +145,7 @@ const AddSubject = () => {
         );
     };
 
-    {/* ---------------- Search/Filter Logic ---------------- */}
+    /* ---------------- Search/Filter Logic ---------------- */
     const filteredSubject = subjects.filter((s) =>
         [s.subjectName, s.subjectCode, s.status].join(" ").toLowerCase().includes(searchItem.toLowerCase())
     );

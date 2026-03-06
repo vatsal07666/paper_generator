@@ -18,7 +18,7 @@ const Dashboard = () => {
 
     const dispatch = useDispatch();
 
-    {/* ---------------- Calling api to Count the Length of all Sections ---------------- */}
+    /* ---------------- Calling api to Count the Length of all Sections ---------------- */
     const tokenSubject = "2xzYLLbk3VRezP5s";
     const tokenTopic = "7TDdOTQs88FIYRPd";
     const tokenQuestion = "5TirRDcDOTjoaVUS";
@@ -53,7 +53,7 @@ const Dashboard = () => {
         questionCount();
     }, [subjectCount, topicCount, questionCount]);
 
-    {/* ---------------- Card Details ---------------- */}
+    /* ---------------- Card Details ---------------- */
     const cards = [
         {
             icon: <GiBookshelf />,

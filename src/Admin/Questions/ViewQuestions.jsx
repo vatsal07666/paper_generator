@@ -23,13 +23,13 @@ const ViewQuestions = () => {
     const { list: subjects = [] } = useSelector((state) => state.subjectStore);
     const { list: topics = [] } = useSelector((state) => state.topicStore);
 
-    {/* ---------------- Dropdown Options ---------------- */}
+    /* ---------------- Dropdown Options ---------------- */
     const subjectOptions = subjects.map((s) => ({ value: s.subjectName, label: s.subjectName }));
 
     const topicOptions = topics.filter((t) => selectedSubject ? t.subjectName === selectedSubject : true)
         .map((t) => ({ value: t.topicName, label: t.topicName }));
 
-    {/* ---------------- Filtering Logic ---------------- */}
+    /* ---------------- Filtering Logic ---------------- */
     const filteredQuestions = questions.filter((q) => {
         return (
             (!selectedSubject || q.subjectName === selectedSubject) &&
@@ -40,7 +40,7 @@ const ViewQuestions = () => {
         );
     });
 
-    {/* ---------------- Checkbox Logic ---------------- */}
+    /* ---------------- Checkbox Logic ---------------- */
     const handleSelect = (id) => {
         const updatedIds = selectedIds.includes(id)
             ? selectedIds.filter(item => item !== id)
@@ -50,14 +50,14 @@ const ViewQuestions = () => {
         setError("");
     };
 
-    {/* ---------------- Select All Logic ---------------- */}
+    /* ---------------- Select All Logic ---------------- */
     const handleSelectAll = (checked) => {
         const allIds = checked ? filteredQuestions.map(item => item._id) : [];
         dispatch(setSelectedIds(allIds));
         setError("");
     };
 
-    {/* ---------------- Create Paper Logic ---------------- */}
+    /* ---------------- Create Paper Logic ---------------- */
     const handleCreatePaper = () => {
         if (!selectedSubject) {
             setError("Please select a subject before creating the paper.");
@@ -78,7 +78,7 @@ const ViewQuestions = () => {
         });
     };
 
-    {/* ---------------- Call Api to get Subjet, Topic & Question Data ---------------- */}
+    /* ---------------- Call Api to get Subjet, Topic & Question Data ---------------- */
     const subjectsToken = "2xzYLLbk3VRezP5s";
     const getSubjects = useCallback(() => {
         axios.get("https://generateapi.techsnack.online/api/subject", { headers: { Authorization: subjectsToken } })
