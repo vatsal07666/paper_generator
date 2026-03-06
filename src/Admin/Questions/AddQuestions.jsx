@@ -35,6 +35,7 @@ const AddQuestions = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
+    {/* ---------------- Validation ---------------- */}
     const validationSchema = Yup.object({
         subjectName: Yup.string().required("Subject Name is Required*"),
         topicName: Yup.string().required("Topic Name is Required*"),
@@ -43,6 +44,7 @@ const AddQuestions = () => {
                 .min(0, "Marks cannot be negative"),
     })
 
+    {/* ---------------- Call Api to get Subject & Tpic Data ---------------- */}
     const subjectsToken = "2xzYLLbk3VRezP5s";
     const getSubjects = useCallback(() => {
         axios.get("https://generateapi.techsnack.online/api/subject", { headers: { Authorization: subjectsToken } })
@@ -64,6 +66,7 @@ const AddQuestions = () => {
 
     const token = "5TirRDcDOTjoaVUS";
     
+    {/* ---------------- Get Question ---------------- */}
     const getData = () => {
         axios.get("https://generateapi.techsnack.online/api/question", {
             headers: { Authorization: token }
@@ -75,11 +78,13 @@ const AddQuestions = () => {
         .catch((err) => console.error("GET error: ", err));
     }
 
+    {/* ---------------- Load Data ---------------- */}
     useEffect(() => { 
         getData() 
         // eslint-disable-next-line 
     }, [])
 
+    {/* ---------------- Post/Save Question ---------------- */}
     const postData = (values, resetForm) => {
         const data = { subjectName: values.subjectName, topicName: values.topicName, marks: Number(values.marks),
             question: values.question
@@ -101,6 +106,7 @@ const AddQuestions = () => {
         .catch((err) => console.error("POST error: ", err));
     }
 
+    {/* ---------------- Delete Question ---------------- */}
     const deleteData = () => {
         axios.delete(`https://generateapi.techsnack.online/api/question/${deleteId}`, {
             headers: { Authorization: token }
@@ -118,6 +124,7 @@ const AddQuestions = () => {
         })
     }
 
+    {/* ---------------- Patch/Update/Edit Question ---------------- */}
     const patchData = (id, values, resetForm) => {
         axios.patch(`https://generateapi.techsnack.online/api/question/${id}`, values, {
             headers: { Authorization: token }
@@ -138,6 +145,7 @@ const AddQuestions = () => {
         })
     }
 
+    {/* ---------------- Submission Logic ---------------- */}
     const handleSubmit = (values, { resetForm }) => {
         if(editId !== null){
             patchData(editId, values, resetForm);
@@ -146,17 +154,20 @@ const AddQuestions = () => {
         }
     }
 
+    {/* ---------------- Cancle Logic ---------------- */}
     const handleCancel = (resetForm) => {
         resetForm();
         dispatch(resetUIstate());
         dispatch(resetFormValues());
     }
 
+    {/* ---------------- Delete Logic ---------------- */}
     const handleDelete = (item) => {
         dispatch(setDeleteOpen(true));
         dispatch(setDeleteId(item._id));
     }
 
+    {/* ---------------- Edit Logic ---------------- */}
     const handleEdit = (item) => {
         dispatch(setOpenForm(true));
         dispatch(setEditId(item._id));
@@ -166,7 +177,7 @@ const AddQuestions = () => {
         }));
     }
 
-    /* ---------------- Search ---------------- */
+    {/* ---------------- Search/Filter Logic ---------------- */}
     const filteredQuestions = questions.filter((q) => {
         return (
             (!selectedSubject || q.subjectName === selectedSubject) &&
@@ -191,6 +202,7 @@ const AddQuestions = () => {
         }));
     };
 
+    {/* ---------------- Accordion Open-Close Logic ---------------- */}
     const handleAccordionToggle = (id) => setExpanded(prev => (prev === id ? null : id));
 
     return (
@@ -198,6 +210,7 @@ const AddQuestions = () => {
             <Box sx={{ m: isMobile ? 0 : 2 }}>
                 {/* Heading & Add Question Button */}
                 <Box sx={{display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    {/* Heading */}
                     <Box>
                         <Typography component={"h1"} variant={isMobile ? "h6" : "h5"} fontWeight={600}>
                             Questions ({questions.length})
@@ -207,6 +220,7 @@ const AddQuestions = () => {
                         </Typography>
                     </Box>
                     
+                    {/* Add Question Button */}
                     <Button  onClick={() => dispatch(setOpenForm(true))}
                         sx={{background: "linear-gradient(135deg, #1E293B 0%, #334155 100%)", color: "#fff", 
                             p: "8px 14px", borderRadius: 2, whiteSpace: "none", textTransform: "none", 
@@ -224,13 +238,16 @@ const AddQuestions = () => {
                         backdrop: { sx: { backgroundColor: "rgba(0,0,0,0.35)", backdropFilter: "blur(4px)" } }
                     }}
                 >
+                    {/* Form Title */}
                     <DialogTitle sx={{ fontWeight: 700 }}>
                         {editId !== null ? "Edit Question" : "Add New Question"}
                     </DialogTitle>
 
                     <Divider />
                 
+                    {/* Form Content */}
                     <DialogContent sx={{ mt: 1 }}>
+                        {/* Form */}
                         <Formik initialValues={formValues}
                             validationSchema={validationSchema}
                             onSubmit={handleSubmit}
@@ -238,11 +255,11 @@ const AddQuestions = () => {
                         >
                             {({errors, touched, isValid, dirty, resetForm, setFieldValue, values}) => (
                                 <Form className="question-form">
-                                    {/* Subject Name & Topic Name & Marks */}
                                     <Box sx={{ display: "flex", flexDirection: {xs: "column", sm: "row"}, 
                                             gap: 3, mb: 3 
                                         }}
                                     >
+                                        {/* Subject Field */}
                                         <Box sx={{ display: "flex", flexDirection: "column", gap: 1, flex: 1 }}>
                                             <label htmlFor="subjectName">Subject Name</label>                                            
                                             <Select options={subjectOptions} placeholder="Select Subject"
@@ -262,6 +279,7 @@ const AddQuestions = () => {
                                             )}
                                         </Box>
 
+                                        {/* Topic Field */}
                                         <Box sx={{ display: "flex", flexDirection: "column", gap: 1, flex: 1 }}>
                                             <label htmlFor="topicName">Topic Name</label>                                            
                                             <Select options={getFilteredTopics(values.subjectName)} placeholder="Select Topic"
@@ -282,6 +300,7 @@ const AddQuestions = () => {
                                             )}
                                         </Box>
 
+                                        {/* Marks Field */}
                                         <Box sx={{display: "flex", flexDirection: "column", gap: 1, flex: 1}}>
                                             <label htmlFor="marks">Marks</label>
                                             <Field name="marks" id="marks" type="number" placeholder="Enter Marks" />
@@ -320,6 +339,7 @@ const AddQuestions = () => {
                     </DialogContent>
                 </Dialog>
 
+                {/* View Question Button */}
                 <Box sx={{ mr: {xs: 0, sm: 2}, my: 3}}>
                     <Button component={NavLink} to="/admin/view-questions" 
                         sx={{ borderRadius: 2, color: "#fff",
@@ -374,6 +394,7 @@ const AddQuestions = () => {
                     </Box>
                 </Box>
 
+                {/* Question Data Shown */}
                 {!isMobile ? (
                     <Box>
                         {filteredQuestions.length > 0 ? (
@@ -384,7 +405,7 @@ const AddQuestions = () => {
                                         "&:before": { display: "none" }
                                     }}
                                 >
-                                    {/* ================= SUMMARY ================= */}
+                                    {/* Summary */}
                                     <AccordionSummary expandIcon={<ExpandMoreIcon />}
                                         sx={{ background: index % 2 === 0 ? "#ffffff" : "#f8fafc",
                                             "&:hover": { backgroundColor: "#e9f5fd" }
@@ -402,7 +423,7 @@ const AddQuestions = () => {
                                         </Box>
                                     </AccordionSummary>
 
-                                    {/* ================= DETAILS ================= */}
+                                    {/* Question Details */}
                                     <AccordionDetails sx={{ background: "#f9fafb" }}>
                                         <Box sx={{ display: "flex", justifyContent: "space-between", gap: 2, mb: 2 }}>
                                             <Typography><strong>Subject:</strong> {item.subjectName} </Typography>
@@ -412,9 +433,9 @@ const AddQuestions = () => {
                                             <Typography><strong>Marks:</strong> {item.marks} </Typography>
                                         </Box>
 
-                                        {/* ACTION BUTTONS */}
+                                        {/* Action Buttons */}
                                         <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1 }}>
-                                            {/* DELETE */}
+                                            {/* Delete */}
                                             <Tooltip title="Delete">
                                                 <Button sx={{  background: "#fff", color: "#ef4444",
                                                         "&:hover": { background: "#dc2626", color: "#fff" },
@@ -426,7 +447,7 @@ const AddQuestions = () => {
                                                 </Button>
                                             </Tooltip>
 
-                                            {/* EDIT */}
+                                            {/* Edit */}
                                             <Tooltip title="Edit">
                                                 <Button sx={{ background: "#fff", color: "#2563eb",
                                                         "&:hover": { background: "#2563eb", color: "#fff" },
@@ -451,7 +472,7 @@ const AddQuestions = () => {
                             <Card key={item._id ?? index}
                                 sx={{ borderRadius: 3, boxShadow: 2, display: "flex", flexDirection: "column" }}
                             >
-                                {/* CONTENT */}
+                                {/* Content */}
                                 <CardContent sx={{ flexGrow: 1 }}>
                                     <Typography variant="body2"><b>Question:</b> {item.question}</Typography>
                                     <Typography variant="body2"><b>Subject Name:</b> {item.subjectName}</Typography>
@@ -459,8 +480,9 @@ const AddQuestions = () => {
                                     <Typography variant="body2"><b>Marks:</b> {item.marks}</Typography>
                                 </CardContent>
 
-                                {/* ACTIONS — ALWAYS AT BOTTOM */}
+                                {/* Actions */}
                                 <Box sx={{ display: "flex", justifyContent: "center", gap: 1, p: 2, mt: "auto" }}>
+                                    {/* Delete */}
                                     <Button
                                         sx={{ background: "#fff", color: "#ef4444", border: 1, whiteSpace: "nowrap" }}
                                         onClick={() => dispatch(setDeleteOpen(true))}
@@ -468,6 +490,7 @@ const AddQuestions = () => {
                                         <RiDeleteBin6Line />&nbsp; Delete
                                     </Button>
 
+                                    {/* Edit */}
                                     <Button
                                         sx={{ background: "#fff", color: "#2563eb", border: 1, whiteSpace: "nowrap" }}
                                         onClick={() => handleEdit(item)}

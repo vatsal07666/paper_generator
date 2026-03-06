@@ -12,10 +12,6 @@ const CreatePaper = () => {
     const { questions = [], subject } = location.state || {};
     const [error, setError] = useState("");
     const exams = [ "Internal", "External" ];
-
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-
     const [paperDetails, setPaperDetails] = useState({
         university: "ABC University",
         subject: subject || "",
@@ -26,7 +22,12 @@ const CreatePaper = () => {
         examDurationMinutes: "",
         instructions: "Answer all questions.",
     });
-    
+    const [sections, setSections] = useState([]);
+
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
+    {/* ---------------- Validation ---------------- */}
     const validateForm = () => {
         if (!paperDetails.university.trim()) return "University name is required.";
         if (!paperDetails.subject.trim()) return "Subject is required.";
@@ -47,9 +48,8 @@ const CreatePaper = () => {
         return null;
     };
 
-    const [sections, setSections] = useState([]);
 
-    // set sections when questions load
+   {/* ---------------- Set Sections When Pages Load ---------------- */}
     useEffect(() => {
         if (questions.length > 0) {
 
@@ -79,11 +79,13 @@ const CreatePaper = () => {
         }
     }, [questions]);
 
+    {/* ---------------- Total Marks Logic ---------------- */}
     const totalMarks = sections.reduce(
         (sum, sec) => sum + sec.questions.length * sec.marksPerQuestion,
         0
     );
 
+    {/* ---------------- PDF download Logic ---------------- */}
     const handleDownload = () => {
         const validationError = validateForm();
 
@@ -103,21 +105,26 @@ const CreatePaper = () => {
         const img = new Image();
         img.src = logo;
         img.onload = () => {
+            {/* Logo */}
             pdf.addImage(img, "PNG", margin, y, 20, 20);
 
+            {/* University Name */}
             pdf.setFontSize(16);
             pdf.setFont("helvetica", "bold");
             pdf.text(paperDetails.university, margin + 20, y + 12);
 
+            {/* Date */}
             pdf.setFontSize(12);
             pdf.setFont("helvetica", "bold");
             pdf.text(`Date: ${paperDetails.examDate}`, pageWidth - margin, y + 12, { align: "right" });
             y += 25;
 
+            {/* Divider Line */}
             pdf.setLineWidth(0.5);
             pdf.line(margin, y, pageWidth - margin, y);
             y += 10;
 
+            {/* Subject, Semester & Exam Type */}
             pdf.setFontSize(14);
             pdf.setFont("helvetica", "bold");
             pdf.text(`Subject: ${paperDetails.subject}`, margin, y);
@@ -125,6 +132,7 @@ const CreatePaper = () => {
             pdf.text(`Exam Type: ${paperDetails.examType}`, pageWidth - margin, y, { align: "right" });
             y += 10;
 
+            {/* Time Duration */}
             pdf.setFont("helvetica", "bold");
             pdf.text(`Time: ${paperDetails.examDurationHours || 0}h ${paperDetails.examDurationMinutes || 0}m`, 
                 margin, y
@@ -133,10 +141,12 @@ const CreatePaper = () => {
 
             y += 10;
 
+            {/* Divider Line */}
             pdf.setLineWidth(0.2);
             pdf.line(margin, y, pageWidth - margin, y);
             y += 10;
 
+            {/* Introduction */}
             pdf.setFont("helvetica", "bold");
             pdf.text("Instructions:", margin, y);
             y += 7;
@@ -145,6 +155,7 @@ const CreatePaper = () => {
             pdf.text(instructions, margin, y);
             y += instructions.length * 7 + 5;
 
+            {/* Divider Line */}
             pdf.setLineWidth(0.5);
             pdf.line(margin, y, pageWidth - margin, y);
             y += 10;
@@ -173,14 +184,17 @@ const CreatePaper = () => {
                 y += 5;
             });
 
+            {/* Page */}
             if (y + 15 > pageHeight) {
                 pdf.addPage();
                 y = 15;
             }
 
+            {/* Footer */}
             pdf.setFont("helvetica", "bold");
             pdf.text("------- Best of Luck -------", pageWidth / 2, pageHeight - 15, { align: "center" });
 
+            {/* Save Paper */}
             const savedPaper = {
                 id: Date.now(),
                 paperDetails,
@@ -198,6 +212,7 @@ const CreatePaper = () => {
         };
     };
 
+    {/* ---------------- Clear Paper Details Logic ---------------- */}
     const handleClearPaper = () => {
         setPaperDetails({
             university: "ABC University",
@@ -214,6 +229,7 @@ const CreatePaper = () => {
         setError("");
     };
 
+    {/* ---------------- Semester States ---------------- */}
     const sems = [ "1", "2", "3", "4", "5", "6", "7", "8" ];
 
     return (

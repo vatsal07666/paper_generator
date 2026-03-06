@@ -23,13 +23,13 @@ const ViewQuestions = () => {
     const { list: subjects = [] } = useSelector((state) => state.subjectStore);
     const { list: topics = [] } = useSelector((state) => state.topicStore);
 
-    /* ---------------- Dropdown Options ---------------- */
+    {/* ---------------- Dropdown Options ---------------- */}
     const subjectOptions = subjects.map((s) => ({ value: s.subjectName, label: s.subjectName }));
 
     const topicOptions = topics.filter((t) => selectedSubject ? t.subjectName === selectedSubject : true)
         .map((t) => ({ value: t.topicName, label: t.topicName }));
 
-    /* ---------------- Filtering Logic ---------------- */
+    {/* ---------------- Filtering Logic ---------------- */}
     const filteredQuestions = questions.filter((q) => {
         return (
             (!selectedSubject || q.subjectName === selectedSubject) &&
@@ -40,7 +40,7 @@ const ViewQuestions = () => {
         );
     });
 
-    /* ---------------- Checkbox Logic ---------------- */
+    {/* ---------------- Checkbox Logic ---------------- */}
     const handleSelect = (id) => {
         const updatedIds = selectedIds.includes(id)
             ? selectedIds.filter(item => item !== id)
@@ -50,12 +50,14 @@ const ViewQuestions = () => {
         setError("");
     };
 
+    {/* ---------------- Select All Logic ---------------- */}
     const handleSelectAll = (checked) => {
         const allIds = checked ? filteredQuestions.map(item => item._id) : [];
         dispatch(setSelectedIds(allIds));
         setError("");
     };
-    
+
+    {/* ---------------- Create Paper Logic ---------------- */}
     const handleCreatePaper = () => {
         if (!selectedSubject) {
             setError("Please select a subject before creating the paper.");
@@ -76,6 +78,7 @@ const ViewQuestions = () => {
         });
     };
 
+    {/* ---------------- Call Api to get Subjet, Topic & Question Data ---------------- */}
     const subjectsToken = "2xzYLLbk3VRezP5s";
     const getSubjects = useCallback(() => {
         axios.get("https://generateapi.techsnack.online/api/subject", { headers: { Authorization: subjectsToken } })
@@ -185,11 +188,13 @@ const ViewQuestions = () => {
                     <Typography fontWeight={600}>Select All</Typography>
                 </Box>
 
+                {/* Actions */}
                 {selectedIds.length > 0 && (
                     <Box sx={{ mb: 2, display: "flex", flexDirection: isMobile ? "column" : "row", 
                             alignItems: "center", gap: 1, flexWrap: "wrap" 
                         }}
                     >
+                        {/* Show the howmany question are selected */}
                         <Typography fontWeight={600}> Selected Questions: </Typography>
                         <Typography fontSize={14} color="text.secondary">
                             { Object.entries(questions.filter(q => selectedIds.includes(q._id))
@@ -214,7 +219,7 @@ const ViewQuestions = () => {
                             </IconButton>
                         </Tooltip>
 
-
+                        {/* Create Paper Button */}
                         <Button variant="contained" size="small" onClick={handleCreatePaper}
                             sx={{ background: "linear-gradient(135deg, #1E293B 0%, #334155 100%)", color: "#fff", 
                                 px: 3, py: 1, mb: isMobile ? 2 : 0, 

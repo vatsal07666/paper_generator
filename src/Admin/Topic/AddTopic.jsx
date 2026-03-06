@@ -32,12 +32,14 @@ const AddSubject = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
+    {/* ---------------- Validation ---------------- */}
     const validationSchema = Yup.object({
         topicName: Yup.string().required("Subject Name is Required*"),
         subjectName: Yup.string().required("Subject Code is Required*"),
         status: Yup.string().required("Status is Required*"),
     });
 
+    {/* ---------------- Call Api to get Subject Data ---------------- */}
     const getsubjectName = useCallback(() => {
         return axios.get("https://generateapi.techsnack.online/api/subject", {
             headers: { Authorization: "2xzYLLbk3VRezP5s" },
@@ -52,6 +54,7 @@ const AddSubject = () => {
 
     const token = "7TDdOTQs88FIYRPd";
 
+    {/* ---------------- Get Topic ---------------- */}
     const getData = () => {
         axios.get("https://generateapi.techsnack.online/api/topic", {
             headers: { Authorization: token },
@@ -63,11 +66,13 @@ const AddSubject = () => {
         .catch((err) => console.error("GET error: ", err));
     };
 
+    {/* ---------------- Load Data ---------------- */}
     useEffect(() => {
         getData();
         // eslint-disable-next-line
     }, []);
 
+    {/* ---------------- Post/Save Topic ---------------- */}
     const postData = (values, resetForm) => {
         const topicData = { topicName: values.topicName, subjectName: values.subjectName,
             status: values.status,
@@ -89,6 +94,7 @@ const AddSubject = () => {
         .catch((err) => console.error("POST error: ", err));
     };
 
+    {/* ---------------- Delete Topic ---------------- */}
     const deleteData = () => {
         axios.delete(`https://generateapi.techsnack.online/api/topic/${deleteId}`, {
             headers: { Authorization: token },
@@ -106,6 +112,7 @@ const AddSubject = () => {
         });
     };
 
+    {/* ---------------- Patch/Update/Edit Topic ---------------- */}
     const patchData = (id, values, resetForm) => {
         axios.patch(`https://generateapi.techsnack.online/api/topic/${id}`, values, {
             headers: { Authorization: token },
@@ -125,6 +132,7 @@ const AddSubject = () => {
         });
     };
 
+    {/* ---------------- Submission Logic ---------------- */}
     const handleSubmit = (values, { resetForm }) => {
         if (editId !== null) {
             patchData(editId, values, resetForm);
@@ -133,17 +141,20 @@ const AddSubject = () => {
         }
     };
 
+    {/* ---------------- Cancle Logic ---------------- */}
     const handleCancel = (resetForm) => {
         resetForm();
         dispatch(resetUIstate());
         dispatch(resetFormValues());
     };
 
+    {/* ---------------- Delete Logic ---------------- */}
     const handleDelete = (item) => {
         dispatch(setDeleteOpen(true));
         dispatch(setDeleteId(item._id));
     };
 
+    {/* ---------------- Edit Logic ---------------- */}
     const handleEdit = (item) => {
         dispatch(setOpenForm(true));
         dispatch(setEditId(item._id));
@@ -153,7 +164,7 @@ const AddSubject = () => {
         );
     };
 
-    /* ---------------- Search ---------------- */
+    {/* ---------------- Search/Filter Logic ---------------- */}
     const filteredTopic = topics.filter((l) =>
         [l.topicName, l.subjectName, l.status].join(" ").toLowerCase().includes(searchItem.toLowerCase()),
     );
@@ -164,8 +175,8 @@ const AddSubject = () => {
     return (
         <>
             <Box sx={{ m: isMobile ? 0 : 2 }}>
-                {/* Heading & Add Topic Button */}
                 <Box sx={{display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    {/* Heading */}
                     <Box>
                         <Typography component={"h1"} variant={isMobile ? "h6" : "h5"} fontWeight={600}>
                             Topics ({topics.length})
@@ -175,6 +186,7 @@ const AddSubject = () => {
                         </Typography>
                     </Box>
 
+                    {/* Add Topic Button */}
                     <Button onClick={() => dispatch(setOpenForm(true))}
                         sx={{ background: "linear-gradient(135deg, #1E293B 0%, #334155 100%)", color: "#fff", 
                             p: "8px 14px", borderRadius: 2, whiteSpace: "none", textTransform: "none", 
@@ -194,13 +206,16 @@ const AddSubject = () => {
                         },
                     }}
                 >
+                    {/* Form Title */}
                     <DialogTitle sx={{ fontWeight: 700 }}>
                         {editId !== null ? "Edit Topic" : "Add New Topic"}
                     </DialogTitle>
 
                     <Divider />
 
+                    {/* Form Content */}
                     <DialogContent sx={{ mt: 1 }}>
+                        {/* Form */}
                         <Formik initialValues={formValues}
                             validationSchema={validationSchema}
                             onSubmit={handleSubmit}
@@ -222,11 +237,11 @@ const AddSubject = () => {
                                         </Box>
                                     </Box>
 
-                                    {/* Subject Name & Status */}
                                     <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" },
                                             gap: 3, mb: 3,
                                         }}
                                     >
+                                        {/* Subject Name Field */}
                                         <Box sx={{ display: "flex", flexDirection: "column", gap: 1, flex: 1 }}>
                                             <label htmlFor="subjectName">Subject Name</label>                                            
                                             <Select options={subjectOptions} placeholder="Select Subject"
@@ -246,6 +261,7 @@ const AddSubject = () => {
                                             )}
                                         </Box>
 
+                                        {/* Status Field */}
                                         <Box sx={{ display: "flex", flexDirection: "column", gap: 1, flex: 1 }}>
                                             <label htmlFor="status">Status</label>
                                             <Select options={statusOptions} placeholder="Select Status"
@@ -309,7 +325,7 @@ const AddSubject = () => {
                             <Card key={item._id ?? index}
                                 sx={{ borderRadius: 3, boxShadow: 2, display: "flex", flexDirection: "column" }}
                             >
-                                {/* CONTENT */}
+                                {/* Content */}
                                 <CardContent sx={{ flexGrow: 1 }}>
                                     <Box sx={{ display: "flex", justifyContent: "space-between", gap: 1 }}>
                                         <Box sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 0.6 }}>
@@ -333,10 +349,11 @@ const AddSubject = () => {
                                     </Box>
                                 </CardContent>
 
-                                {/* ACTIONS — ALWAYS AT BOTTOM */}
+                                {/* Actions */}
                                 <Box sx={{ display: "flex", justifyContent: "center", gap: 1, pb: 2,
                                     }}
                                 >
+                                    {/* Delete */}
                                     <Button sx={{ background: "#fff", color: "#ef4444", border: 1,
                                             whiteSpace: "nowrap", textTransform: "none"
                                         }}
@@ -345,6 +362,7 @@ const AddSubject = () => {
                                         <RiDeleteBin6Line />&nbsp; Delete
                                     </Button>
 
+                                    {/* Edit */}
                                     <Button sx={{ background: "#fff", color: "#2563eb", border: 1,
                                             whiteSpace: "nowrap", textTransform: "none"
                                         }}

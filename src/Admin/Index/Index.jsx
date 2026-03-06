@@ -93,6 +93,7 @@ const DesktopDrawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 
     }),
 );
 
+{/* Drawer Item Details */}
 const Items = [
     { name: "Dashboard", icon: <TbLayoutDashboardFilled />, to: "/admin" },
     { name: "Subject", icon: <GiBookshelf />, to: "/admin/subject" },
@@ -200,11 +201,13 @@ const Index = ({children}) => {
         <>
             <Box sx={{ display: 'flex' }}>
                 <CssBaseline />
+                {/* Navbar */}
                 <AppBar position="fixed" open={!isMobile && open} 
                     sx={{ background: "#ffffff", boxShadow: "0 4px 12px rgba(15, 23, 42, 0.08)" 
                     }}
                 >
                     <Toolbar>
+                        {/* Menu Icon */}
                         <IconButton color="inherit" aria-label="open drawer"
                             onClick={handleDrawerOpen} edge="start"
                             sx={{ display: { md: open ? "none" : "inline-flex" }, color: "#1E293B",
@@ -214,10 +217,12 @@ const Index = ({children}) => {
                             <MenuIcon />
                         </IconButton>
 
+                        {/* Title And Log-out Button */}
                         <Box sx={{width: "100%", display: "flex", justifyContent: "space-between", 
                                 alignItems: "center"
                             }}
                         >
+                            {/* Title */}
                             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                                 <img src={webLogo} alt="website-logo"
                                     style={{ width: isMobile ? 35 : 50, height: 50, objectFit: "contain" }} 
@@ -230,6 +235,8 @@ const Index = ({children}) => {
                                     Paper Generator
                                 </Typography>
                             </Box>
+
+                            {/* Log-out Button */}
                             <Button sx={{color: "#1E293B", border: "1px solid #1E293B", px: isMobile ? 1 : 2, 
                                     py: 0.4, transition: "0.3s ease-in-out", textTransform: "none",
                                     fontSize: {xs: "13px", sm: "15px"},
@@ -261,6 +268,7 @@ const Index = ({children}) => {
                     </Drawer>
                 )}
 
+                {/* All the Pages */}
                 <Box component="main" sx={{ minHeight: "100vh", flexGrow: 1, pt: 10, pb: 3, px: { xs: 2, sm: 0 },
                         background: "#F8FAFC",
                         transition: theme.transitions.create(['margin', 'width'], {

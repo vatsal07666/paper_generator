@@ -28,6 +28,7 @@ const AddSubject = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
+    {/* ---------------- Validation ---------------- */}
     const validationSchema = Yup.object({
         subjectName: Yup.string().required("Subject Name is Required*"),
         subjectCode: Yup.string().required("Subject Code is Required*"),
@@ -36,6 +37,7 @@ const AddSubject = () => {
 
     const token = "2xzYLLbk3VRezP5s";
 
+    {/* ---------------- Get Subject ---------------- */}
     const getData = () => {
         axios.get("https://generateapi.techsnack.online/api/subject", { headers: { Authorization: token } })
         .then((res) => {
@@ -45,11 +47,13 @@ const AddSubject = () => {
         .catch((err) => console.error("GET error: ", err));
     };
 
+    {/* ---------------- Load Data ---------------- */}
     useEffect(() => {
         getData();
         // eslint-disable-next-line
     }, []);
 
+    {/* ---------------- Post/Save Subject ---------------- */}
     const postData = (values, resetForm) => {
         const data = { subjectName: values.subjectName, subjectCode: values.subjectCode, 
             status: values.status,
@@ -71,6 +75,7 @@ const AddSubject = () => {
         .catch((err) => console.error("POST error: ", err));
     };
 
+    {/* ---------------- Delete Subject ---------------- */}
     const deleteData = () => {
         axios.delete(`https://generateapi.techsnack.online/api/subject/${deleteId}`, {
             headers: { Authorization: token },
@@ -88,6 +93,7 @@ const AddSubject = () => {
         });
     };
 
+    {/* ---------------- Patch/Update/Edit Subject ---------------- */}
     const patchData = (id, values, resetForm) => {
         axios.patch(`https://generateapi.techsnack.online/api/subject/${id}`, values, {
             headers: { Authorization: token },
@@ -107,6 +113,7 @@ const AddSubject = () => {
         });
     };
 
+    {/* ---------------- Submission Logic ---------------- */}
     const handleSubmit = (values, { resetForm }) => {
         if (editId !== null) {
             patchData(editId, values, resetForm);
@@ -115,17 +122,20 @@ const AddSubject = () => {
         }
     };
 
+    {/* ---------------- Cancle Logic ---------------- */}
     const handleCancel = (resetForm) => {
         resetForm();
         dispatch(resetUIstate());
         dispatch(resetFormValues());
     };
 
+    {/* ---------------- Delete Logic ---------------- */}
     const handleDelete = (item) => {
         dispatch(setDeleteOpen(true));
         dispatch(setDeleteId(item._id));
     };
 
+    {/* ---------------- Edit Logic ---------------- */}
     const handleEdit = (item) => {
         dispatch(setOpenForm(true));
         dispatch(setEditId(item._id));
@@ -135,7 +145,7 @@ const AddSubject = () => {
         );
     };
 
-    /* ---------------- Search ---------------- */
+    {/* ---------------- Search/Filter Logic ---------------- */}
     const filteredSubject = subjects.filter((s) =>
         [s.subjectName, s.subjectCode, s.status].join(" ").toLowerCase().includes(searchItem.toLowerCase())
     );
@@ -145,8 +155,8 @@ const AddSubject = () => {
     return (
         <>
             <Box sx={{ m: isMobile ? 0 : 2 }}>
-                {/* Heading & Add Subject Button */}
                 <Box sx={{display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    {/* Heading */}
                     <Box>
                         <Typography component={"h1"} variant={isMobile ? "h6" : "h5"} fontWeight={600}>
                             Subjects ({subjects.length})
@@ -156,6 +166,7 @@ const AddSubject = () => {
                         </Typography>
                     </Box>
 
+                    {/* Add Subject Button */}
                     <Button onClick={() => dispatch(setOpenForm(true))}
                         sx={{ background: "linear-gradient(135deg, #1E293B 0%, #334155 100%)", color: "#fff", 
                             p: "8px 14px", borderRadius: 2, whiteSpace: "none", textTransform: "none", 
@@ -175,13 +186,16 @@ const AddSubject = () => {
                         },
                     }}
                 >
+                    {/* Form Title */}
                     <DialogTitle sx={{ fontWeight: 700 }}>
                         {editId !== null ? "Edit Language" : "Add New Language"}
                     </DialogTitle>
 
                     <Divider />
 
+                    {/* Form Content */}
                     <DialogContent sx={{ mt: 1 }}>
+                        {/* Form */}
                         <Formik  initialValues={formValues}
                             validationSchema={validationSchema}
                             onSubmit={handleSubmit}
@@ -189,11 +203,11 @@ const AddSubject = () => {
                         >
                         {({ errors, touched, isValid, dirty, resetForm, values, setFieldValue }) => (
                             <Form className="subject-form">
-                                {/* Subject Name & Code */}
                                 <Box sx={{ display: "flex",  flexDirection: { xs: "column", sm: "row" },
                                         gap: 3, mb: 3,
                                     }}
                                 >
+                                    {/* Subject Name */}
                                     <Box sx={{ display: "flex", flexDirection: "column", gap: 1, flex: 1 }}>
                                         <label htmlFor="subjectName">Subject Name</label>
                                         <Field name="subjectName" id="subjectName"
@@ -206,6 +220,7 @@ const AddSubject = () => {
                                         )}
                                     </Box>
 
+                                    {/* Subject Code */}
                                     <Box
                                     sx={{ display: "flex", flexDirection: "column", gap: 1, flex: 1 }}>
                                         <label htmlFor="subjectCode">Subject Code</label>
@@ -285,6 +300,7 @@ const AddSubject = () => {
                     </Box>
                 </Box>
 
+                {/* Data Table */}
                 {!isMobile ? (
                     <TableContainer component={Paper} elevation={0}
                         sx={{ WebkitOverflowScrolling: "touch", "&::-webkit-scrollbar": { height: "8px" },
@@ -336,12 +352,14 @@ const AddSubject = () => {
                                                     {item.status}
                                                 </span>
                                             </TableCell>
+
+                                            {/* Actions */}
                                             <TableCell>
                                                 <Box sx={{ display: "flex", justifyContent: "center",
                                                         alignItems: "center", gap: 1,
                                                     }}
                                                 >
-                                                    {/* Delete Button */}
+                                                    {/* Delete */}
                                                     <Tooltip title="Delete" component={Paper}
                                                         slotProps={{
                                                             tooltip: {
@@ -362,7 +380,7 @@ const AddSubject = () => {
                                                         </IconButton>
                                                     </Tooltip>
 
-                                                    {/* Edit Button */}
+                                                    {/* Edit */}
                                                     <Tooltip title="Edit" component={Paper}
                                                         slotProps={{
                                                             tooltip: {
@@ -401,7 +419,7 @@ const AddSubject = () => {
                                     flexDirection: "column",
                                 }}
                             >
-                                {/* CONTENT */}
+                                {/* Content */}
                                 <CardContent sx={{ flexGrow: 1 }}>
                                     <Typography variant="body2">
                                         <b>Subject Name:</b> {item.subjectName}
@@ -421,8 +439,9 @@ const AddSubject = () => {
                                     </Typography>
                                 </CardContent>
 
-                                {/* ACTIONS — ALWAYS AT BOTTOM */}
+                                {/* Actions */}
                                 <Box sx={{ display: "flex", justifyContent: "center", gap: 1, p: 2, mt: "auto" }}>
+                                    {/* Delete */}
                                     <Button sx={{ background: "#fff", color: "#ef4444", border: 1,
                                             whiteSpace: "nowrap",
                                         }}
@@ -431,6 +450,7 @@ const AddSubject = () => {
                                         <RiDeleteBin6Line />&nbsp; Delete
                                     </Button>
 
+                                    {/* Edit */}
                                     <Button sx={{ background: "#fff", color: "#2563eb", border: 1,
                                             whiteSpace: "nowrap",
                                         }}

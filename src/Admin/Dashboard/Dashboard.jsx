@@ -18,6 +18,7 @@ const Dashboard = () => {
 
     const dispatch = useDispatch();
 
+    {/* ---------------- Calling api to Count the Length of all Sections ---------------- */}
     const tokenSubject = "2xzYLLbk3VRezP5s";
     const tokenTopic = "7TDdOTQs88FIYRPd";
     const tokenQuestion = "5TirRDcDOTjoaVUS";
@@ -52,6 +53,7 @@ const Dashboard = () => {
         questionCount();
     }, [subjectCount, topicCount, questionCount]);
 
+    {/* ---------------- Card Details ---------------- */}
     const cards = [
         {
             icon: <GiBookshelf />,
@@ -76,10 +78,12 @@ const Dashboard = () => {
     return (
         <>
             <Box>
+                {/* Heading */}
                 <Box sx={{ mb: 2 }}>
                     <Typography variant="h4">Dashboard</Typography>
                 </Box>
 
+                {/* Card Grid */}
                 <Grid container spacing={{ xs: 2, sm: 3 }}>
                     {cards.map((item, index) => (
                         <Grid size={{ xs: 12, sm: 4 }} key={index} component={Link}
