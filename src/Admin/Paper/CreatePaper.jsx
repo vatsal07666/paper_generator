@@ -6,6 +6,7 @@ import { Box, Typography, Divider, Button, TextField, Paper, useTheme, useMediaQ
 import logo from "../../Images/university-college-academy.png";
 import jsPDF from "jspdf";
 import { IoIosArrowRoundBack } from "react-icons/io";
+import { GrDocumentDownload } from "react-icons/gr";
 
 const CreatePaper = () => {
     const location = useLocation();
@@ -38,16 +39,17 @@ const CreatePaper = () => {
         const today = new Date().toISOString().split("T")[0];
         if (paperDetails.examDate < today) return "Past dates are not allowed.";
 
-        if (!paperDetails.examDurationHours || !paperDetails.examDurationMinutes)
+        const hours = Number(paperDetails.examDurationHours);
+        const minutes = Number(paperDetails.examDurationMinutes);
+        if (paperDetails.examDurationHours === "" || paperDetails.examDurationMinutes === "")
             return "Exam Duration Hour and Minute are required.";
-
-        if (paperDetails.examDurationHours < 0) return "Hours cannot be negative.";
-
-        if (paperDetails.examDurationMinutes < 0 || paperDetails.examDurationMinutes > 59)
+        if (hours < 0) return "Hours cannot be negative.";
+        if (minutes < 0 || paperDetails.examDurationMinutes > 59)
             return "Minutes must be between 0 and 59.";
+        if (hours === 0 && minutes === 0) return "Hours and Minutes both Can't be 0.";
+        
         return null;
     };
-
 
    /* ---------------- Set Sections When Pages Load ---------------- */
     useEffect(() => {
@@ -164,7 +166,7 @@ const CreatePaper = () => {
             pdf.setFontSize(12);
             sections.forEach((sec) => {
                 pdf.setFont("helvetica", "bold");
-                pdf.text(`Section ${sec.section} (Each Question ${sec.marksPerQuestion} marks)`, margin, y);
+                pdf.text(`₹Section ${sec.section} (Each Question ${sec.marksPerQuestion} marks)`, margin, y);
                 y += 7;
                 pdf.setFont("helvetica", "normal");
 
@@ -272,7 +274,7 @@ const CreatePaper = () => {
                     <Button variant="contained" onClick={handleDownload}
                         sx={{ background: "#334155", color: "#fff", mb: 3, textTransform: "none" }}
                     >
-                        Download PDF
+                        <GrDocumentDownload />&nbsp; Download PDF
                     </Button>
                 </Box>
             </Box>
