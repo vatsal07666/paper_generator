@@ -374,7 +374,7 @@ const AddSubject = () => {
                             </Card>
                         ))
                     ) : (   
-                        <Paper sx={{ p: 3, textAlign: "center" }}> Topics Data Not Found ! </Paper>
+                        <Paper sx={{ p: 3, textAlign: "center", gridColumn: "1 / -1" }}> Topics Data Not Found ! </Paper>
                     )}
                 </Box>
             </Box>
