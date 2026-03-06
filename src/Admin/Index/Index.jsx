@@ -164,7 +164,7 @@ const Index = ({children}) => {
             <Divider />
             
             {Items.map((menu) => (
-                <ListItem key={menu.name} sx={{ display: 'block', p: 0, alignItems: "center", 
+                <ListItem key={menu.name} sx={{ display: 'block', p: 0, mb: 0.5, alignItems: "center", 
                         justifyContent: "center" 
                     }}
                 >
