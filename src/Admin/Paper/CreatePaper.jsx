@@ -47,7 +47,7 @@ const CreatePaper = () => {
         if (minutes < 0 || paperDetails.examDurationMinutes > 59)
             return "Minutes must be between 0 and 59.";
         if (hours === 0 && minutes === 0) return "Hours and Minutes both Can't be 0.";
-        
+
         return null;
     };
 
@@ -235,7 +235,7 @@ const CreatePaper = () => {
     const sems = [ "1", "2", "3", "4", "5", "6", "7", "8" ];
 
     return (
-        <Box>
+        <Box sx={{ m: isMobile ? 0 : 2 }}>
             {/* Validation */}
             {error && ( <Typography color="error" fontWeight={500} mb={2} align="right"> {error} </Typography> )}
             

@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, Grid, IconButton, Paper, Typography } from "@mui/material";
+import { Box, Card, CardContent, Grid, IconButton, Paper, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 import CountUp from "react-countup";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,6 +17,9 @@ const Dashboard = () => {
     const { list: questions = [] } = useSelector((state) => state.questionStore);
 
     const dispatch = useDispatch();
+
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
     /* ---------------- Calling api to Count the Length of all Sections ---------------- */
     const tokenSubject = "2xzYLLbk3VRezP5s";
@@ -77,7 +80,7 @@ const Dashboard = () => {
 
     return (
         <>
-            <Box>
+            <Box sx={{ m: isMobile ? 0 : 2 }}>
                 {/* Heading */}
                 <Box sx={{ mb: 2 }}>
                     <Typography variant="h4">Dashboard</Typography>
@@ -86,8 +89,7 @@ const Dashboard = () => {
                 {/* Card Grid */}
                 <Grid container spacing={{ xs: 2, sm: 3 }}>
                     {cards.map((item, index) => (
-                        <Grid size={{ xs: 12, sm: 4 }} key={index} component={Link}
-                            to={item.path}
+                        <Grid size={{ xs: 12, sm: 4 }} key={index} component={Link} to={item.path}
                             sx={{ textDecoration: "none" }}
                         >
                             <Card sx={{ width: "100%", borderRadius: 5, color: "#FFF",
