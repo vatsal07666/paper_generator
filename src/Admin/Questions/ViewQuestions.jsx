@@ -111,16 +111,21 @@ const ViewQuestions = () => {
         <Box sx={{ m: isMobile ? 0 : 2 }}>
             {/* Heading */}
             <Box>
-                <Typography variant={isMobile ? "h6" : "h5"} fontWeight={700}>
+                <Typography component={"h1"} variant={isMobile ? "h6" : "h5"} 
+                    sx={{ color: "#4e342e", fontWeight: 600 }}
+                >
                     View Questions ({filteredQuestions.length})
                 </Typography>
-                <Typography sx={{ color: "#888", mb: 3, fontSize: isMobile ? 14 : 16 }}>
+                <Typography variant="span" sx={{ color: "#888", mb: 3, fontSize: isMobile ? 14 : 16, 
+                        fontWeight: 600 
+                    }}
+                >
                     Filter and select questions
                 </Typography>
             </Box>
 
             {/* Filters Section */}
-            <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, gap: 2, mb: 3 }}>
+            <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, gap: 2, my: 3 }}>
                 {/* Subject Filter */}
                 <Box sx={{ flex: 1 }}>
                     <Select options={subjectOptions} placeholder="Filter by Subject"
@@ -163,7 +168,9 @@ const ViewQuestions = () => {
             </Box>
 
             <Box>
-                <Typography component={"h5"} variant="h5" fontWeight={600}>All Questions</Typography>
+                <Typography component={"h5"} variant="h5" sx={{ color: "#4e342e", fontWeight: 600 }}>
+                    All Questions
+                </Typography>
             </Box>
 
             <Divider sx={{ mb: 2 }} />
@@ -179,13 +186,13 @@ const ViewQuestions = () => {
             >
                 {/* Select All */}
                 <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                    <Checkbox checked={
-                            filteredQuestions.length > 0 &&
+                    <Checkbox checked={ filteredQuestions.length > 0 &&
                             selectedIds.length === filteredQuestions.length
                         }
-                        onChange={(e) => handleSelectAll(e.target.checked)} 
+                        onChange={(e) => handleSelectAll(e.target.checked)}
+                        sx={{ color: "#8d6e63", "&.Mui-checked": { color: "#6d4c41" } }} 
                     />
-                    <Typography fontWeight={600}>Select All</Typography>
+                    <Typography sx={{ color: "#4e342e", fontWeight: 600 }}>Select All</Typography>
                 </Box>
 
                 {/* Actions */}
@@ -195,7 +202,7 @@ const ViewQuestions = () => {
                         }}
                     >
                         {/* Show the howmany question are selected */}
-                        <Typography fontWeight={600}> Selected Questions: </Typography>
+                        <Typography sx={{ color: "#4e342e", fontWeight: 600 }}> Selected Questions: </Typography>
                         <Typography fontSize={14} color="text.secondary">
                             { Object.entries(questions.filter(q => selectedIds.includes(q._id))
                                 .reduce((acc, q) => { 
@@ -213,7 +220,7 @@ const ViewQuestions = () => {
                             }
                         }}>
                             <IconButton size="small" onClick={() => {dispatch(setSelectedIds([])); setError("")}}
-                                sx={{ fontSize: "22px", color: "#1F51FF" }}    
+                                sx={{ fontSize: "22px", color: "#4e342e" }}    
                             >
                                 <MdIndeterminateCheckBox />
                             </IconButton>
@@ -221,9 +228,8 @@ const ViewQuestions = () => {
 
                         {/* Create Paper Button */}
                         <Button variant="contained" size="small" onClick={handleCreatePaper}
-                            sx={{ background: "linear-gradient(135deg, #1E293B 0%, #334155 100%)", color: "#fff", 
-                                px: 3, py: 1, mb: isMobile ? 2 : 0, 
-                                "&:hover": { filter: "brightness(1.3)" }
+                            sx={{ background: "#6d4c41", color: "#fff", px: 3, py: 1, mb: isMobile ? 2 : 0, 
+                                fontWeight: 600, "&:hover": { background: "#5d4037" }
                             }}
                         >
                             Create Paper
@@ -249,7 +255,9 @@ const ViewQuestions = () => {
                                     alignItems={ isMobile ? "start" : "center"}
                                     flexDirection={isMobile && "column"}
                                 >
-                                    <Checkbox checked={isChecked} onChange={() => handleSelect(item._id)} />
+                                    <Checkbox checked={isChecked} onChange={() => handleSelect(item._id)} 
+                                        sx={{ color: "#8d6e63", "&.Mui-checked": { color: "#6d4c41" } }}    
+                                    />
                                     {index + 1}. {" "} {item.question}
                                 </Typography>
 

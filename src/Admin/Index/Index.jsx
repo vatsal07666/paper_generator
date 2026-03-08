@@ -161,36 +161,43 @@ const Index = ({children}) => {
                 </IconButton>
             </DrawerHeader>
 
-            <Divider />
+            <Divider sx={{ mb: 1.5 }} />
             
             {Items.map((menu) => (
-                <ListItem key={menu.name} sx={{ display: 'block', p: 0, mb: 0.5, alignItems: "center", 
+                <ListItem key={menu.name} sx={{ display: 'block', p: 0, mb: 1, alignItems: "center", 
                         justifyContent: "center" 
                     }}
                 >
                     <Tooltip title={menu.name} placement="right"
                         slotProps={{
-                            tooltip: { sx: {background: "#1e293b", color: "#ffffff", 
+                            tooltip: { sx: {background: "#4e342e", color: "#ffffff", 
                                 letterSpacing: 2, fontWeight: 600 
                             }}
                         }}
                     >
                         <ListItemButton component={Link} to={menu.to} 
-                            sx={{ m: 0.5, borderRadius: "10px", 
-                                backgroundColor: location.pathname === menu.to ? "#ecf1fc": "transparent",
-                                "&:hover": { backgroundColor: "#ecf1fc" },
+                            sx={{ m: 0.5, borderRadius: "10px", position: "relative", transition: "0.25s",
+                                backgroundColor: location.pathname === menu.to ? "#e0d3cd" : "transparent",
+                                "&:hover": { backgroundColor: "#ebe3df" },
+                                "&::before": { content: '""', position: "absolute", left: 0, top: "10%",
+                                    height: "80%", width: "4px", borderRadius: "4px", background: "#6d4c41",
+                                    transform: location.pathname === menu.to ? "scaleY(1)" : "scaleY(0)",
+                                    transition: "0.25s",
+                                },
                             }}
                         >
                             <ListItemIcon sx={{ minWidth: 0, fontSize: "23px", 
-                                    transition: "0.2s ease", mr: open ? 2 : 'auto', color: "#1E293B", 
+                                    transition: "0.2s ease", mr: open ? 2 : 'auto', 
+                                    color: location.pathname === menu.to ? "#6d4c41" : "#8d6e63", 
                                     ".MuiListItemButton-root:hover &": { color: "#1E293B" },
                                 }}
                             >
                                 {menu.icon}
                             </ListItemIcon>
                             <ListItemText primary={menu.name}
-                                sx={{ opacity: open ? 1 : 0, 
-                                    color: location.pathname === menu.to ? "#1E293B" : "#475569",}}
+                                sx={{ opacity: open ? 1 : 0, fontWeight: 600,
+                                    color: location.pathname === menu.to ? "#4e342e" : "#6d6d6d",
+                                }}
                             />
                         </ListItemButton>
                     </Tooltip>
@@ -205,14 +212,15 @@ const Index = ({children}) => {
                 <CssBaseline />
                 {/* Navbar */}
                 <AppBar position="fixed" open={!isMobile && open} 
-                    sx={{ background: "#ffffff", boxShadow: "0 4px 12px rgba(15, 23, 42, 0.08)" 
+                    sx={{ background: "#efebe9", color: "#4e342e", borderBottom: "1px solid #d7ccc8",
+                        boxShadow: "0 2px 8px rgba(0,0,0,0.05)", 
                     }}
                 >
                     <Toolbar>
                         {/* Menu Icon */}
                         <IconButton color="inherit" aria-label="open drawer"
                             onClick={handleDrawerOpen} edge="start"
-                            sx={{ display: { md: open ? "none" : "inline-flex" }, color: "#1E293B",
+                            sx={{ display: { md: open ? "none" : "inline-flex" }, color: "#4e342e",
                                 mr: isMobile ? 0 : 2
                             }}
                         >
@@ -226,23 +234,24 @@ const Index = ({children}) => {
                         >
                             {/* Title */}
                             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                <img src={webLogo} alt="website-logo"
-                                    style={{ width: isMobile ? 35 : 50, height: 50, objectFit: "contain" }} 
-                                />
-                                <Typography variant="h6" noWrap component="div" 
-                                    sx={{ color: "#1E293B", fontWeight: 600, letterSpacing: 0.5, display: "flex",
-                                        alignItems: "center", gap: 1, fontSize: isMobile ? 16 : 20
-                                    }}
-                                >
-                                    Paper Generator
-                                </Typography>
+                                <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                                    <Box component={"img"} src={webLogo} alt="logo"
+                                        sx={{ height: 32, width: 32, objectFit: "cover" }}
+                                    />
+                                
+                                    <Typography variant="h6"
+                                        sx={{ fontWeight: 600, color: "#4e342e", lineHeight: 1.1 }}
+                                    >
+                                        Paper {isMobile ? <br /> : ""} Generator
+                                    </Typography>
+                                </Box>
                             </Box>
 
                             {/* Log-out Button */}
-                            <Button sx={{color: "#1E293B", border: "1px solid #1E293B", px: isMobile ? 1 : 2, 
+                            <Button sx={{color: "#6d4c41", border: "1px solid #6d4c41", px: isMobile ? 1 : 2, 
                                     py: 0.4, transition: "0.3s ease-in-out", textTransform: "none",
-                                    fontSize: {xs: "13px", sm: "15px"},
-                                    '&:hover': { background: "#1E293B", color: "#ffffff" },
+                                    fontSize: {xs: "13px", sm: "15px"}, fontWeight: 600,
+                                    '&:hover': { background: "#6d4c41", color: "#ffffff" },
                                 }}
                                 onClick={() => { isLoggedIn ? handleLogout() : history.push("/login") }}
                             >
@@ -255,8 +264,8 @@ const Index = ({children}) => {
                 {/* Desktop Drawer */}
                 {!isMobile ? (
                     <DesktopDrawer variant="permanent" open={open} 
-                        sx={{ "& .MuiDrawer-paper": { backgroundColor: "#ffffff", color: "#0f172a",
-                            borderRight: "1px solid #e2e8f0" },
+                        sx={{ "& .MuiDrawer-paper": { backgroundColor: "#f5f1ef", color: "#4e342e",
+                            borderRight: "1px solid #d7ccc8" },
                         }}
                     >
                         {DrawerContent}
@@ -264,7 +273,7 @@ const Index = ({children}) => {
                 ) : (
                     <Drawer variant="temporary" open={open} onClose={handleDrawerClose}
                         ModalProps={{ keepMounted: true }}
-                        sx={{ '& .MuiDrawer-paper': { width: drawerWidth, height: '100vh' } }}
+                        sx={{ '& .MuiDrawer-paper': { width: drawerWidth, backgroundColor: "#f5f1ef", } }}
                     >
                         {DrawerContent}
                     </Drawer>
@@ -272,7 +281,7 @@ const Index = ({children}) => {
 
                 {/* All the Pages */}
                 <Box component="main" sx={{ minHeight: "100vh", flexGrow: 1, pt: 10, pb: 3, px: { xs: 2, sm: 0 },
-                        background: "#F8FAFC",
+                        background: "linear-gradient(135deg, #faf7f5, #f3edea)",
                         transition: theme.transitions.create(['margin', 'width'], {
                             easing: theme.transitions.easing.sharp,
                             duration: theme.transitions.duration.leavingScreen,

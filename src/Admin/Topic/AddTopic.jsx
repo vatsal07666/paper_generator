@@ -20,7 +20,7 @@ import { FaEdit } from "react-icons/fa";
 import { setSubject } from "../Subject/SubjectSlice";
 import Select from "react-select";
 
-const AddSubject = () => {
+const AddTopic = () => {
     const { list: topics = [], formValues, openForm, searchItem, deleteOpen, deleteId,
         editId,
     } = useSelector((state) => state.topicStore);
@@ -34,7 +34,7 @@ const AddSubject = () => {
 
     /* ---------------- Validation ---------------- */
     const validationSchema = Yup.object({
-        topicName: Yup.string().required("Subject Name is Required*"),
+        topicName: Yup.string().required("Topic Name is Required*"),
         subjectName: Yup.string().required("Subject Code is Required*"),
         status: Yup.string().required("Status is Required*"),
     });
@@ -178,19 +178,24 @@ const AddSubject = () => {
                 <Box sx={{display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     {/* Heading */}
                     <Box>
-                        <Typography component={"h1"} variant={isMobile ? "h6" : "h5"} fontWeight={600}>
+                        <Typography component={"h1"} variant={isMobile ? "h6" : "h5"} 
+                            sx={{ color: "#4e342e", fontWeight: 600 }}
+                        >
                             Topics ({topics.length})
                         </Typography>
-                        <Typography variant="span" sx={{ color: "#888888", fontSize: isMobile ? 14 : 16 }}>
+                        <Typography variant="span" sx={{ color: "#888888", fontSize: isMobile ? 14 : 16,
+                                fontWeight: 600
+                            }}
+                        >
                             List of all Topics
                         </Typography>
                     </Box>
 
                     {/* Add Topic Button */}
                     <Button onClick={() => dispatch(setOpenForm(true))}
-                        sx={{ background: "linear-gradient(135deg, #1E293B 0%, #334155 100%)", color: "#fff", 
-                            p: "8px 14px", borderRadius: 2, whiteSpace: "none", textTransform: "none", 
-                            "&:hover": { filter: "brightness(1.3)" }
+                        sx={{ background: "#6d4c41", color: "#fff", p: "8px 14px", borderRadius: 2, 
+                            whiteSpace: "none", textTransform: "none", fontWeight: 600,
+                            "&:hover": { background: "#5d4037" }
                         }}
                         startIcon={<IoMdAdd />}
                     >
@@ -207,7 +212,7 @@ const AddSubject = () => {
                     }}
                 >
                     {/* Form Title */}
-                    <DialogTitle sx={{ fontWeight: 700 }}>
+                    <DialogTitle sx={{ fontWeight: 600 }}>
                         {editId !== null ? "Edit Topic" : "Add New Topic"}
                     </DialogTitle>
 
@@ -282,14 +287,16 @@ const AddSubject = () => {
                                         </Box>
                                     </Box>
 
-                                    {/* Cancle & Submit Button */}
+                                    {/* Cancel & Submit Button */}
                                     <DialogActions>
-                                        <Button onClick={() => handleCancel(resetForm)} sx={{ color: "#1e293b" }}>
+                                        <Button onClick={() => handleCancel(resetForm)} 
+                                            sx={{ color: "#6d4c41", fontWeight: 600 }}
+                                        >
                                             Cancel
                                         </Button>
 
                                         <Button type="submit" variant="contained"
-                                            sx={{ background: "#1e293b", "&:hover": { background: "#0f172a" } }}
+                                            sx={{ background: "#6d4c41", "&:hover": { background: "#5d4037" } }}
                                             disabled={!isValid || !dirty}
                                         >
                                             {editId !== null ? "Update" : "Submit"}
@@ -306,9 +313,9 @@ const AddSubject = () => {
                     }}
                 >
                     {/* Search Field */}
-                    <Box sx={{ position: "relative", borderRadius: 2, border: "1px solid #ddd",
+                    <Box sx={{ position: "relative", borderRadius: 2, border: "1px solid #e4e4e4",
                             width: { xs: "100%", sm: "60%", md: "50%" }, py: 0.5, my: 2, background: "#fff",
-                            boxShadow: "0 6px 16px rgba(0,0,0,0.1)"
+                            boxShadow: "0 4px 14px rgba(0,0,0,0.06)"
                         }}
                     >
                         <InputBase name="search" placeholder="Search Topics" value={searchItem ?? ""}
@@ -323,10 +330,23 @@ const AddSubject = () => {
                     {filteredTopic.length > 0 ? (
                         filteredTopic.map((item, index) => (
                             <Card key={item._id ?? index}
-                                sx={{ borderRadius: 3, boxShadow: 2, display: "flex", flexDirection: "column" }}
+                                sx={{ position: "relative", borderRadius: 4, overflow: "hidden",
+                                    boxShadow: "0 10px 25px rgba(0,0,0,0.08)",
+                                    transition: "0.3s",
+                                    "&:hover": { transform: "translateY(-4px)",
+                                        boxShadow: "0 14px 32px rgba(0,0,0,0.12)"
+                                    }
+                                }}
                             >
+                                <Box sx={{ position: "absolute", left: 0, top: 0, bottom: 0, width: "6px",
+                                        background: item.status === "Active"
+                                            ? "linear-gradient(180deg,#66bb6a,#43a047)"
+                                            : "linear-gradient(180deg,#ef5350,#c62828)"
+                                    }}
+                                />
+
                                 {/* Content */}
-                                <CardContent sx={{ flexGrow: 1 }}>
+                                <CardContent sx={{ flexGrow: 1, pl: 3 }}>
                                     <Box sx={{ display: "flex", justifyContent: "space-between", gap: 1 }}>
                                         <Box sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 0.6 }}>
                                             <Typography variant="body2" fontSize={"16px"}>
@@ -338,9 +358,9 @@ const AddSubject = () => {
                                         </Box>
 
                                         <Typography variant="body2" sx={{ textAlign: "right" }}>
-                                            <span style={{ background: item.status === "Active" ? "#4caf50" : "#f44336",
+                                            <span style={{ background: item.status === "Active" ? "#66bb6a" : "#ef5350",
                                                     padding: "4px 10px", borderRadius: "20px", fontSize: "13px",
-                                                    color: "#fff",
+                                                    color: "#fff", fontWeight: 600
                                                 }}
                                             >
                                                 {item.status}
@@ -350,12 +370,14 @@ const AddSubject = () => {
                                 </CardContent>
 
                                 {/* Actions */}
-                                <Box sx={{ display: "flex", justifyContent: "center", gap: 1, pb: 2,
+                                <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 1, 
+                                        pb: 2,
                                     }}
                                 >
                                     {/* Delete */}
                                     <Button sx={{ background: "#fff", color: "#ef4444", border: 1,
-                                            whiteSpace: "nowrap", textTransform: "none"
+                                            whiteSpace: "nowrap", textTransform: "none", fontWeight: 600,
+                                            "&:hover": { background: "#c62828", color: "#ffffff" }
                                         }}
                                         onClick={() => handleDelete(item)}
                                     >
@@ -363,8 +385,9 @@ const AddSubject = () => {
                                     </Button>
 
                                     {/* Edit */}
-                                    <Button sx={{ background: "#fff", color: "#2563eb", border: 1,
-                                            whiteSpace: "nowrap", textTransform: "none"
+                                    <Button sx={{ background: "#fff", color: "#6d4c41", border: 1,
+                                            whiteSpace: "nowrap", textTransform: "none", fontWeight: 600,
+                                            "&:hover": { background: "#6d4c41", color: "#fff" }
                                         }}
                                         onClick={() => handleEdit(item)}
                                     >
@@ -374,7 +397,9 @@ const AddSubject = () => {
                             </Card>
                         ))
                     ) : (   
-                        <Paper sx={{ p: 3, textAlign: "center", gridColumn: "1 / -1" }}> Topics Data Not Found ! </Paper>
+                        <Paper sx={{ p: 3, textAlign: "center", gridColumn: "1 / -1" }}> 
+                            No topics available. Click "Add Topic" to create one.
+                        </Paper>
                     )}
                 </Box>
             </Box>
@@ -390,13 +415,15 @@ const AddSubject = () => {
                     },
                 }}
             >
-                <DialogTitle id="alert-dialog-title"> Confirm Delete By Clicking Delete! </DialogTitle>
+                <DialogTitle id="alert-dialog-title" sx={{ fontSize: isMobile ? 17 : 18 }}> 
+                    Confirm Delete By Clicking Delete! 
+                </DialogTitle>
 
                 <DialogActions>
                     <Button onClick={() => dispatch(resetDeleteState())}
                         variant="contained"
-                        sx={{ color: "#1e293b", background: "#fff",
-                            "&:hover": { boxShadow: "0 0 0 2px rgba(0, 0, 0, 0.5)" },
+                        sx={{ color: "#6d4c41", background: "#ffffff", fontWeight: 600,
+                            "&:hover": { border: 1, borderColor: "#6d4c41" },
                         }}
                     >
                         Cancle
@@ -405,6 +432,7 @@ const AddSubject = () => {
                     <Button variant="contained" className="agree-button"
                         onClick={deleteData}
                         sx={{ background: "#ef4444", color: "#fff", transition: "0.2s ease-in-out",
+                            fontWeight: 600,
                             "&:hover": { background: "#fff", color: "#ff0000",
                                 boxShadow: "0 0 2px rgba(255, 0, 0, 1)",
                             },
@@ -418,4 +446,4 @@ const AddSubject = () => {
     );
 };
 
-export default AddSubject;
+export default AddTopic;

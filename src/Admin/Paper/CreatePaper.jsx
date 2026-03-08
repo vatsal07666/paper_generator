@@ -247,12 +247,12 @@ const CreatePaper = () => {
                 {/* Goto View Question Button */}
                 <Box>
                     <Button component={NavLink} to="/admin/view-questions" 
-                        sx={{background: "#334155", color: "#fff", mb: 3, borderRadius: 2,
-                            "&:hover": { filter: "brightness(1.3)" }, textTransform: "none"
+                        sx={{ background: "#6d4c41", color: "#fff", mb: 3, borderRadius: 2,
+                            "&:hover": { background: "#5d4037" }, textTransform: "none"
                         }}
                     >
                         <IoIosArrowRoundBack size={30} /> 
-                        <Typography component={"span"} sx={{fontSize: "15px", fontWeight: 600}}>
+                        <Typography component={"span"} sx={{ fontWeight: 600 }}>
                             Go To View Questions
                         </Typography>
                     </Button>
@@ -264,15 +264,17 @@ const CreatePaper = () => {
                     }}
                 >
                     {/* Clear Button */}
-                    <Button variant="outlined" color="error" onClick={handleClearPaper}
-                        sx={{ mb: 3, textTransform: "none" }}
+                    <Button variant="contained" color="error" onClick={handleClearPaper}
+                        sx={{ mb: 3, textTransform: "none", fontWeight: 600 }}
                     >
                         Clear Paper
                     </Button>
 
                     {/* Download Button */}
                     <Button variant="contained" onClick={handleDownload}
-                        sx={{ background: "#334155", color: "#fff", mb: 3, textTransform: "none" }}
+                        sx={{ background: "#6d4c41", color: "#fff", mb: 3, textTransform: "none",
+                            transition: "0.3s ease-in-out", "&:hover": { background: "#5d4037" }
+                        }}
                     >
                         <GrDocumentDownload />&nbsp; Download PDF
                     </Button>

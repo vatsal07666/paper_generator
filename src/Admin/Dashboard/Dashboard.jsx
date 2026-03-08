@@ -82,8 +82,8 @@ const Dashboard = () => {
         <>
             <Box sx={{ m: isMobile ? 0 : 2 }}>
                 {/* Heading */}
-                <Box sx={{ mb: 2 }}>
-                    <Typography variant="h4">Dashboard</Typography>
+                <Box sx={{ mb: 3 }}>
+                    <Typography variant="h4" sx={{ fontWeight: 700, color: "#4e342e" }}>Dashboard</Typography>
                 </Box>
 
                 {/* Card Grid */}
@@ -92,34 +92,32 @@ const Dashboard = () => {
                         <Grid size={{ xs: 12, sm: 4 }} key={index} component={Link} to={item.path}
                             sx={{ textDecoration: "none" }}
                         >
-                            <Card sx={{ width: "100%", borderRadius: 5, color: "#FFF",
-                                    background: "linear-gradient(135deg, #1E293B 0%, #334155 100%)",
-                                    boxShadow: "0 10px 30px rgba(37, 99, 235, 0.3)",
+                            <Card sx={{ width: "100%", borderRadius: 5, background: "rgba(255,255,255,0.65)",
+                                    boxShadow: "0 12px 28px rgba(0,0,0,0.08)", backdropFilter: "blur(10px)",
+                                    WebkitBackdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,0.3)",
                                     transition: "0.3s ease-in-out",
-                                    "&:hover": { transform: "translateY(-6px)" },
+                                    "&:hover": { transform: "translateY(-6px)", boxShadow: "0 12px 40px rgba(0,0,0,0.12)",
+                                        background: "rgba(255,255,255,0.6)",
+                                    },
                                 }}
                             >
                                 <CardContent sx={{ display: "flex", flexDirection: "column" }}>
-                                    <Box sx={{ display: "flex", justifyContent: "space-between",
-                                            flexWrap: "wrap",
-                                        }}
-                                    >
-                                        <Typography gutterBottom variant="h6" component="div">
+                                    <Box sx={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap" }}>
+                                        <Typography gutterBottom variant="h6" component="div" sx={{ color: "#6d4c41" }}>
                                             {item.title}
                                         </Typography>
-                                        <IconButton component={Paper} sx={{ p: 1.2, mb: 1, color: "#1E293B",
-                                                background: "#e4e4e4", transition: "0.3s ease-in-out",
-                                                fontSize: "20px", borderRadius: 3.5,
-                                                "&:hover": { background: "#1E293B", color: "#e4e4e4",
-                                                    fontWeight: 700, border: 2
-                                                },
+                                        <IconButton component={Paper} sx={{ p: 1.2, mb: 1, color: "#6d4c41",
+                                                background: "#f1ebe7", boxShadow: "0 4px 10px rgba(0,0,0,0.08)",
+                                                backdropFilter: "blur(6px)", fontSize: "20px", borderRadius: 3.5,
+                                                transition: "0.3s ease-in-out",
+                                                "&:hover": { background: "#6d4c41", color: "#e4e4e4" },
                                             }}
                                         >
                                             {item.icon}
                                         </IconButton>
                                     </Box>
 
-                                    <Typography variant="h4">
+                                    <Typography variant="h4" sx={{ color: "#4e342e", fontWeight: 600 }}>
                                         <CountUp delay={0.5} end={item.count ?? 0} duration={0.6} />
                                     </Typography>
                                 </CardContent>

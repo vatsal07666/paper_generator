@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Card, CardContent, Dialog, DialogActions, 
-    DialogContent, DialogTitle, Divider, InputBase, Paper, Tooltip, Typography, useMediaQuery, useTheme 
+    DialogContent, DialogTitle, Divider, InputBase, Paper, Typography, useMediaQuery, useTheme 
 } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { addQuestion, deleteQuestion, resetDeleteState, resetFormValues, resetUIstate, setDeleteId, setDeleteOpen, 
@@ -212,19 +212,24 @@ const AddQuestions = () => {
                 <Box sx={{display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     {/* Heading */}
                     <Box>
-                        <Typography component={"h1"} variant={isMobile ? "h6" : "h5"} fontWeight={600}>
+                        <Typography component={"h1"} variant={isMobile ? "h6" : "h5"} 
+                            sx={{ color: "#4e342e", fontWeight: 600 }}
+                        >
                             Questions ({questions.length})
                         </Typography>
-                        <Typography variant='span' sx={{color: "#888888", fontSize: isMobile ? 14 : 16}}>
+                        <Typography variant='span' sx={{ color: "#888888", fontSize: isMobile ? 14 : 16,
+                                fontWeight: 600
+                            }}
+                        >
                             List of all Questions
                         </Typography>
                     </Box>
                     
                     {/* Add Question Button */}
                     <Button  onClick={() => dispatch(setOpenForm(true))}
-                        sx={{background: "linear-gradient(135deg, #1E293B 0%, #334155 100%)", color: "#fff", 
-                            p: "8px 14px", borderRadius: 2, whiteSpace: "none", textTransform: "none", 
-                            "&:hover": { filter: "brightness(1.3)" }
+                        sx={{ background: "#6d4c41", color: "#fff", p: "8px 14px", borderRadius: 2, 
+                            whiteSpace: "none", textTransform: "none", fontWeight: 600,
+                            "&:hover": { background: "#5d4037" }
                         }}
                         startIcon={<IoMdAdd />}
                     >
@@ -235,7 +240,9 @@ const AddQuestions = () => {
                 {/* Question Form */}
                 <Dialog open={openForm} sx={{ zIndex: 2000 }} maxWidth="md" fullWidth disableRestoreFocus
                     slotProps={{
-                        backdrop: { sx: { backgroundColor: "rgba(0,0,0,0.35)", backdropFilter: "blur(4px)" } }
+                        backdrop: { 
+                            sx: { backgroundColor: "rgba(0,0,0,0.35)", backdropFilter: "blur(4px)" } 
+                        }
                     }}
                 >
                     {/* Form Title */}
@@ -322,12 +329,14 @@ const AddQuestions = () => {
 
                                     {/* Cancle & Submit Button */}
                                     <DialogActions>
-                                        <Button onClick={() => handleCancel(resetForm)} sx={{ color: "#1e293b" }}>
+                                        <Button onClick={() => handleCancel(resetForm)} 
+                                            sx={{ color: "#6d4c41", fontWeight: 600 }}
+                                        >
                                             Cancel
                                         </Button>
                                         
                                         <Button type="submit" variant="contained"                
-                                            sx={{ background: "#1e293b", "&:hover": { background: "#0f172a" } }}
+                                            sx={{ background: "#6d4c41", "&:hover": { background: "#5d4037" } }}
                                             disabled={!isValid || !dirty}
                                         >
                                             {editId !== null ? "Update" : "Submit"}
@@ -342,10 +351,8 @@ const AddQuestions = () => {
                 {/* View Question Button */}
                 <Box sx={{ mr: {xs: 0, sm: 2}, my: 3}}>
                     <Button component={NavLink} to="/admin/view-questions" 
-                        sx={{ borderRadius: 2, color: "#fff",
-                            background: "linear-gradient(135deg, #1E293B 0%, #334155 100%)",
-                            textTransform: "none", transition: "all 0.3s ease-in-out",
-                            '&:hover': { filter: "brightness(1.3)" }
+                        sx={{ borderRadius: 2, color: "#fff", background: "#6d4c41", textTransform: "none", 
+                            transition: "all 0.3s ease-in-out", "&:hover": { background: "#5d4037" }
                         }}
                     >
                         <MdOutlineViewInAr size={20} />&nbsp; View Questions
@@ -379,18 +386,15 @@ const AddQuestions = () => {
                     </Box>
                 
                     {/* Search */}
-                    <Box sx={{ position: "relative", border: "1px solid #ddd", borderRadius: 2, flex: 1,
-                            py: 0.5, background: "#fff", boxShadow: "0 6px 16px rgba(0,0,0,0.1)"
+                    <Box sx={{ position: "relative", border: "1px solid #e4e4e4", borderRadius: 2, flex: 1,
+                            py: 0.5, background: "#fff", boxShadow: "0 4px 14px rgba(0,0,0,0.06)"
                         }}
                     >
                         <InputBase placeholder="Search Questions..." value={searchItem ?? ""}
                             onChange={(e) => dispatch(setSearchItem(e.target.value))}
                             sx={{ paddingLeft: "40px", width: "100%" }}
                         />
-                        <SearchIcon sx={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)",
-                                color: "#888",
-                            }}
-                        />
+                        <SearchIcon sx={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", }}/>
                     </Box>
                 </Box>
 
@@ -407,8 +411,8 @@ const AddQuestions = () => {
                                 >
                                     {/* Summary */}
                                     <AccordionSummary expandIcon={<ExpandMoreIcon />}
-                                        sx={{ background: index % 2 === 0 ? "#ffffff" : "#f8fafc",
-                                            "&:hover": { backgroundColor: "#e9f5fd" }
+                                        sx={{ backgroundColor: index % 2 === 0 ? "#f9f9f9" : "#fff",
+                                            "&:hover": { backgroundColor: "#f3edea" }
                                         }}
                                     >
                                         <Box sx={{ width: "100%", display: "flex", justifyContent: "space-between",
@@ -436,28 +440,24 @@ const AddQuestions = () => {
                                         {/* Action Buttons */}
                                         <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1 }}>
                                             {/* Delete */}
-                                            <Tooltip title="Delete">
-                                                <Button sx={{  background: "#fff", color: "#ef4444",
-                                                        "&:hover": { background: "#dc2626", color: "#fff" },
-                                                        border: "1px solid #ff0000", textTransform: "none"
-                                                    }}
-                                                    onClick={() => handleDelete(item)}
-                                                >
-                                                    <RiDeleteBin6Line size={18} />&nbsp; Delete
-                                                </Button>
-                                            </Tooltip>
-
+                                            <Button sx={{ background: "#fff", color: "#ef4444", border: 1,
+                                                    whiteSpace: "nowrap", textTransform: "none", fontWeight: 600,
+                                                    "&:hover": { background: "#c62828", color: "#ffffff" }
+                                                }}
+                                                onClick={() => handleDelete(item)}
+                                            >
+                                                <RiDeleteBin6Line />&nbsp; Delete
+                                            </Button>
+        
                                             {/* Edit */}
-                                            <Tooltip title="Edit">
-                                                <Button sx={{ background: "#fff", color: "#2563eb",
-                                                        "&:hover": { background: "#2563eb", color: "#fff" },
-                                                        border: "1px solid #2563eb", textTransform: "none"
-                                                    }}
-                                                    onClick={() => handleEdit(item)}
-                                                >
-                                                    <FaEdit size={18} />&nbsp; Edit
-                                                </Button>
-                                            </Tooltip>
+                                            <Button sx={{ background: "#fff", color: "#6d4c41", border: 1,
+                                                    whiteSpace: "nowrap", textTransform: "none", fontWeight: 600,
+                                                    "&:hover": { background: "#6d4c41", color: "#fff" }
+                                                }}
+                                                onClick={() => handleEdit(item)}
+                                            >
+                                                <FaEdit />&nbsp; Edit
+                                            </Button>
                                         </Box>
                                     </AccordionDetails>
                                 </Accordion>
@@ -515,13 +515,15 @@ const AddQuestions = () => {
                     }
                 }}
             >
-                <DialogTitle id="alert-dialog-title"> Confirm Delete By Clicking Delete! </DialogTitle>
+                <DialogTitle id="alert-dialog-title" sx={{ fontSize: isMobile ? 17 : 18 }}> 
+                    Confirm Delete By Clicking Delete! 
+                </DialogTitle>
                 
                 <DialogActions>
                     <Button onClick={() => dispatch(resetDeleteState())} 
                         variant="contained" 
-                        sx={{color: "#1e293b", background: "#fff", 
-                            '&:hover': { boxShadow: "0 0 0 2px rgba(0, 0, 0, 0.5)" }
+                        sx={{ color: "#6d4c41", background: "#ffffff", fontWeight: 600,
+                            "&:hover": { border: 1, borderColor: "#6d4c41" },
                         }}
                     >
                         Cancle
@@ -529,8 +531,9 @@ const AddQuestions = () => {
 
                     <Button variant="contained" className="agree-button" 
                         onClick={deleteData}
-                        sx={{background: "#ef4444", color: "#fff", transition: "0.2s ease-in-out",
-                            '&:hover': {background: "#fff", color: "#ff0000", 
+                        sx={{background: "#ef4444", color: "#fff", fontWeight: 600,
+                            transition: "0.2s ease-in-out",
+                            '&:hover': { background: "#fff", color: "#ff0000", 
                                 boxShadow: "0 0 2px rgba(255, 0, 0, 1)"
                             }
                         }}
