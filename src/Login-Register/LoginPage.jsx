@@ -62,7 +62,7 @@ const LoginPage = () => {
         resetForm();
         ShowSnackbar("Login Successful!", "success");
 
-        history.push(validUser === "user" ? "/" : "/admin");
+        history.push(validUser.role === "user" ? "/" : "/admin");
     };
 
     const handleSubmit = (values, { resetForm }) => {
@@ -71,17 +71,29 @@ const LoginPage = () => {
 
     return (
         <>
-            <Box className="container" sx={{ px: {xs: 2, md: 0} }}>
-                <Paper elevation={0} className='form-container' sx={{p: { xs: 0.5, md: 1 }, borderRadius: 5}}>
+            <Box className="container" 
+                sx={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center",
+                    background: "linear-gradient(135deg, #e0e7ff 0%, #f8fafc 100%)", px: { xs: 2, sm: 0 }
+                }}
+            >
+                <Paper elevation={0} className='form-container' 
+                    sx={{ width: 420, p: { xs: 1, sm: 4 }, borderRadius: 4, background: "#ffffff",
+                        boxShadow: "0 15px 40px rgba(0,0,0,0.1)",
+                    }}
+                >
                     <Formik initialValues={initialValues}
                         validationSchema={validationSchema}
                         onSubmit={handleSubmit}
                     >
                         {({errors, touched}) => (
                             <Form className='login-form'>
-                                <Box>
-                                    <Typography component={"h3"} variant='h4' align='center' sx={{fontSize: "28px"}}>
-                                        Log in
+                                <Box mb={2} textAlign="center">
+                                    <Typography variant="h4" fontWeight={700} color="#1E3A8A">
+                                        Paper Generator
+                                    </Typography>
+
+                                    <Typography variant="body2" color="text.secondary">
+                                        Login to generate question papers
                                     </Typography>
                                 </Box>
 
@@ -110,10 +122,13 @@ const LoginPage = () => {
                                     {errors.password && touched.password && <div style={{color: "#ff0000", marginTop: "5px"}}>{errors.password}</div>}
                                 </Box>
 
-                                <Button type='submit' fullWidth sx={{ background: "#1E3A8A", color: "#fff",
-                                    "&:hover": {background: "#1D4ED8"}
-                                }}>
-                                    Submit
+                                <Button type="submit" fullWidth
+                                    sx={{ mt: 1, py: 1.2, fontWeight: 600, fontSize: "15px", borderRadius: 2,
+                                        background: "#1E3A8A", color: "#fff",
+                                        "&:hover": { background: "#1D4ED8" }
+                                    }}
+                                >
+                                    Login
                                 </Button>
 
                                 <Box  sx={{ display: "flex", justifyContent: "center", gap: 1, mt: 2, flexWrap: "wrap" }}>

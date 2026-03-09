@@ -34,24 +34,23 @@ const RegisterPage = () => {
     const token = "uL8hdyXEltvYldi8";
     
     const postData = (values, resetForm) => {
+        const users = JSON.parse(localStorage.getItem("users")) || [];
+
+        const userExists = users.find(
+            (user) => user.username === values.username || user.email === values.email
+        );
+
+        if (userExists) {
+            ShowSnackbar("Username or Email already exists!", "error");
+            return;
+        }
+
         axios.post("https://generateapi.techsnack.online/api/login-register", values, { 
                 headers: { Authorization: token, "Content-Type": "application/json" }
             }
         )
         .then((res) => {
             console.log("User Data: ", res.data);
-            // Get existing users
-            const users = JSON.parse(localStorage.getItem("users")) || [];
-
-            // Check if username already exists
-            const userExists = users.find(
-                (user) => (user.username === values.username || user.email === values.email)
-            );
-
-            if (userExists) {
-                ShowSnackbar("Username or Email already exists!", "error");
-                return;
-            }
 
             // Save new user
             const newUser = {
@@ -77,17 +76,30 @@ const RegisterPage = () => {
 
     return (
         <>
-            <Box className="container"  sx={{ px: {xs: 2, md: 0} }}>
-                <Paper elevation={0} className='form-container' sx={{p: { xs: 0.5, md: 1 }, borderRadius: 5}}>
+            <Box className="container" 
+                sx={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center",
+                    background: "linear-gradient(135deg, #e0e7ff, #f8fafc)", px: { xs: 2, sm: 0 },
+                    py: {xs: 4, sm: 2}
+                }}
+            >
+                <Paper elevation={0} className='form-container' 
+                    sx={{ width: 420, p: { xs: 1, sm: 4 }, borderRadius: 4, background: "#ffffff",
+                        boxShadow: "0 15px 40px rgba(0,0,0,0.1)",
+                    }}
+                >
                     <Formik initialValues={initialValues}
                         validationSchema={validationSchema}
                         onSubmit={handleSubmit}
                     >
                         {({ errors, touched }) => (
                             <Form className='register-form'>
-                                <Box>
-                                    <Typography component={"h3"} variant='h4' align='center' sx={{fontSize: "28px"}}>
-                                        Register
+                                <Box textAlign="center" mb={2}>
+                                    <Typography variant="h4" fontWeight={700} color="#1E3A8A">
+                                        Paper Generator
+                                    </Typography>
+
+                                    <Typography variant="body2" color="text.secondary">
+                                        Create your account
                                     </Typography>
                                 </Box>
 
@@ -116,7 +128,7 @@ const RegisterPage = () => {
                                     />
                                     <Tooltip title={"View Password"}>
                                         <IconButton onClick={() => setShowPassword(!showPassword)}
-                                            sx={{position: "absolute", alignSelf: "center", right: 5}}    
+                                            sx={{position: "absolute", alignSelf: "center", right: 0}}    
                                         >
                                             {showPassword ? <FaEye /> : <FaEyeSlash />}
                                         </IconButton>
@@ -133,7 +145,7 @@ const RegisterPage = () => {
                                     />
                                     <Tooltip title={"View Password"}>
                                         <IconButton onClick={() => setConfirmPassword(!confirmPassword)}
-                                            sx={{position: "absolute", alignSelf: "center", right: 5}}    
+                                            sx={{position: "absolute", alignSelf: "center", right: 0}}    
                                         >
                                             {confirmPassword ? <FaEye /> : <FaEyeSlash />}
                                         </IconButton>
@@ -141,7 +153,9 @@ const RegisterPage = () => {
                                     {errors.confirmPassword && touched.confirmPassword && <div style={{color: "#ff0000", marginTop: "5px"}}>{errors.confirmPassword}</div>}
                                 </Box>
 
-                                <Button type='submit' fullWidth sx={{ background: "#1E3A8A", color: "#fff", 
+                                <Button type='submit' fullWidth 
+                                    sx={{ mt: 1, py: 1.2, fontWeight: 600, fontSize: "15px", borderRadius: 2,
+                                        background: "#1E3A8A", color: "#fff",
                                         "&:hover": { background: "#1D4ED8" }
                                     }}
                                 >
