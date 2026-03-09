@@ -78,13 +78,13 @@ const RegisterPage = () => {
         <>
             <Box className="container" 
                 sx={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center",
-                    background: "linear-gradient(135deg, #e0e7ff, #f8fafc)", px: { xs: 2, sm: 0 },
+                    background: "linear-gradient(135deg, #faf7f5, #f3edea)", px: { xs: 2, sm: 0 },
                     py: {xs: 4, sm: 2}
                 }}
             >
                 <Paper elevation={0} className='form-container' 
                     sx={{ width: 420, p: { xs: 1, sm: 4 }, borderRadius: 4, background: "#ffffff",
-                        boxShadow: "0 15px 40px rgba(0,0,0,0.1)",
+                        border: "1px solid #e7ded9", boxShadow: "0 10px 30px rgba(78,52,46,0.08)"
                     }}
                 >
                     <Formik initialValues={initialValues}
@@ -94,11 +94,11 @@ const RegisterPage = () => {
                         {({ errors, touched }) => (
                             <Form className='register-form'>
                                 <Box textAlign="center" mb={2}>
-                                    <Typography variant="h4" fontWeight={700} color="#1E3A8A">
+                                    <Typography variant="h4" fontWeight={700} color="#4e342e">
                                         Paper Generator
                                     </Typography>
 
-                                    <Typography variant="body2" color="text.secondary">
+                                    <Typography variant="body2" color="#8d6e63">
                                         Create your account
                                     </Typography>
                                 </Box>
@@ -155,8 +155,8 @@ const RegisterPage = () => {
 
                                 <Button type='submit' fullWidth 
                                     sx={{ mt: 1, py: 1.2, fontWeight: 600, fontSize: "15px", borderRadius: 2,
-                                        background: "#1E3A8A", color: "#fff",
-                                        "&:hover": { background: "#1D4ED8" }
+                                        background: "#6d4c41", color: "#fff",
+                                        "&:hover": { background: "#5d4037" }
                                     }}
                                 >
                                     Create Account
