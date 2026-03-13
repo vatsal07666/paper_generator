@@ -1,21 +1,32 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useLocation, NavLink } from "react-router-dom";
 import { Box, Typography, Divider, Button, TextField, Paper, useTheme, useMediaQuery, FormControl, Select, 
-    MenuItem, 
+    MenuItem,
+    FormControlLabel,
+    Checkbox,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions, 
 } from "@mui/material";
 import logo from "../../Images/university-college-academy.png";
 import jsPDF from "jspdf";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { GrDocumentDownload } from "react-icons/gr";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { setSubject } from "../Subject/SubjectSlice";
 
 const CreatePaper = () => {
     const location = useLocation();
-    const { questions = [], subject } = location.state || {};
+    const dispatch = useDispatch();
+    const {list: subjects = []} = useSelector((state) => state.subjectStore);
+    const { questions = [] } = location.state || {};
     const [error, setError] = useState("");
-    const exams = [ "Internal", "External" ];
+    const exams = [ "Theory", "Practical" ];
     const [paperDetails, setPaperDetails] = useState({
         university: "ABC University",
-        subject: subject || "",
+        subject: "",
         semester: "",
         examType: "",
         examDate: "",
@@ -24,6 +35,8 @@ const CreatePaper = () => {
         instructions: "Answer all questions.",
     });
     const [sections, setSections] = useState([]);
+    const [subjectDialogOpen, setSubjectDialogOpen] = useState(false);
+    const [selectedSubjects, setSelectedSubjects] = useState([]);
 
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -50,6 +63,13 @@ const CreatePaper = () => {
 
         return null;
     };
+
+     const subjectsToken = "2xzYLLbk3VRezP5s";
+    const getSubjects = useCallback(() => {
+        axios.get("https://generateapi.techsnack.online/api/subject", { headers: { Authorization: subjectsToken } })
+        .then((res) => dispatch(setSubject(res.data.Data)))
+        .catch((err) => console.error("Get Subjects error: ", err))
+    }, [dispatch])
 
    /* ---------------- Set Sections When Pages Load ---------------- */
     useEffect(() => {
@@ -79,7 +99,8 @@ const CreatePaper = () => {
 
             setSections(newSections);
         }
-    }, [questions]);
+        getSubjects();
+    }, [questions, getSubjects]);
 
     /* ---------------- Total Marks Logic ---------------- */
     const totalMarks = sections.reduce(
@@ -130,17 +151,17 @@ const CreatePaper = () => {
             pdf.setFontSize(14);
             pdf.setFont("helvetica", "bold");
             pdf.text(`Subject: ${paperDetails.subject}`, margin, y);
-            pdf.text(`Semester: ${paperDetails.semester}`, 100, y);
-            pdf.text(`Exam Type: ${paperDetails.examType}`, pageWidth - margin, y, { align: "right" });
+            pdf.text(`Semester: ${paperDetails.semester}`, pageWidth - margin, y, { align: "right" });
             y += 10;
-
+            
             /* Time Duration */
+            pdf.setFontSize(14);
             pdf.setFont("helvetica", "bold");
             pdf.text(`Time: ${paperDetails.examDurationHours || 0}h ${paperDetails.examDurationMinutes || 0}m`, 
                 margin, y
             );
+            pdf.text(`Exam Type: ${paperDetails.examType}`, 80, y);
             pdf.text(`Total Marks: ${totalMarks}`, pageWidth - margin, y, { align: "right" });
-
             y += 10;
 
             /* Divider Line */
@@ -166,7 +187,7 @@ const CreatePaper = () => {
             pdf.setFontSize(12);
             sections.forEach((sec) => {
                 pdf.setFont("helvetica", "bold");
-                pdf.text(`₹Section ${sec.section} (Each Question ${sec.marksPerQuestion} marks)`, margin, y);
+                pdf.text(`Section ${sec.section} (Each Question ${sec.marksPerQuestion} marks)`, margin, y);
                 y += 7;
                 pdf.setFont("helvetica", "normal");
 
@@ -318,7 +339,11 @@ const CreatePaper = () => {
                     {/* Subject Field */}
                     <Box sx={{ display: "flex", alignItems: "center" }}>
                         <Typography component={"span"} fontWeight={600}>Subject: </Typography>
-                        <TextField variant="standard" value={paperDetails.subject || ""} sx={{ pl: 1 }} />
+                        <TextField value={paperDetails.subject || ""} 
+                            onClick={() => setSubjectDialogOpen(true)}
+                            slotProps={{ input: {readOnly: true} }}
+                            sx={{ pl: 1, cursor: "pointer" }} 
+                        />
                     </Box>
 
                     {/* Exam Type Field */}
@@ -415,6 +440,48 @@ const CreatePaper = () => {
                     <Typography align="center" fontWeight={600}>------- Best of Luck -------</Typography>
                 </Box>
             </Box>
+
+            <Dialog open={subjectDialogOpen} onClose={() => setSubjectDialogOpen(false)}>
+                <DialogTitle>Select Subject</DialogTitle>
+                <DialogContent>
+                    {subjects.map((s) => (
+                        <FormControlLabel
+                            key={s.subjectName}
+                            control={
+                                <>
+                                    <Checkbox
+                                        checked={selectedSubjects.includes(s.subjectName)}
+                                        onChange={(e) => {
+                                            if (e.target.checked) {
+                                                setSelectedSubjects([...selectedSubjects, s.subjectName]);
+                                            } else {
+                                                setSelectedSubjects(selectedSubjects.filter((sub) => sub !== s.subjectName));
+                                            }
+                                        }}
+                                    />
+                                    <br />
+                                </>
+                            }
+                            label={s.subjectName}
+                        />
+                    ))}
+                </DialogContent>
+                
+                <DialogActions>
+                    <Button onClick={() => setSubjectDialogOpen(false)}>Cancel</Button>
+                    <Button
+                        onClick={() => {
+                            // Join multiple subjects as comma-separated or pick first for paperDetails.subject
+                            const selected = selectedSubjects.join(", ");
+                            setPaperDetails({ ...paperDetails, subject: selected });
+                            setSubjectDialogOpen(false);
+                        }}
+                        variant="contained"
+                    >
+                        Select
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 };

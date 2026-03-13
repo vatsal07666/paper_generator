@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Box, Typography, Checkbox, InputBase, Divider, useTheme, useMediaQuery, IconButton, Tooltip, Button,
     Paper
 } from "@mui/material";
@@ -17,7 +17,6 @@ const ViewQuestions = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
     const history = useHistory();
-    const [error, setError] = useState("");
 
     const { list: questions = [], searchItem, selectedIds = [], selectedSubject, selectedTopic } = useSelector((state) => state.questionStore);
     const { list: subjects = [] } = useSelector((state) => state.subjectStore);
@@ -47,31 +46,19 @@ const ViewQuestions = () => {
             : [...selectedIds, id];
         
         dispatch(setSelectedIds(updatedIds));
-        setError("");
     };
 
     /* ---------------- Select All Logic ---------------- */
     const handleSelectAll = (checked) => {
         const allIds = checked ? filteredQuestions.map(item => item._id) : [];
         dispatch(setSelectedIds(allIds));
-        setError("");
     };
 
     /* ---------------- Create Paper Logic ---------------- */
     const handleCreatePaper = () => {
-        if (!selectedSubject) {
-            setError("Please select a subject before creating the paper.");
-            return;
-        }
-
         const selectedQuestions = questions.filter(
             (q) => Array.isArray(selectedIds) && selectedIds.includes(q._id)
         );
-
-        if (selectedQuestions.length === 0) {
-            setError("Please select at least one question."); 
-            return;
-        }
 
         history.push("/admin/create-paper", {
             questions: selectedQuestions, subject: selectedSubject
@@ -101,7 +88,6 @@ const ViewQuestions = () => {
     }, [dispatch])
 
     useEffect(() => {
-        if (selectedSubject && selectedIds.length > 0) setError("");
         getSubjects();
         getTopics();
         getQuestions();
@@ -134,7 +120,6 @@ const ViewQuestions = () => {
                             const value = option ? option.value : "";
                             dispatch(setSelectedSubject(value));
                             dispatch(setSelectedTopic("")); // reset topic
-                            if (value) { setError("") }
                         }}
                         isSearchable
                         isClearable
@@ -143,8 +128,12 @@ const ViewQuestions = () => {
 
                 {/* Topic Filter */}
                 <Box sx={{ flex: 1 }}>
-                    <Select options={topicOptions} placeholder="Filter by Topic"
-                        value={ topicOptions.find((opt) => opt.value === selectedTopic) || null }
+                    <Select options={selectedSubject ? topicOptions : []} 
+                        placeholder="Filter by Topic"
+                        value={ selectedSubject 
+                            ? topicOptions.find((opt) => opt.value === selectedTopic) || null
+                            : null
+                        }
                         onChange={(option) => dispatch(setSelectedTopic(option ? option.value : ""))}
                         isSearchable
                         isClearable
@@ -174,10 +163,6 @@ const ViewQuestions = () => {
             </Box>
 
             <Divider sx={{ mb: 2 }} />
-
-            {error && (
-                <Typography color="error" fontWeight={500} mb={1} align={isMobile ? "center" : "right"}> {error} </Typography>
-            )}
 
             {/* Selected Count */}
             <Box sx={{ display: "flex", flexDirection: isMobile ? "column" : "row", 
@@ -219,7 +204,7 @@ const ViewQuestions = () => {
                                 sx: { letterSpacing: 0.5, background: "#475569", color: "#fff" }
                             }
                         }}>
-                            <IconButton size="small" onClick={() => {dispatch(setSelectedIds([])); setError("")}}
+                            <IconButton size="small" onClick={() => dispatch(setSelectedIds([]))}
                                 sx={{ fontSize: "22px", color: "#4e342e" }}    
                             >
                                 <MdIndeterminateCheckBox />
