@@ -28,7 +28,7 @@ const LoginPage = () => {
     const postData = (values, resetForm) => {
         const users = JSON.parse(localStorage.getItem("users")) || [];
         const adminExists = users.some(
-            (user) => (user.userName === "admin" && user.email === "admin666@gmail.com")
+            (user) => (user.username === "admin" && user.email === "admin666@gmail.com")
         );
 
         if(!adminExists){
