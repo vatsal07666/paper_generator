@@ -146,7 +146,7 @@ const Index = ({children}) => {
         localStorage.removeItem("authToken");
         localStorage.removeItem("role");
         setIsLoggedIn(false);
-        history.push("/login");
+        history.push("/");
         ShowSnackbar("Logged Out successful !", "success");
     };
 
@@ -253,7 +253,7 @@ const Index = ({children}) => {
                                     fontSize: {xs: "13px", sm: "15px"}, fontWeight: 600,
                                     '&:hover': { background: "#6d4c41", color: "#ffffff" },
                                 }}
-                                onClick={() => { isLoggedIn ? handleLogout() : history.push("/login") }}
+                                onClick={() => { isLoggedIn && handleLogout()}}
                             >
                                 {isLoggedIn ? "Log out" : "Log in"}
                             </Button>

@@ -54,7 +54,7 @@ const RegisterPage = () => {
 
         resetForm();
         ShowSnackbar("Account Created Successfully!", "success");
-        history.push("/login");
+        history.push("/");
     };
 
     const handleSubmit = (values, { resetForm }) => {
@@ -153,7 +153,7 @@ const RegisterPage = () => {
                                     <Typography component={"span"}>
                                         Already have an Account ?
                                     </Typography>
-                                    <NavLink className="register-link" to="/login">Log in</NavLink>
+                                    <NavLink className="register-link" to="/">Log in</NavLink>
                                 </Box>
                             </Form>
                         )}
