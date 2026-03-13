@@ -8,7 +8,6 @@ import { MdOutlineAttachEmail } from "react-icons/md";
 import { NavLink, useHistory } from 'react-router-dom';
 import { useSnackbar } from '../Context/SnackbarContext';
 import * as Yup from "yup";
-import axios from 'axios';
 
 const RegisterPage = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -30,8 +29,6 @@ const RegisterPage = () => {
         confirmPassword: Yup.string().required("Confirm Password is required*")
                 .oneOf([Yup.ref("password"), null], "Passwords must match")
     })
-
-    const token = "uL8hdyXEltvYldi8";
     
     const postData = (values, resetForm) => {
         const users = JSON.parse(localStorage.getItem("users")) || [];
@@ -45,29 +42,19 @@ const RegisterPage = () => {
             return;
         }
 
-        axios.post("https://generateapi.techsnack.online/api/login-register", values, { 
-                headers: { Authorization: token, "Content-Type": "application/json" }
-            }
-        )
-        .then((res) => {
-            console.log("User Data: ", res.data);
+        // Save new user
+        const newUser = {
+            username: values.username,
+            email: values.email,
+            password: values.password,
+            role: "user"
+        };
+        users.push(newUser);
+        localStorage.setItem("users", JSON.stringify(users));
 
-            // Save new user
-            const newUser = {
-                username: values.username,
-                email: values.email,
-                password: values.password,
-                role: "user"
-            };
-
-            users.push(newUser);
-            localStorage.setItem("users", JSON.stringify(users));
-
-            resetForm();
-            ShowSnackbar("Account Created Successfully!", "success");
-            history.push("/login");
-        })
-        .catch(() => ShowSnackbar("Registration Failed!", "error"));
+        resetForm();
+        ShowSnackbar("Account Created Successfully!", "success");
+        history.push("/login");
     };
 
     const handleSubmit = (values, { resetForm }) => {

@@ -18,28 +18,28 @@ const LoginPage = () => {
 
     const validationSchema = Yup.object({
         username: Yup.string().required("Username or Email is Required*"),
-        password: Yup.string().required("Password is required*").min(8,"Password must be at least 8 characters")
-                .matches(/[A-Z]/, "Password must contain at least one uppercase character")
-                .matches(/[a-z]/, "Password must contain at least one lowercase character")
-                .matches(/\d/, "Password must contain at least one number")
-                .matches(/[!@#$%^&*()]/, "Password must contain at least one special character")
+        password: Yup.string().required("Password is required*")
     })
 
-    const postData = (values, resetForm) => {
+    const ensureAdminExists = () => {
         const users = JSON.parse(localStorage.getItem("users")) || [];
         const adminExists = users.some(
-            (user) => (user.username === "admin" && user.email === "admin666@gmail.com")
+            (user) => user.username === "admin" && user.email === "admin666@gmail.com"
         );
-
-        if(!adminExists){
+        if (!adminExists) {
             users.push({
                 username: "admin",
                 email: "admin666@gmail.com",
                 password: "Admin@666",
                 role: "admin"
-            })
+            });
             localStorage.setItem("users", JSON.stringify(users));
         }
+        return JSON.parse(localStorage.getItem("users")) || [];
+    };
+
+    const postData = (values, resetForm) => {
+        const users = ensureAdminExists();
 
         const validUser = users.find(
             (user) =>
@@ -52,16 +52,12 @@ const LoginPage = () => {
             return;
         }
 
-        // Fake session token
-        const fakeToken = "frontend-auth-token";
-
-        localStorage.setItem("authToken", fakeToken);
+        localStorage.setItem("authToken", "frontend-auth-token");
         localStorage.setItem("role", validUser.role);
         localStorage.setItem("authUser", JSON.stringify(validUser));
 
         resetForm();
         ShowSnackbar("Login Successful!", "success");
-
         history.push(validUser.role === "user" ? "/" : "/admin");
     };
 
