@@ -1,13 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useLocation, NavLink } from "react-router-dom";
 import { Box, Typography, Divider, Button, TextField, Paper, useTheme, useMediaQuery, FormControl, Select, 
-    MenuItem,
-    FormControlLabel,
-    Checkbox,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions, 
+    MenuItem, Checkbox, Dialog, DialogTitle, DialogContent, DialogActions, 
 } from "@mui/material";
 import logo from "../../Images/university-college-academy.png";
 import jsPDF from "jspdf";
@@ -441,31 +435,26 @@ const CreatePaper = () => {
                 </Box>
             </Box>
 
-            <Dialog open={subjectDialogOpen} onClose={() => setSubjectDialogOpen(false)}>
+            <Dialog open={subjectDialogOpen} onClose={() => setSubjectDialogOpen(false)} fullWidth 
+                disableRestoreFocus    
+            >
                 <DialogTitle sx={{ color: "#4e342e", fontWeight: 600 }}>Select Subject</DialogTitle>
                 <DialogContent>
                     {subjects.map((s) => (
-                        <FormControlLabel
-                            key={s.subjectName}
-                            control={
-                                <>
-                                    <Checkbox
-                                        checked={selectedSubjects.includes(s.subjectName)}
-                                        onChange={(e) => {
-                                            if (e.target.checked) {
-                                                setSelectedSubjects([...selectedSubjects, s.subjectName]);
-                                            } else {
-                                                setSelectedSubjects(selectedSubjects.filter((sub) => sub !== s.subjectName));
-                                            }
-                                        }}
-                                        sx={{ color: "#8d6e63", "&.Mui-checked": { color: "#6d4c41" } }}
-                                    />
-                                    <br />
-                                </>
-                            }
-                            label={s.subjectName}
-                            style={{ color: "#6d4c41" }}
-                        />
+                        <Box key={s.subjectName} sx={{ display: "flex", alignItems: "center" }}>
+                            <Checkbox
+                                checked={selectedSubjects.includes(s.subjectName)}
+                                onChange={(e) => {
+                                    if (e.target.checked) {
+                                        setSelectedSubjects([...selectedSubjects, s.subjectName]);
+                                    } else {
+                                        setSelectedSubjects(selectedSubjects.filter((sub) => sub !== s.subjectName));
+                                    }
+                                }}
+                                sx={{ color: "#8d6e63", "&.Mui-checked": { color: "#6d4c41" } }}
+                            />
+                            <Typography>{s.subjectName}</Typography>
+                        </Box>
                     ))}
                 </DialogContent>
                 
