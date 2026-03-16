@@ -3,8 +3,9 @@ import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Card, CardC
     DialogContent, DialogTitle, Divider, InputBase, Paper, Typography, useMediaQuery, useTheme 
 } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { addQuestion, deleteQuestion, resetDeleteState, resetFormValues, resetUIstate, setDeleteId, setDeleteOpen, 
-    setEditId, setFormValues, setOpenForm, setQuestion, setSearchItem, updateQuestion 
+import { addQuestion, deleteQuestion, resetDeleteState, resetFormValues, resetUIstate, setDeleteId, 
+    setDeleteOpen, setEditId, setFormValues, setOpenForm, setQuestion, setSearchItem, setSelectedSubject, 
+    setSelectedTopic, updateQuestion 
 } from '../Questions/QuestionsSlice';
 import { Field, Form, Formik } from 'formik';
 import SearchIcon from '@mui/icons-material/Search';
@@ -23,14 +24,14 @@ import { setSubject } from '../Subject/SubjectSlice';
 import { setTopic } from '../Topic/TopicSlice';
 
 const AddQuestions = () => {
-    const { list: questions = [], openForm, formValues, searchItem, deleteOpen, deleteId, editId } = useSelector((state) => state.questionStore);
+    const { list: questions = [], openForm, formValues, searchItem, deleteOpen, deleteId, editId,
+        selectedSubject, selectedTopic
+    } = useSelector((state) => state.questionStore);
     const { list: subjects = [] } = useSelector((state) => state.subjectStore);
     const { list: topics = [] } = useSelector((state) => state.topicStore);
     const dispatch = useDispatch();
     const { ShowSnackbar } = useSnackbar();
     const [expanded, setExpanded] = useState(null);
-    const [selectedSubject, setSelectedSubject] = useState("");
-    const [selectedTopic, setSelectedTopic] = useState("");
 
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -367,8 +368,8 @@ const AddQuestions = () => {
                             value={ subjectOptions.find((opt) => opt.value === selectedSubject ) || null }
                             onChange={(option) => {
                                 const value = option ? option.value : "";
-                                setSelectedSubject(value);
-                                setSelectedTopic(""); // reset topic
+                                dispatch(setSelectedSubject(value));
+                                dispatch(setSelectedTopic("")); // reset topic
                             }}
                             isSearchable
                             isClearable
@@ -377,9 +378,12 @@ const AddQuestions = () => {
                 
                     {/* Topic Filter */}
                     <Box sx={{ flex: 1 }}>
-                        <Select options={topicOptions} placeholder="Filter by Topic"
-                            value={ topicOptions.find((opt) => opt.value === selectedTopic) || null }
-                            onChange={(option) => setSelectedTopic(option ? option.value : "")}
+                        <Select options={selectedSubject ? topicOptions : []} placeholder="Filter by Topic"
+                            value={ subjectOptions 
+                                ? topicOptions.find((opt) => opt.value === selectedTopic) || null
+                                : null
+                            }
+                            onChange={(option) => dispatch(setSelectedTopic(option ? option.value : ""))}
                             isSearchable
                             isClearable
                         />
