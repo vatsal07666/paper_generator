@@ -22,7 +22,7 @@ const LoginPage = () => {
     })
 
     const ensureAdminExists = () => {
-        const users = JSON.parse(localStorage.getItem("users")) || [];
+        const users = JSON.parse(localStorage.getItem("users"));
         const adminExists = users.some(
             (user) => user.username === "admin" && user.email === "admin666@gmail.com"
         );
@@ -35,7 +35,7 @@ const LoginPage = () => {
             });
             localStorage.setItem("users", JSON.stringify(users));
         }
-        return JSON.parse(localStorage.getItem("users")) || [];
+        return users;
     };
 
     const postData = (values, resetForm) => {
@@ -48,7 +48,7 @@ const LoginPage = () => {
         );
 
         if (!validUser) {
-            ShowSnackbar("Invalid Username or Password!", "error");
+            ShowSnackbar("Invalid Username or Password !", "error");
             return;
         }
 
