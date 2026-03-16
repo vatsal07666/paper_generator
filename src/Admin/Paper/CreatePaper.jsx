@@ -442,7 +442,7 @@ const CreatePaper = () => {
             </Box>
 
             <Dialog open={subjectDialogOpen} onClose={() => setSubjectDialogOpen(false)}>
-                <DialogTitle>Select Subject</DialogTitle>
+                <DialogTitle sx={{ color: "#4e342e", fontWeight: 600 }}>Select Subject</DialogTitle>
                 <DialogContent>
                     {subjects.map((s) => (
                         <FormControlLabel
@@ -458,17 +458,19 @@ const CreatePaper = () => {
                                                 setSelectedSubjects(selectedSubjects.filter((sub) => sub !== s.subjectName));
                                             }
                                         }}
+                                        sx={{ color: "#8d6e63", "&.Mui-checked": { color: "#6d4c41" } }}
                                     />
                                     <br />
                                 </>
                             }
                             label={s.subjectName}
+                            style={{ color: "#6d4c41" }}
                         />
                     ))}
                 </DialogContent>
                 
                 <DialogActions>
-                    <Button onClick={() => setSubjectDialogOpen(false)}>Cancel</Button>
+                    <Button onClick={() => setSubjectDialogOpen(false)} sx={{ color: "#6d4c41" }}>Cancel</Button>
                     <Button
                         onClick={() => {
                             // Join multiple subjects as comma-separated or pick first for paperDetails.subject
@@ -477,6 +479,7 @@ const CreatePaper = () => {
                             setSubjectDialogOpen(false);
                         }}
                         variant="contained"
+                        sx={{ background: "#6d4c41", color: "#fff", "&:hover": { background: "#5d4037" }}}
                     >
                         Select
                     </Button>
