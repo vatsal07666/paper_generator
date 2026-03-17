@@ -22,7 +22,7 @@ const LoginPage = () => {
     })
 
     const ensureAdminExists = () => {
-        const users = JSON.parse(localStorage.getItem("users") || []);
+        const users = JSON.parse(localStorage.getItem("users")) || [];
         const adminExists = users.some(
             (user) => user.username === "admin" && user.email === "admin666@gmail.com"
         );
