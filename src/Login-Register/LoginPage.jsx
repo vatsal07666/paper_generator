@@ -22,7 +22,7 @@ const LoginPage = () => {
     })
 
     const ensureAdminExists = () => {
-        const users = JSON.parse(localStorage.getItem("users"));
+        const users = JSON.parse(localStorage.getItem("users") || []);
         const adminExists = users.some(
             (user) => user.username === "admin" && user.email === "admin666@gmail.com"
         );
@@ -57,7 +57,7 @@ const LoginPage = () => {
         localStorage.setItem("authUser", JSON.stringify(validUser));
 
         resetForm();
-        ShowSnackbar("Login Successful!", "success");
+        ShowSnackbar("Login Successful !", "success");
         history.push(validUser.role === "user" ? "/" : "/admin");
     };
 
