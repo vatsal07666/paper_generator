@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Button, IconButton, Paper, Tooltip, Typography } from "@mui/material";
 import { Field, Form, Formik } from 'formik';
 import { NavLink, useHistory } from 'react-router-dom';
@@ -40,12 +40,17 @@ const LoginPage = () => {
 
     const postData = (values, resetForm) => {
         const users = ensureAdminExists();
+        const input = values.username.trim().toLowerCase();
 
-        const validUser = users.find(
-            (user) =>
-                (user.username === values.username || user.email === values.username) &&
+        const validUser = users.find((user) => {
+            const username = user.username?.toLowerCase();
+            const email = user.email?.toLowerCase();
+
+            return (
+                (username === input || email === input) &&
                 user.password === values.password
-        );
+            );
+        });
 
         if (!validUser) {
             ShowSnackbar("Invalid Username or Password !", "error");
@@ -64,6 +69,15 @@ const LoginPage = () => {
     const handleSubmit = (values, { resetForm }) => {
         postData(values, resetForm);
     }
+
+    useEffect(() => {
+        const token = localStorage.getItem("authToken");
+        const role = localStorage.getItem("role");
+
+        if (token) {
+            history.push(role === "admin" ? "/admin" : "/");
+        }
+    }, [history]);
 
     return (
         <>
