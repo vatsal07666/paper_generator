@@ -21,7 +21,7 @@ const LoginPage = () => {
         password: Yup.string().required("Password is required*")
     })
 
-    const ensureAdminExists = () => {
+    const initializeUsers = () => {
         const users = JSON.parse(localStorage.getItem("users")) || [];
         const adminExists = users.some(
             (user) => user.username === "admin" && user.email === "admin666@gmail.com"
@@ -33,8 +33,8 @@ const LoginPage = () => {
                 password: "Admin@666",
                 role: "admin"
             });
-            localStorage.setItem("users", JSON.stringify(users));
         }
+        localStorage.setItem("users", JSON.stringify(users));
         return users;
     };
 
@@ -71,13 +71,11 @@ const LoginPage = () => {
     }
 
     useEffect(() => {
-        ensureAdminExists();
+        initializeUsers();
         const token = localStorage.getItem("authToken");
         const role = localStorage.getItem("role");
 
-        if (token) {
-            history.push(role === "admin" ? "/admin" : "/");
-        }
+        if (token) history.push(role === "admin" ? "/admin" : "/");
     }, [history]);
 
     return (
