@@ -71,6 +71,7 @@ const LoginPage = () => {
     }
 
     useEffect(() => {
+        ensureAdminExists();
         const token = localStorage.getItem("authToken");
         const role = localStorage.getItem("role");
 
