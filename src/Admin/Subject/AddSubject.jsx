@@ -37,7 +37,7 @@ const AddSubject = () => {
 
     const token = "2xzYLLbk3VRezP5s";
 
-    /* ---------------- Get Subject ---------------- */
+    /* ---------------- Get Subject --------------- */
     const getData = () => {
         axios.get("https://generateapi.techsnack.online/api/subject", { headers: { Authorization: token } })
         .then((res) => {
