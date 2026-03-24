@@ -1,19 +1,21 @@
-📝 Paper Generator
+# 📝 Paper Generator
 
 Paper Generator is a React-based web app that helps you quickly create formatted question papers or worksheets from predefined templates. Perfect for teachers, students, or anyone needing structured documents.
 
-🚀 Features
-✅ Generate question papers automatically
-✅ User-friendly interface built with React
-✅ Export papers in PDF or printable formats
-✅ Responsive design for desktop and mobile
+# 🚀 Features <br>
+
+✅ Generate question papers automatically <br>
+✅ User-friendly interface built with React <br>
+✅ Export papers in PDF or printable formats <br>
+✅ Responsive design for desktop and mobile <br>
 
 📌 Technologies <br>
+
 &bullet; React (Create React App) <br>
 &bullet; JavaScript <br>
 &bullet; HTML & CSS <br>
 
-📸 Demo
+# 📸 Demo
 
 Live demo: [Your Deployed Link](https://paper-generator-one.vercel.app/)
 
