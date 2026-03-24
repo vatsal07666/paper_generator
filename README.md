@@ -20,10 +20,10 @@ Paper Generator is a React-based web app that helps you quickly create formatted
 
 # 📸 Demo
 
-Live demo: [paper-generator-one.vercel.app](https://paper-generator-one.vercel.app/)
+Live demo: <a href="https://paper-generator-one.vercel.app/" target="_blank">paper-generator-one.vercel.app</a>
 
 
 # 📚 Learn More
 
-[React Documentation](https://react.dev/) – Official React docs <br>
-[Create React App Documentation](https://create-react-app.dev/) – CRA features and tips <br>
+<a href="https://react.dev/" target="_blank">React Documentation</a> <br>
+<a href="https://create-react-app.dev/" target="_blank">Create React App Documentation</a> <br>
