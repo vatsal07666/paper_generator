@@ -8,10 +8,10 @@ Paper Generator is a React-based web app that helps you quickly create formatted
 ✅ Export papers in PDF or printable formats
 ✅ Responsive design for desktop and mobile
 
-📌 Technologies
-&bullet; React (Create React App)
-&bullet; JavaScript
-&bullet; HTML & CSS
+📌 Technologies <br>
+&bullet; React (Create React App) <br>
+&bullet; JavaScript <br>
+&bullet; HTML & CSS <br>
 
 📸 Demo
 
