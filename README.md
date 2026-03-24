@@ -25,5 +25,5 @@ Live demo: <a href="https://paper-generator-one.vercel.app/" target="_blank">pap
 
 # 📚 Learn More
 
-<a href="https://react.dev/" target="_blank">React Documentation</a> <br>
-<a href="https://create-react-app.dev/" target="_blank">Create React App Documentation</a> <br>
+&bullet; <a href="https://react.dev/" target="_blank">React Documentation</a> <br>
+&bullet; <a href="https://create-react-app.dev/" target="_blank">Create React App Documentation</a> <br>
