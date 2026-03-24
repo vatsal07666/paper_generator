@@ -20,7 +20,7 @@ Paper Generator is a React-based web app that helps you quickly create formatted
 
 # 📸 Demo
 
-Live demo: [Your Deployed Link](https://paper-generator-one.vercel.app/)
+Live demo: [paper-generator-one.vercel.app](https://paper-generator-one.vercel.app/)
 
 
 ## Learn More
