@@ -25,5 +25,5 @@ Live demo: [paper-generator-one.vercel.app](https://paper-generator-one.vercel.a
 
 # 📚 Learn More
 
-React Documentation – Official React docs
-Create React App Documentation – CRA features and tips
+[React Documentation](https://react.dev/) – Official React docs <br>
+[Create React App Documentation](https://create-react-app.dev/) – CRA features and tips <br>
