@@ -8,6 +8,7 @@ import { MdOutlineAttachEmail } from "react-icons/md";
 import { NavLink, useHistory } from 'react-router-dom';
 import { useSnackbar } from '../Context/SnackbarContext';
 import * as Yup from "yup";
+import axios from 'axios';
 
 const RegisterPage = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -29,32 +30,26 @@ const RegisterPage = () => {
         confirmPassword: Yup.string().required("Confirm Password is required*")
                 .oneOf([Yup.ref("password"), null], "Passwords must match")
     })
+
+    const token = "uL8hdyXEltvYldi8";
     
     const postData = (values, resetForm) => {
-        const users = JSON.parse(localStorage.getItem("users")) || [];
-
-        const userExists = users.find(
-            (user) => user.username === values.username || user.email === values.email
-        );
-
-        if (userExists) {
-            ShowSnackbar("Username or Email already exists!", "error");
-            return;
+        const userData = { username: values.username, email: values.email, password: values.password, 
+            confirmPassword: values.confirmPassword
         }
 
-        // Save new user
-        const newUser = {
-            username: values.username,
-            email: values.email,
-            password: values.password,
-            role: "user"
-        };
-        users.push(newUser);
-        localStorage.setItem("users", JSON.stringify(users));
-
-        resetForm();
-        ShowSnackbar("Account Created Successfully!", "success");
-        history.push("/");
+        axios.post("https://generateapi.techsnack.online/api/login-register", userData, {
+            headers: { Authorization: token }
+        })
+        .then((res) => {
+            if(res.status === 200 || res.status === 201){
+                console.log("POST response: ", res.data);
+                resetForm();
+                history.push("/");
+                ShowSnackbar("Account Created Successfully !", "success");
+            }
+        })
+        .catch((err) => console.error("POST error: ", err))
     };
 
     const handleSubmit = (values, { resetForm }) => {

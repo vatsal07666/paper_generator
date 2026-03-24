@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Box, Button, IconButton, Paper, Tooltip, Typography } from "@mui/material";
 import { Field, Form, Formik } from 'formik';
 import { NavLink, useHistory } from 'react-router-dom';
@@ -8,6 +8,7 @@ import * as Yup from "yup";
 import { useSnackbar } from '../Context/SnackbarContext';
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
+import axios from 'axios';
 
 const LoginPage = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -21,62 +22,42 @@ const LoginPage = () => {
         password: Yup.string().required("Password is required*")
     })
 
-    const initializeUsers = () => {
-        const users = JSON.parse(localStorage.getItem("users")) || [];
-        const adminExists = users.some(
-            (user) => user.username === "admin" && user.email === "admin666@gmail.com"
-        );
-        if (!adminExists) {
-            users.push({
-                username: "admin",
-                email: "admin666@gmail.com",
-                password: "Admin@666",
-                role: "admin"
-            });
-        }
-        localStorage.setItem("users", JSON.stringify(users));
-        return users;
-    };
+    const token = "uL8hdyXEltvYldi8";
 
     const postData = (values, resetForm) => {
-        const users = ensureAdminExists();
-        const input = values.username.trim().toLowerCase();
+        const userData = { username: values.username, password: values.password };
 
-        const validUser = users.find((user) => {
-            const username = user.username?.toLowerCase();
-            const email = user.email?.toLowerCase();
+        axios.post("https://generateapi.techsnack.online/api/login-register", userData, {
+            headers: { Authorization: token }
+        })
+        .then((res) => {
+            console.log("POST response: ", res.data);
 
-            return (
-                (username === input || email === input) &&
-                user.password === values.password
-            );
-        });
+            // Save auth token
+            localStorage.setItem("authToken", res.data.token);
+            console.log(localStorage.getItem("authToken"));
 
-        if (!validUser) {
+            // Save role
+            const role = res.data.role || 
+                (values.username === "admin" && values.password === "Admin@666" ? "admin" : "user");
+            localStorage.setItem("role", role);
+            
+            resetForm();
+            // Redirect based on role
+            if (role === "admin") history.push("/admin");
+            else history.push("/");
+            
+            ShowSnackbar("Login Successful !", "success");
+        })
+        .catch((err) => {
+            console.error(err);
             ShowSnackbar("Invalid Username or Password !", "error");
-            return;
-        }
-
-        localStorage.setItem("authToken", "frontend-auth-token");
-        localStorage.setItem("role", validUser.role);
-        localStorage.setItem("authUser", JSON.stringify(validUser));
-
-        resetForm();
-        ShowSnackbar("Login Successful !", "success");
-        history.push(validUser.role === "user" ? "/" : "/admin");
+        });
     };
 
     const handleSubmit = (values, { resetForm }) => {
         postData(values, resetForm);
     }
-
-    useEffect(() => {
-        initializeUsers();
-        const token = localStorage.getItem("authToken");
-        const role = localStorage.getItem("role");
-
-        if (token) history.push(role === "admin" ? "/admin" : "/");
-    }, [history]);
 
     return (
         <>
