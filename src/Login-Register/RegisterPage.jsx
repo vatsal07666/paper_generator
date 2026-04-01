@@ -3,7 +3,6 @@ import { Box, Button, IconButton, Paper, Tooltip, Typography } from '@mui/materi
 import { Field, Form, Formik } from 'formik'
 import { FaEye, FaEyeSlash, FaRegUser } from "react-icons/fa";
 import { RiLockPasswordLine } from "react-icons/ri";
-import { RiLockPasswordFill } from "react-icons/ri";
 import { MdOutlineAttachEmail } from "react-icons/md";
 import { NavLink, useHistory } from 'react-router-dom';
 import { useSnackbar } from '../Context/SnackbarContext';
@@ -12,11 +11,10 @@ import axios from 'axios';
 
 const RegisterPage = () => {
     const [showPassword, setShowPassword] = useState(false);
-    const [confirmPassword, setConfirmPassword] = useState(false);
     const { ShowSnackbar } = useSnackbar();
     const history = useHistory();
 
-    const initialValues = { username: '', email: '', password: '', confirmPassword: '' };
+    const initialValues = { username: '', email: '', password: '' };
 
     const validationSchema = Yup.object({
         username: Yup.string().required("Username is Required*"),
@@ -26,19 +24,14 @@ const RegisterPage = () => {
                 .matches(/[a-z]/, "Password must contain at least one lowercase character")
                 .matches(/\d/, "Password must contain at least one number")
                 .matches(/[!@#$%^&*()]/, "Password must contain at least one special character"),
-
-        confirmPassword: Yup.string().required("Confirm Password is required*")
-                .oneOf([Yup.ref("password"), null], "Passwords must match")
     })
 
-    const token = "uL8hdyXEltvYldi8";
+    const token = "vZt3CGeByg2P1RDS";
     
     const postData = (values, resetForm) => {
-        const userData = { username: values.username, email: values.email, password: values.password, 
-            confirmPassword: values.confirmPassword
-        }
+        const userData = { username: values.username, email: values.email, password: values.password }
 
-        axios.post("https://generateapi.techsnack.online/api/login-register", userData, {
+        axios.post("https://generateapi.techsnack.online/api/register", userData, {
             headers: { Authorization: token }
         })
         .then((res) => {
@@ -49,7 +42,10 @@ const RegisterPage = () => {
                 ShowSnackbar("Account Created Successfully !", "success");
             }
         })
-        .catch((err) => console.error("POST error: ", err))
+        .catch((err) => {
+            console.error("POST error: ", err);
+            ShowSnackbar("Account Creation Failed !", "error");    
+        })
     };
 
     const handleSubmit = (values, { resetForm }) => {
@@ -116,23 +112,6 @@ const RegisterPage = () => {
                                         </IconButton>
                                     </Tooltip>
                                     {errors.password && touched.password && <div style={{color: "#ff0000", marginTop: "5px"}}>{errors.password}</div>}
-                                </Box>
-
-                                <Box position="relative" sx={{ mb: 4 }}>
-                                    <RiLockPasswordFill style={{ position: "absolute", left: 12, color: "gray", 
-                                        alignSelf: "center", fontSize: "25px" }} 
-                                    />
-                                    <Field name="confirmPassword" type={confirmPassword ? "text" : "password"} 
-                                        placeholder="Enter Confirm Password" 
-                                    />
-                                    <Tooltip title={"View Password"}>
-                                        <IconButton onClick={() => setConfirmPassword(!confirmPassword)}
-                                            sx={{position: "absolute", alignSelf: "center", right: 0}}    
-                                        >
-                                            {confirmPassword ? <FaEye /> : <FaEyeSlash />}
-                                        </IconButton>
-                                    </Tooltip>
-                                    {errors.confirmPassword && touched.confirmPassword && <div style={{color: "#ff0000", marginTop: "5px"}}>{errors.confirmPassword}</div>}
                                 </Box>
 
                                 <Button type='submit' fullWidth 

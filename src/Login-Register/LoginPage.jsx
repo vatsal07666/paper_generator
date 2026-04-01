@@ -22,15 +22,16 @@ const LoginPage = () => {
         password: Yup.string().required("Password is required*")
     })
 
-    const token = "uL8hdyXEltvYldi8";
+    const token = "vZt3CGeByg2P1RDS";
 
     const postData = (values, resetForm) => {
-        const userData = { username: values.username, password: values.password };
+        const data = { username: values.username, password: values.password };
 
-        axios.post("https://generateapi.techsnack.online/api/login-register", userData, {
-            headers: { Authorization: token }
+        axios.post("https://generateapi.techsnack.online/api/login", data, {
+            headers: { Authorization: token, "Content-Type": "application/json" }
         })
         .then((res) => {
+            console.log("/* Login Data */");
             console.log("POST response: ", res.data);
 
             // Save auth token
@@ -41,23 +42,28 @@ const LoginPage = () => {
             const role = res.data.role || 
                 (values.username === "admin" && values.password === "Admin@666" ? "admin" : "user");
             localStorage.setItem("role", role);
-            
+
             resetForm();
+
             // Redirect based on role
-            if (role === "admin") history.push("/admin");
-            else history.push("/");
-            
-            ShowSnackbar("Login Successful !", "success");
+            if (role === "admin"){
+                history.push("/admin");
+                ShowSnackbar("Login Successful !", "success");
+            } else {
+                history.push("/")
+                ShowSnackbar("Only Admin Can Login !", "info");
+            }
+
         })
         .catch((err) => {
-            console.error(err);
-            ShowSnackbar("Invalid Username or Password !", "error");
+            console.error("POST error: ", err);
+            ShowSnackbar("Login Failed !", "error");
         });
     };
 
     const handleSubmit = (values, { resetForm }) => {
         postData(values, resetForm);
-    }
+    };
 
     return (
         <>

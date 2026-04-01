@@ -194,11 +194,11 @@ const AddQuestions = () => {
         .map((t) => ({ value: t.topicName, label: t.topicName }));
 
     const getFilteredTopics = (selectedSubject) => {
-    if (!selectedSubject) {
-        return topics.map((t) => ({ value: t.topicName, label: t.topicName }));
-    }
+        if (!selectedSubject) {
+            return topics.map((t) => ({ value: t.topicName, label: t.topicName }));
+        }
 
-    return topics.filter((t) => t.subjectName === selectedSubject).map((t) => ({
+        return topics.filter((t) => t.subjectName === selectedSubject).map((t) => ({
             value: t.topicName, label: t.topicName
         }));
     };
@@ -290,7 +290,8 @@ const AddQuestions = () => {
                                         {/* Topic Field */}
                                         <Box sx={{ display: "flex", flexDirection: "column", gap: 1, flex: 1 }}>
                                             <label htmlFor="topicName">Topic Name</label>                                            
-                                            <Select options={getFilteredTopics(values.subjectName)} placeholder="Select Topic"
+                                            <Select options={values.subjectName ? getFilteredTopics(values.subjectName) : []} 
+                                                placeholder="Select Topic"
                                                 value={ getFilteredTopics(values.subjectName).find(
                                                         (option) => option.value === values.topicName
                                                     ) || null

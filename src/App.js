@@ -18,16 +18,18 @@ function App() {
                     <Route exact path="/" component={LoginPage} />
                     <Route exact path="/register" component={RegisterPage} />
 
-                    <Index>
-                        <Switch>
-                            <Route exact path="/admin" component={Dashboard} />
-                            <Route exact path="/admin/subject" component={AddSubject} />
-                            <Route exact path="/admin/topic" component={AddTopic} />
-                            <Route exact path="/admin/question" component={AddQuestions} />
-                            <Route exact path="/admin/view-questions" component={ViewQuestions} />
-                            <Route exact path="/admin/create-paper" component={CreatePaper} />
-                        </Switch>
-                    </Index>
+                    <Route path="/admin">
+                        <Index>
+                            <Switch>
+                                <Route exact path="/admin" component={Dashboard} role="admin" />
+                                <Route exact path="/admin/subject" component={AddSubject} role="admin" />
+                                <Route exact path="/admin/topic" component={AddTopic} role="admin" />
+                                <Route exact path="/admin/question" component={AddQuestions} role="admin" />
+                                <Route exact path="/admin/view-questions" component={ViewQuestions} role="admin" />
+                                <Route exact path="/admin/create-paper" component={CreatePaper} role="admin" />
+                            </Switch>
+                        </Index>
+                    </Route>
                 </Switch>
             </Router>
         </>
