@@ -2,11 +2,10 @@ import React, { useState } from 'react';
 import { Box, Button, IconButton, Paper, Tooltip, Typography } from "@mui/material";
 import { Field, Form, Formik } from 'formik';
 import { NavLink, useHistory } from 'react-router-dom';
-import { FaRegUser } from 'react-icons/fa';
 import { RiLockPasswordLine } from 'react-icons/ri';
 import * as Yup from "yup";
 import { useSnackbar } from '../Context/SnackbarContext';
-import { FaEye } from "react-icons/fa";
+import { FaEye, FaRegUser } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 import axios from 'axios';
 
@@ -15,51 +14,72 @@ const LoginPage = () => {
     const{ ShowSnackbar } = useSnackbar();
     const history = useHistory();
 
-    const initialValues = {username: '', password: ''};
+    const initialValues = { username: '', password: '' };
 
     const validationSchema = Yup.object({
-        username: Yup.string().required("Username or Email is Required*"),
-        password: Yup.string().required("Password is required*")
+        username: Yup.string().required("Username is Required*"),
+        password: Yup.string().required("Password is required*").min(8,"Password must be at least 8 characters")
+                .matches(/[A-Z]/, "Password must contain at least one uppercase character")
+                .matches(/[a-z]/, "Password must contain at least one lowercase character")
+                .matches(/\d/, "Password must contain at least one number")
+                .matches(/[!@#$%^&*()]/, "Password must contain at least one special character")
     })
 
     const token = "vZt3CGeByg2P1RDS";
 
     const postData = (values, resetForm) => {
-        const data = { username: values.username, password: values.password };
+        const initializeAdmin = () => {
+            const users = JSON.parse(localStorage.getItem("users")) || [];
+            const adminExists = users.some((u) => u.username === "admin");
+            if (!adminExists) {
+                users.push({
+                    username: "admin",
+                    password: "Admin@666",
+                    email: "admin@example.com",
+                    role: "admin",
+                });
+                localStorage.setItem("users", JSON.stringify(users));
+            }
+        };
 
-        axios.post("https://generateapi.techsnack.online/api/login", data, {
-            headers: { Authorization: token, "Content-Type": "application/json" }
+        initializeAdmin();
+        
+        const loginData = {username: values.username, password: values.password}
+
+        axios.post("https://generateapi.techsnack.online/api/login", loginData, {
+            headers: {Authorization: token, "Content-Type": "application/json" }
         })
         .then((res) => {
-            console.log("/* Login Data */");
-            console.log("POST response: ", res.data);
+            if(res.status === 200 || res.status === 201){
+                // Get registered users from localStorage
+                const users = JSON.parse(localStorage.getItem("users")) || [];
+                const user = users.find(
+                    (u) => u.username === values.username && u.password === values.password
+                );
 
-            // Save auth token
-            localStorage.setItem("authToken", res.data.token);
-            console.log(localStorage.getItem("authToken"));
+                if (user) {
+                    console.log("/* Login Data */");
+                    console.log("POST response: ", res.data);
 
-            // Save role
-            const role = res.data.role || 
-                (values.username === "admin" && values.password === "Admin@666" ? "admin" : "user");
-            localStorage.setItem("role", role);
+                    // Successful login
+                    localStorage.setItem("authToken", "demo-token"); // fake token
+                    localStorage.setItem("role", user.role || "user");
+                    ShowSnackbar("Login Successful !", "success");
 
-            resetForm();
-
-            // Redirect based on role
-            if (role === "admin"){
-                history.push("/admin");
-                ShowSnackbar("Login Successful !", "success");
-            } else {
-                history.push("/")
-                ShowSnackbar("Only Admin Can Login !", "info");
+                    resetForm();
+                    // Redirect based on role
+                    if(user.role === "admin") history.push("/admin");
+                    else ShowSnackbar("Only Admin Can Access for Now !", "info");
+                } else {
+                    ShowSnackbar("Username or Password not Exists !", "info");
+                }
             }
-
         })
         .catch((err) => {
             console.error("POST error: ", err);
             ShowSnackbar("Login Failed !", "error");
-        });
-    };
+        })
+    }
 
     const handleSubmit = (values, { resetForm }) => {
         postData(values, resetForm);
@@ -95,12 +115,12 @@ const LoginPage = () => {
 
                                 <Box position="relative" sx={{ my: 4 }}>
                                     <FaRegUser style={{ position: "absolute", left: 12, color: "gray",
-                                        alignSelf: "center", fontSize: "25px" }} 
+                                        alignSelf: "center", fontSize: "25px" }}
                                     />
-                                    <Field name="username" placeholder="Enter Username or Email" />
+                                    <Field name="username" placeholder="Enter Username" />
                                     {errors.username && touched.username && <div style={{color: "#ff0000", marginTop: "5px"}}>{errors.username}</div>}
                                 </Box>
-                                
+
                                 <Box position="relative" sx={{ mb: 4 }}>
                                     <RiLockPasswordLine style={{ position: "absolute", left: 12, color: "gray", 
                                         alignSelf: "center", fontSize: "25px" }} 
@@ -127,7 +147,10 @@ const LoginPage = () => {
                                     Login
                                 </Button>
 
-                                <Box  sx={{ display: "flex", justifyContent: "center", gap: 1, mt: 2, flexWrap: "wrap" }}>
+                                <Box sx={{ mt: 3, display: "flex", justifyContent: "center", gap: 1, 
+                                        flexWrap: "wrap" 
+                                    }}
+                                >
                                     <Typography component={"span"}>
                                         Don&apos;t have an Account ?
                                     </Typography>

@@ -23,30 +23,46 @@ const RegisterPage = () => {
                 .matches(/[A-Z]/, "Password must contain at least one uppercase character")
                 .matches(/[a-z]/, "Password must contain at least one lowercase character")
                 .matches(/\d/, "Password must contain at least one number")
-                .matches(/[!@#$%^&*()]/, "Password must contain at least one special character"),
+                .matches(/[!@#$%^&*()]/, "Password must contain at least one special character")
     })
 
-    const token = "vZt3CGeByg2P1RDS";
-    
-    const postData = (values, resetForm) => {
-        const userData = { username: values.username, email: values.email, password: values.password }
+    const token = "5wI8xsf3DqDSmYTX";
 
-        axios.post("https://generateapi.techsnack.online/api/register", userData, {
-            headers: { Authorization: token }
+    const postData = (values, resetForm) => {
+        const RegisterData = {username: values.username, email: values.email, password: values.password}
+
+        axios.post("https://generateapi.techsnack.online/api/register", RegisterData, {
+            headers: { Authorization: token, "Content-Type": "application/json" }
         })
         .then((res) => {
-            if(res.status === 200 || res.status === 201){
-                console.log("POST response: ", res.data);
-                resetForm();
-                history.push("/");
-                ShowSnackbar("Account Created Successfully !", "success");
+            if(res.status === 200 || res.status === 204){
+                // Get existing users from localStorage
+                const users = JSON.parse(localStorage.getItem("users")) || [];
+                
+                // Check if username already exists
+                const userExists = users.some((u) => u.username === values.username);
+
+                if (userExists) {
+                    ShowSnackbar("Username already exists!", "error");
+                } else {
+                    console.log("/* Register Data */");
+                    console.log("POST response: ", res.data);
+
+                    // Add new user
+                    users.push({ ...values, role: "user" });
+                    localStorage.setItem("users", JSON.stringify(users));
+    
+                    resetForm();
+                    history.push("/log-in");
+                    ShowSnackbar("Account Created Successfully!", "success");
+                }
             }
         })
         .catch((err) => {
             console.error("POST error: ", err);
-            ShowSnackbar("Account Creation Failed !", "error");    
+            ShowSnackbar("Account Creation Failed !", "error");
         })
-    };
+    }
 
     const handleSubmit = (values, { resetForm }) => {
         postData(values, resetForm);
@@ -123,7 +139,10 @@ const RegisterPage = () => {
                                     Create Account
                                 </Button>
 
-                                <Box sx={{ display: "flex", justifyContent: "center", gap: 1, mt: 2, flexWrap: "wrap" }}>
+                                <Box sx={{ mt: 3, display: "flex", justifyContent: "center", gap: 1, 
+                                        flexWrap: "wrap" 
+                                    }}
+                                >
                                     <Typography component={"span"}>
                                         Already have an Account ?
                                     </Typography>
