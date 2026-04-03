@@ -42,8 +42,10 @@ const RegisterPage = () => {
                 // Check if username already exists
                 const userExists = users.some((u) => u.username === values.username);
 
+                
                 if (userExists) {
-                    ShowSnackbar("Username already exists!", "error");
+                    if(values.username === "admin") ShowSnackbar("Cannot Use Username admin !", "info");
+                    else ShowSnackbar("Username already exists!", "error");
                 } else {
                     console.log("/* Register Data */");
                     console.log("POST response: ", res.data);

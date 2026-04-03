@@ -126,7 +126,7 @@ const Index = ({children}) => {
         const role = localStorage.getItem("role");
 
         if (!token || role !== "admin") {
-            history.replace(role === "user" ? "/" : "/login");
+            history.replace(role === "user" && "/");
         } else {
             setIsLoggedIn(true);
         }
