@@ -319,6 +319,7 @@ const CreatePaper = () => {
 
                     {/* Date Field */}
                     <TextField type="date" variant="standard" value={paperDetails.examDate || ""}
+                        label="Exam Date" InputLabelProps={{ shrink: true }}
                         onChange={(e) => setPaperDetails({ ...paperDetails, examDate: e.target.value })} 
                     />
                 </Box>
