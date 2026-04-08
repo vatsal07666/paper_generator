@@ -303,8 +303,8 @@ const CreatePaper = () => {
                 }}
             >
                 {/* University & Date Section */}
-                <Box sx={{ display: "flex", justifyContent: { xs: "none", sm: "space-between" }, alignItems: "center", 
-                        mb: 2, flexDirection: isMobile ? "column" : "row", gap: 2
+                <Box sx={{ display: "flex", justifyContent: { xs: "flex-start", sm: "space-between" }, 
+                        alignItems: "center", mb: 2, flexDirection: isMobile ? "column" : "row", gap: 2
                     }}
                 >
                     {/* University Field */}
@@ -319,8 +319,7 @@ const CreatePaper = () => {
 
                     {/* Date Field */}
                     <TextField type="date" variant="standard" value={paperDetails.examDate || ""}
-                        label="Exam Date" slotProps={{ inputLabel: { shrink: true } }} 
-                        fullWidth={{ xs: true, sm: false }}
+                        label="Exam Date" slotProps={{ inputLabel: { shrink: true } }}
                         onChange={(e) => setPaperDetails({ ...paperDetails, examDate: e.target.value })} 
                     />
                 </Box>
