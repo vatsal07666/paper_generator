@@ -96,8 +96,9 @@ const LoginPage = () => {
                 }}
             >
                 <Paper elevation={0} className='form-container' 
-                    sx={{ width: 420, p: { xs: 1, sm: 4 }, borderRadius: 4, background: "#ffffff",
-                        border: "1px solid #e7ded9", boxShadow: "0 10px 30px rgba(78,52,46,0.08)"
+                    sx={{ width: "100%", maxWidth: 350, p: { xs: 1, sm: 4 }, borderRadius: 4, 
+                        background: "#ffffff", border: "1px solid #e7ded9", 
+                        boxShadow: "0 10px 30px rgba(78,52,46,0.08)"
                     }}
                 >
                     <Formik innerRef={formikRef} 

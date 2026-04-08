@@ -72,13 +72,13 @@ const RegisterPage = () => {
         <>
             <Box className="container" 
                 sx={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center",
-                    background: "linear-gradient(135deg, #faf7f5, #f3edea)", px: { xs: 2, sm: 0 },
-                    py: {xs: 4, sm: 2}
+                    background: "linear-gradient(135deg, #faf7f5, #f3edea)", px: { xs: 2, sm: 0 }
                 }}
             >
                 <Paper elevation={0} className='form-container' 
-                    sx={{ width: 420, p: { xs: 1, sm: 4 }, borderRadius: 4, background: "#ffffff",
-                        border: "1px solid #e7ded9", boxShadow: "0 10px 30px rgba(78,52,46,0.08)"
+                    sx={{ width: "100%", maxWidth: 350, p: { xs: 1, sm: 4 }, borderRadius: 4, 
+                        background: "#ffffff", border: "1px solid #e7ded9", 
+                        boxShadow: "0 10px 30px rgba(78,52,46,0.08)"
                     }}
                 >
                     <Formik initialValues={initialValues}

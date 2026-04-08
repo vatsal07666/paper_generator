@@ -18,6 +18,7 @@ Paper Generator is a React-based web app that helps you quickly create formatted
 * React (Create React App)
 * JavaScript
 * HTML & CSS
+* Material UI
 
 ---
 
