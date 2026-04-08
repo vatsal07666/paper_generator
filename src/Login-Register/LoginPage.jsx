@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Box, Button, IconButton, Paper, Tooltip, Typography } from "@mui/material";
 import { Field, Form, Formik } from 'formik';
 import { NavLink, useHistory } from 'react-router-dom';
@@ -14,12 +14,17 @@ const LoginPage = () => {
     const [showPassword, setShowPassword] = useState(false);
     const{ ShowSnackbar } = useSnackbar();
     const history = useHistory();
-
-    const initialValues = {username: '', password: ''};
+    const formikRef = useRef();
+    
+    const initialValues = { username: '', password: '' };
 
     const validationSchema = Yup.object({
-        username: Yup.string().required("Username or Email is Required*"),
-        password: Yup.string().required("Password is required*")
+        username: Yup.string().required("Username is Required*"),
+        password: Yup.string().required("Password is required*").min(8,"Password must be at least 8 characters")
+                .matches(/[A-Z]/, "Password must contain at least one uppercase character")
+                .matches(/[a-z]/, "Password must contain at least one lowercase character")
+                .matches(/\d/, "Password must contain at least one number")
+                .matches(/[!@#$%^&*()]/, "Password must contain at least one special character"),
     })
 
     const token = "vZt3CGeByg2P1RDS";
@@ -65,11 +70,14 @@ const LoginPage = () => {
         postData(values, resetForm);
     };
 
+    const fillForm = (username, password) => formikRef.current.setValues({ username, password });
+
     return (
         <>
             <Box className="container" 
                 sx={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center",
-                    background: "linear-gradient(135deg, #faf7f5, #f3edea)", px: { xs: 2, sm: 0 }
+                    flexDirection: "column", background: "linear-gradient(135deg, #faf7f5, #f3edea)", 
+                    px: { xs: 2, sm: 0 }
                 }}
             >
                 <Paper elevation={0} className='form-container' 
@@ -77,7 +85,8 @@ const LoginPage = () => {
                         border: "1px solid #e7ded9", boxShadow: "0 10px 30px rgba(78,52,46,0.08)"
                     }}
                 >
-                    <Formik initialValues={initialValues}
+                    <Formik innerRef={formikRef} 
+                        initialValues={initialValues}
                         validationSchema={validationSchema}
                         onSubmit={handleSubmit}
                     >
@@ -137,6 +146,24 @@ const LoginPage = () => {
                         )}
                     </Formik>
                 </Paper>
+
+                <Box sx={{ display: "flex", justifyContent: "center", flexDirection: "column" }}>
+                    {/* <Button variant="contained" onClick={() => fillForm("DemoUser000", "DEmo@#666")} 
+                        sx={{ mt: 3, textTransform: "none", background: "#9a3c1c", color: "#ffffff", 
+                            borderRadius: 4 
+                        }}
+                    >
+                        User Account :- Username: DemoUser000, Password: DEmo@#666
+                    </Button> */}
+
+                    <Button variant="contained" onClick={() => fillForm("admin", "Admin@666")} 
+                        sx={{ mt: 3, textTransform: "none", background: "#9a3c1c", color: "#ffffff", 
+                            borderRadius: 4 
+                        }}
+                    >
+                        Admin Account :- Username: admin, Password: Admin@666
+                    </Button>
+                </Box>
             </Box>
         </>
     )

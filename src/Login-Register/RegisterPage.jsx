@@ -26,27 +26,43 @@ const RegisterPage = () => {
                 .matches(/[!@#$%^&*()]/, "Password must contain at least one special character"),
     })
 
-    const token = "vZt3CGeByg2P1RDS";
-    
-    const postData = (values, resetForm) => {
-        const userData = { username: values.username, email: values.email, password: values.password }
+    const token = "5wI8xsf3DqDSmYTX";
 
-        axios.post("https://generateapi.techsnack.online/api/register", userData, {
-            headers: { Authorization: token }
+    const postData = (values, resetForm) => {
+        const data = {username: values.username, email: values.email, password: values.password}
+
+        axios.post("https://generateapi.techsnack.online/api/register", data, {
+            headers: { Authorization: token, "Content-Type": "application/json" }
         })
         .then((res) => {
-            if(res.status === 200 || res.status === 201){
-                console.log("POST response: ", res.data);
-                resetForm();
-                history.push("/");
-                ShowSnackbar("Account Created Successfully !", "success");
+            if(res.status === 200 || res.status === 204){
+                // Get existing users from localStorage
+                const users = JSON.parse(localStorage.getItem("users")) || [];
+                
+                // Check if username already exists
+                const userExists = users.some((u) => u.username === values.username);
+
+                if (userExists) {
+                    if(values.username === "admin") ShowSnackbar("Cannot Use Username admin !", "info");
+                    else ShowSnackbar("Username already exists!", "error");
+                } else {
+                    console.log("/* Register Data */");
+                    console.log("POST response: ", res.data);
+
+                    // Add new user
+                    users.push({ ...values, role: "user" });
+                    localStorage.setItem("users", JSON.stringify(users));
+    
+                    resetForm();
+                    history.push("/log-in");
+                    ShowSnackbar("Account Created Successfully!", "success");
+                }
             }
         })
         .catch((err) => {
             console.error("POST error: ", err);
-            ShowSnackbar("Account Creation Failed !", "error");    
         })
-    };
+    }
 
     const handleSubmit = (values, { resetForm }) => {
         postData(values, resetForm);
