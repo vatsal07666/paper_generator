@@ -23,7 +23,7 @@ const RegisterPage = () => {
                 .matches(/[A-Z]/, "Password must contain at least one uppercase character")
                 .matches(/[a-z]/, "Password must contain at least one lowercase character")
                 .matches(/\d/, "Password must contain at least one number")
-                .matches(/[!@#$%^&*()]/, "Password must contain at least one special character"),
+                .matches(/[!@#$%^&*()]/, "Password must contain at least one special character")
     })
 
     const token = "5wI8xsf3DqDSmYTX";
@@ -54,8 +54,8 @@ const RegisterPage = () => {
                     localStorage.setItem("users", JSON.stringify(users));
     
                     resetForm();
-                    history.push("/log-in");
-                    ShowSnackbar("Account Created Successfully!", "success");
+                    history.push("/");
+                    ShowSnackbar("Account Created Successfully !", "success");
                 }
             }
         })
@@ -139,7 +139,10 @@ const RegisterPage = () => {
                                     Create Account
                                 </Button>
 
-                                <Box sx={{ display: "flex", justifyContent: "center", gap: 1, mt: 2, flexWrap: "wrap" }}>
+                                <Box sx={{ mt: 3, display: "flex", justifyContent: "center", gap: 1, 
+                                        flexWrap: "wrap" 
+                                    }}
+                                >
                                     <Typography component={"span"}>
                                         Already have an Account ?
                                     </Typography>

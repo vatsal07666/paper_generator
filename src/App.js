@@ -1,5 +1,6 @@
 import "./App.css";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
+
 import Index from "./Admin/Index/Index";
 import Dashboard from "./Admin/Dashboard/Dashboard";
 import LoginPage from "./Login-Register/LoginPage";
@@ -9,6 +10,8 @@ import AddTopic from "./Admin/Topic/AddTopic";
 import AddQuestions from "./Admin/Questions/AddQuestions";
 import ViewQuestions from "./Admin/Questions/ViewQuestions";
 import CreatePaper from "./Admin/Paper/CreatePaper";
+
+import PrivateRoute from "./Login-Register/PrivateRoute";
 
 function App() {
     return (
@@ -21,14 +24,19 @@ function App() {
                     <Route path="/admin">
                         <Index>
                             <Switch>
-                                <Route exact path="/admin" component={Dashboard} role="admin" />
-                                <Route exact path="/admin/subject" component={AddSubject} role="admin" />
-                                <Route exact path="/admin/topic" component={AddTopic} role="admin" />
-                                <Route exact path="/admin/question" component={AddQuestions} role="admin" />
-                                <Route exact path="/admin/view-questions" component={ViewQuestions} role="admin" />
-                                <Route exact path="/admin/create-paper" component={CreatePaper} role="admin" />
+                                <PrivateRoute exact path="/admin" component={Dashboard} role="admin" />
+                                <PrivateRoute exact path="/admin/subject" component={AddSubject} role="admin" />
+                                <PrivateRoute exact path="/admin/topic" component={AddTopic} role="admin" />
+                                <PrivateRoute exact path="/admin/question" component={AddQuestions} role="admin" />
+                                <PrivateRoute exact path="/admin/view-questions" component={ViewQuestions} role="admin" />
+                                <PrivateRoute exact path="/admin/create-paper" component={CreatePaper} role="admin" />
                             </Switch>
                         </Index>
+                    </Route>
+
+                    {/* Redirect if role not matched */}
+                    <Route path="*">
+                        <Redirect to="/" />
                     </Route>
                 </Switch>
             </Router>
