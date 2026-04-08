@@ -303,8 +303,8 @@ const CreatePaper = () => {
                 }}
             >
                 {/* University & Date Section */}
-                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2,
-                        flexDirection: isMobile ? "column" : "row", gap: 2
+                <Box sx={{ display: "flex", justifyContent: { xs: "none", sm: "space-between" }, alignItems: "center", 
+                        mb: 2, flexDirection: isMobile ? "column" : "row", gap: 2
                     }}
                 >
                     {/* University Field */}
