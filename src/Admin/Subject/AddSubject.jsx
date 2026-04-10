@@ -17,6 +17,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FaEdit } from "react-icons/fa";
 import Select from "react-select";
+import SubjectIcon from '@mui/icons-material/Subject';
 
 const AddSubject = () => {
     const { list: subjects = [], formValues, openForm, searchItem, deleteOpen, deleteId, editId } 
@@ -411,7 +412,26 @@ const AddSubject = () => {
                                     ))
                                 ) : (
                                     <TableRow>
-                                        <TableCell colSpan={5} align="center"> Language Data Not Found ! </TableCell>
+                                        <TableCell colSpan={5}>
+                                            <Box sx={{ width: "100%", display: "flex", flexDirection: "column",
+                                                    alignItems: "center", justifyContent: "center", py: 10, textAlign: "center",
+                                                    color: "#64748B"
+                                                }} 
+                                            >
+                                                {/* Icon */}
+                                                <SubjectIcon sx={{ fontSize: 100, color: "#cbd5e1", mb: 2 }} />
+
+                                                {/* Title */}
+                                                <Typography sx={{ fontSize: "22px", fontWeight: 600, color: "#1e293b" }} >
+                                                    No Subjects Found
+                                                </Typography>
+
+                                                {/* Subtitle */}
+                                                <Typography sx={{ mt: 1, fontSize: 14 }}>
+                                                    there aren’t any subjects added yet.
+                                                </Typography>
+                                            </Box>
+                                        </TableCell>
                                     </TableRow>
                                 )}
                             </TableBody>

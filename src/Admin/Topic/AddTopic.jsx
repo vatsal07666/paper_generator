@@ -1,9 +1,7 @@
 import React, { useCallback, useContext, useEffect } from "react";
 import * as Yup from "yup";
 import { Box, Button, Card, CardContent, Dialog, DialogActions, DialogContent, DialogTitle, Divider,
-    InputBase, Paper, Typography,
-    useMediaQuery,
-    useTheme,
+    InputBase, Paper, Typography, useMediaQuery, useTheme,
 } from "@mui/material";
 import { IoMdAdd } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,6 +17,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { FaEdit } from "react-icons/fa";
 import { setSubject } from "../Subject/SubjectSlice";
 import Select from "react-select";
+import TopicIcon from '@mui/icons-material/Topic';
 
 const AddTopic = () => {
     const { list: topics = [], formValues, openForm, searchItem, deleteOpen, deleteId,
@@ -397,8 +396,25 @@ const AddTopic = () => {
                             </Card>
                         ))
                     ) : (   
-                        <Paper sx={{ p: 3, textAlign: "center", gridColumn: "1 / -1" }}> 
-                            No topics available. Click "Add Topic" to create one.
+                        <Paper sx={{ p: 3, textAlign: "center", borderRadius: 4 }}> 
+                            <Box sx={{ width: "100%", display: "flex", flexDirection: "column",
+                                    alignItems: "center", justifyContent: "center", py: 10, textAlign: "center",
+                                    color: "#64748B"
+                                }} 
+                            >
+                                {/* Icon */}
+                                <TopicIcon sx={{ fontSize: 100, color: "#cbd5e1", mb: 2 }} />
+
+                                {/* Title */}
+                                <Typography sx={{ fontSize: "22px", fontWeight: 600, color: "#1e293b" }} >
+                                    No Topics Found
+                                </Typography>
+
+                                {/* Subtitle */}
+                                <Typography sx={{ mt: 1, fontSize: 14 }}>
+                                    there aren’t any topics added yet.
+                                </Typography>
+                            </Box>
                         </Paper>
                     )}
                 </Box>

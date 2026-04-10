@@ -11,6 +11,7 @@ import { useHistory } from "react-router-dom";
 import axios from "axios";
 import { setSubject } from "../Subject/SubjectSlice";
 import { setTopic } from "../Topic/TopicSlice";
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 const ViewQuestions = () => {
     const dispatch = useDispatch();
@@ -254,7 +255,26 @@ const ViewQuestions = () => {
                         )
                     })
                 ) : (
-                    <Typography>No Questions Found</Typography>
+                    <Paper sx={{ p: 3, textAlign: "center", borderRadius: 4 }}> 
+                        <Box sx={{ width: "100%", display: "flex", flexDirection: "column",
+                                alignItems: "center", justifyContent: "center", py: 10, textAlign: "center",
+                                color: "#64748B"
+                            }} 
+                        >
+                            {/* Icon */}
+                            <HelpOutlineIcon sx={{ fontSize: 100, color: "#cbd5e1", mb: 2 }} />
+
+                            {/* Title */}
+                            <Typography sx={{ fontSize: "22px", fontWeight: 600, color: "#1e293b" }} >
+                                No Questions Found
+                            </Typography>
+
+                            {/* Subtitle */}
+                            <Typography sx={{ mt: 1, fontSize: 14 }}>
+                                there aren’t any questions added yet.
+                            </Typography>
+                        </Box>
+                    </Paper>
                 )}
             </Box>
         </Box>
