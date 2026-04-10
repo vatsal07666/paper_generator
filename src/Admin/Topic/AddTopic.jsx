@@ -396,7 +396,7 @@ const AddTopic = () => {
                             </Card>
                         ))
                     ) : (   
-                        <Paper sx={{ p: 3, textAlign: "center", borderRadius: 4 }}> 
+                        <Paper sx={{ p: 3, textAlign: "center", gridColumn: "1 / -1", borderRadius: 4 }}> 
                             <Box sx={{ width: "100%", display: "flex", flexDirection: "column",
                                     alignItems: "center", justifyContent: "center", py: 10, textAlign: "center",
                                     color: "#64748B"
