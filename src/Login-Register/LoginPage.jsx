@@ -5,9 +5,10 @@ import { NavLink, useHistory } from 'react-router-dom';
 import { RiLockPasswordLine } from 'react-icons/ri';
 import * as Yup from "yup";
 import { useSnackbar } from '../Context/SnackbarContext';
-import { FaEye, FaRegUser } from "react-icons/fa";
+import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 import axios from 'axios';
+import { MdOutlineAttachEmail } from 'react-icons/md';
 
 const LoginPage = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -15,10 +16,10 @@ const LoginPage = () => {
     const history = useHistory();
     const formikRef = useRef();
 
-    const initialValues = {username: '', password: ''};
+    const initialValues = {email: '', password: ''};
 
     const validationSchema = Yup.object({
-        username: Yup.string().required("Username or Email is Required*"),
+        email: Yup.string().email("Invalid Email*").required("Enter Email*"),
         password: Yup.string().required("Password is required*").min(8,"Password must be at least 8 characters")
                 .matches(/[A-Z]/, "Password must contain at least one uppercase character")
                 .matches(/[a-z]/, "Password must contain at least one lowercase character")
@@ -26,81 +27,74 @@ const LoginPage = () => {
                 .matches(/[!@#$%^&*()]/, "Password must contain at least one special character")
     })
 
-    const token = "vZt3CGeByg2P1RDS";
+    const token = "5wI8xsf3DqDSmYTX";
 
-    const postData = (values, resetForm) => {
+    const getData = (values, resetForm) => {
         const initializeAdmin = () => {
-            const users = JSON.parse(localStorage.getItem("users")) || [];
-            const adminExists = users.some((u) => u.username === "admin");
+            const localUsers = JSON.parse(localStorage.getItem("users")) || [];
+            const adminExists = localUsers.some((u) => u.email === "admin@example.com");
             if (!adminExists) {
-                users.push({
+                localUsers.push({
                     username: "admin",
                     password: "Admin@666",
+                    email: "admin@example.com",
                     role: "admin",
                 });
-                localStorage.setItem("users", JSON.stringify(users));
+                localStorage.setItem("users", JSON.stringify(localUsers));
             }
         };
 
         initializeAdmin();
-        
-        const loginData = {username: values.username, password: values.password}
 
-        axios.post("https://generateapi.techsnack.online/api/login", loginData, {
+        axios.get("https://generateapi.techsnack.online/api/register", {
             headers: {Authorization: token, "Content-Type": "application/json" }
         })
         .then((res) => {
             if(res.status === 200 || res.status === 201){
                 // Get registered users from localStorage
-                const users = JSON.parse(localStorage.getItem("users")) || [];
-                const user = users.find(
-                    (u) => u.username === values.username && u.password === values.password
+                const users = res.data?.Data;
+                const localUsers = JSON.parse(localStorage.getItem("users")) || [];
+                const allUsers = [...localUsers, ...users]
+                const user = allUsers.find(
+                    (u) => u.email === values.email && u.password === values.password
                 );
 
                 if (user) {
-                    console.log("/* Login Data */");
-                    console.log("POST response: ", res.data);
-
                     // Successful login
                     localStorage.setItem("authToken", "demo-token"); // fake token
                     localStorage.setItem("role", user.role || "user");
                     ShowSnackbar("Login Successful !", "success");
-
                     resetForm();
+
                     // Redirect based on role
-                    if(user.role === "admin") history.push("/admin");
-                    else ShowSnackbar("Only Admin Can Access for Now !", "info");
+                    if (user.role === "admin") history.push("/admin");
+                    else history.push("/");
                 } else {
-                    ShowSnackbar("Username or Password not Exists !", "info");
+                    ShowSnackbar("Email or Password not Exists !", "info");
                 }
             }
         })
         .catch((err) => {
-            console.error("POST error: ", err);
+            console.error("GET error: ", err);
             ShowSnackbar("Login Failed !", "error");
         })
     }
 
     const handleSubmit = (values, { resetForm }) => {
-        postData(values, resetForm);
+        getData(values, resetForm);
     };
 
-    const fillForm = (username, password) => formikRef.current.setValues({ username, password });
+    const fillForm = (email, password) => {
+        if (!formikRef.current) return;
+
+        formikRef.current.setFieldValue("email", email);
+        formikRef.current.setFieldValue("password", password);
+    };
 
     return (
         <>
-            <Box className="container" 
-                sx={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center",
-                    flexDirection: "column", background: "linear-gradient(135deg, #faf7f5, #f3edea)", 
-                    px: { xs: 2, sm: 0 }
-                }}
-            >
-                <Paper elevation={0} className='form-container' 
-                    sx={{ width: "100%", maxWidth: 350, p: { xs: 1, sm: 4 }, borderRadius: 4, 
-                        background: "#ffffff", border: "1px solid #e7ded9", 
-                        boxShadow: "0 10px 30px rgba(78,52,46,0.08)"
-                    }}
-                >
+            <Box className="container" sx={{ flexDirection: "column", px: { xs: 2, sm: 0 } }}>
+                <Paper elevation={0} className='form-container' sx={{ p: { xs: 1, sm: 4 } }}>
                     <Formik innerRef={formikRef} 
                         initialValues={initialValues}
                         validationSchema={validationSchema}
@@ -119,11 +113,11 @@ const LoginPage = () => {
                                 </Box>
 
                                 <Box position="relative" sx={{ my: 4 }}>
-                                    <FaRegUser style={{ position: "absolute", left: 12, color: "gray",
+                                    <MdOutlineAttachEmail style={{ position: "absolute", left: 12, color: "gray", 
                                         alignSelf: "center", fontSize: "25px" }}
                                     />
-                                    <Field name="username" placeholder="Enter Username" />
-                                    {errors.username && touched.username && <div style={{color: "#ff0000", marginTop: "5px"}}>{errors.username}</div>}
+                                    <Field name="email" type="email" placeholder="Enter Email" />
+                                    {errors.email && touched.email && <div style={{color: "#ff0000", marginTop: "5px"}}>{errors.email}</div>}
                                 </Box>
 
                                 <Box position="relative" sx={{ mb: 4 }}>
@@ -143,12 +137,7 @@ const LoginPage = () => {
                                     {errors.password && touched.password && <div style={{color: "#ff0000", marginTop: "5px"}}>{errors.password}</div>}
                                 </Box>
 
-                                <Button type="submit" fullWidth
-                                    sx={{ mt: 1, py: 1.2, fontWeight: 600, fontSize: "15px", borderRadius: 2,
-                                        background: "#6d4c41", color: "#fff",
-                                        "&:hover": { background: "#5d4037" }
-                                    }}
-                                >
+                                <Button type="submit" fullWidth className='submit-button'>
                                     Login
                                 </Button>
 
@@ -159,7 +148,7 @@ const LoginPage = () => {
                                     <Typography component={"span"}>
                                         Don&apos;t have an Account ?
                                     </Typography>
-                                    <NavLink className="register-link" to="/register">Register</NavLink>
+                                    <NavLink className="router-link" to="/register">Register</NavLink>
                                 </Box>
                             </Form>
                         )}
@@ -167,20 +156,12 @@ const LoginPage = () => {
                 </Paper>
 
                 <Box sx={{ display: "flex", justifyContent: "center", flexDirection: "column" }}>
-                    {/* <Button variant="contained" onClick={() => fillForm("DemoUser000", "DEmo@#666")} 
+                    <Button variant="contained" onClick={() => fillForm("admin@example.com", "Admin@666")} 
                         sx={{ mt: 3, textTransform: "none", background: "#9a3c1c", color: "#ffffff", 
                             borderRadius: 4 
                         }}
                     >
-                        User Account :- Username: DemoUser000, Password: DEmo@#666
-                    </Button> */}
-
-                    <Button variant="contained" onClick={() => fillForm("admin", "Admin@666")} 
-                        sx={{ mt: 3, textTransform: "none", background: "#9a3c1c", color: "#ffffff", 
-                            borderRadius: 4 
-                        }}
-                    >
-                        Admin Account :- Username: admin, Password: Admin@666
+                        Admin Account :- Email: admin@example.com, Password: Admin@666
                     </Button>
                 </Box>
             </Box>

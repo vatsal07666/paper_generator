@@ -31,36 +31,37 @@ const RegisterPage = () => {
     const postData = (values, resetForm) => {
         const data = {username: values.username, email: values.email, password: values.password}
 
+        // Get existing users from localStorage
+        const users = JSON.parse(localStorage.getItem("users")) || [];
+        
+        // Check if username already exists
+        const userExists = users.some((u) => u.email === values.email);
+
+        if (userExists) {
+            ShowSnackbar("Email already exists!", "error");
+            return;
+        }
+
         axios.post("https://generateapi.techsnack.online/api/register", data, {
             headers: { Authorization: token, "Content-Type": "application/json" }
         })
         .then((res) => {
             if(res.status === 200 || res.status === 204){
-                // Get existing users from localStorage
-                const users = JSON.parse(localStorage.getItem("users")) || [];
+                console.log("/* Register Data */");
+                console.log("POST response: ", res.data);
                 
-                // Check if username already exists
-                const userExists = users.some((u) => u.username === values.username);
+                // Add new user
+                users.push({ ...values, role: "user" });
+                localStorage.setItem("users", JSON.stringify(users));
 
-                if (userExists) {
-                    if(values.username === "admin") ShowSnackbar("Cannot Use Username admin !", "info");
-                    else ShowSnackbar("Username already exists!", "error");
-                } else {
-                    console.log("/* Register Data */");
-                    console.log("POST response: ", res.data);
-
-                    // Add new user
-                    users.push({ ...values, role: "user" });
-                    localStorage.setItem("users", JSON.stringify(users));
-    
-                    resetForm();
-                    history.push("/");
-                    ShowSnackbar("Account Created Successfully !", "success");
-                }
+                resetForm();
+                history.push("/log-in");
+                ShowSnackbar("Account Created Successfully !", "success");
             }
         })
         .catch((err) => {
             console.error("POST error: ", err);
+            ShowSnackbar("Registration failed !", "error");
         })
     }
 
@@ -70,17 +71,8 @@ const RegisterPage = () => {
 
     return (
         <>
-            <Box className="container" 
-                sx={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center",
-                    background: "linear-gradient(135deg, #faf7f5, #f3edea)", px: { xs: 2, sm: 0 }
-                }}
-            >
-                <Paper elevation={0} className='form-container' 
-                    sx={{ width: "100%", maxWidth: 350, p: { xs: 1, sm: 4 }, borderRadius: 4, 
-                        background: "#ffffff", border: "1px solid #e7ded9", 
-                        boxShadow: "0 10px 30px rgba(78,52,46,0.08)"
-                    }}
-                >
+            <Box className="container" sx={{ px: { xs: 2, sm: 0 } }}>
+                <Paper elevation={0} className='form-container' sx={{ p: { xs: 1, sm: 4 } }}>
                     <Formik initialValues={initialValues}
                         validationSchema={validationSchema}
                         onSubmit={handleSubmit}
@@ -130,12 +122,7 @@ const RegisterPage = () => {
                                     {errors.password && touched.password && <div style={{color: "#ff0000", marginTop: "5px"}}>{errors.password}</div>}
                                 </Box>
 
-                                <Button type='submit' fullWidth 
-                                    sx={{ mt: 1, py: 1.2, fontWeight: 600, fontSize: "15px", borderRadius: 2,
-                                        background: "#6d4c41", color: "#fff",
-                                        "&:hover": { background: "#5d4037" }
-                                    }}
-                                >
+                                <Button type='submit' fullWidth className='submit-button'>
                                     Create Account
                                 </Button>
 
@@ -146,7 +133,7 @@ const RegisterPage = () => {
                                     <Typography component={"span"}>
                                         Already have an Account ?
                                     </Typography>
-                                    <NavLink className="register-link" to="/">Log in</NavLink>
+                                    <NavLink className="router-link" to="/">Log in</NavLink>
                                 </Box>
                             </Form>
                         )}
